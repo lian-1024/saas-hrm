@@ -1,4 +1,4 @@
-import { createPinia } from 'pinia';
+import { setupStore } from '@/stores';
 import { createApp } from 'vue';
 
 import App from './App.vue';
@@ -8,9 +8,15 @@ import router from './router';
 import "@/styles/base.css";
 import 'ant-design-vue/dist/reset.css';
 
-const app = createApp(App)
+const bootstrap = () => {
+  const app = createApp(App)
+  // 注册 pinia
+  setupStore(app)
+  // 使用 router 
+  app.use(router)
+  // 挂载
+  app.mount('#app')
+}
 
-app.use(createPinia())
-app.use(router)
 
-app.mount('#app')
+bootstrap()
