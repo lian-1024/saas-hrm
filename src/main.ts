@@ -5,7 +5,7 @@ import App from './App.vue';
 import router from './router';
 
 // style
-import "@/styles/base.css";
+import '@/design/index.less';
 import 'ant-design-vue/dist/reset.css';
 
 const bootstrap = () => {

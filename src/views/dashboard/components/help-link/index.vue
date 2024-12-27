@@ -28,5 +28,3 @@ const handleClickMenu: MenuProps['onClick'] = (info) => {
     <Menu :items="LinkItem" @click="handleClickMenu" />
   </QPanel>
 </template>
-
-<style scoped lang="scss"></style>
