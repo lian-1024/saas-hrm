@@ -1,8 +1,8 @@
-import { routes } from '@/router/routes'
+import { constantRoutes } from '@/config/router.config'
 import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes
+  routes: constantRoutes
 })
 
 export default router

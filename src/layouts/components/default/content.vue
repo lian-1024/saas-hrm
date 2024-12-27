@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { LayoutContent } from 'ant-design-vue';
+import type { CSSProperties } from 'vue';
 defineOptions({
   name: "QLayoutContent"
 })
+
+const WrapperStyles: CSSProperties = {
+  margin: "24px 16px",
+  minHeight: '280px'
+}
 </script>
 
 <template>
- <LayoutContent class="layout-content"
-        :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }">
-        <!-- router view -->
-        <RouterView />
-      </LayoutContent>
+  <LayoutContent :style="WrapperStyles">
+    <!-- router view -->
+    <RouterView />
+  </LayoutContent>
 </template>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>

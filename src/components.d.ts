@@ -7,7 +7,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ATree: typeof import('ant-design-vue/es')['Tree']
     Avatar: typeof import('./components/base/Avatar/avatar.vue')['default']
+    Calendar: typeof import('./components/base/Calendar/calendar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
