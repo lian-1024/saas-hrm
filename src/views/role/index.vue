@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button, Flex, Input, Pagination, Table, Tag, TypographyLink, type TableProps } from 'ant-design-vue';
+import { Button, Flex, Input, Pagination, Popconfirm, Table, Tag, TypographyLink, type TableProps } from 'ant-design-vue';
 import type { DataIndex } from 'ant-design-vue/es/vc-table/interface';
 import { cloneDeep } from 'lodash-es';
 import { reactive, ref, useId } from 'vue';
@@ -143,7 +143,10 @@ const handleDeleteRole = (key: string | number) => {
           <Flex gap="small" wrap="wrap">
             <template v-if="editableData[record.key]">
               <TypographyLink @click="handleSaveEditRole(record.key)">Save</TypographyLink>
-              <TypographyLink @click="handleCancelEditRole(record.key)">Cancel</TypographyLink>
+              <Popconfirm title="Are you sure you want to cancel the edit"
+                @confirm="() => handleCancelEditRole(record.key)">
+                <TypographyLink>Cancel</TypographyLink>
+              </Popconfirm>
             </template>
             <template v-else>
               <TypographyLink @click="handleGivePermission">Give Permission</TypographyLink>
