@@ -46,18 +46,18 @@ const UserInfoWrapperAttrs: FlexProps = {
   </Flex>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .dashboard {
   &-info {
-    padding: 24px;
-    background-color: #fff;
+    padding: var(--spacing-large);
+    background-color: var(--color-background);
 
     &-name {
-      font-size: 18px;
+      font-size: var(--font-size-middle);
     }
 
     &-secondary {
-      font-size: 14px;
+      font-size: var(--font-size);
       white-space: nowrap;
     }
   }
@@ -67,18 +67,18 @@ const UserInfoWrapperAttrs: FlexProps = {
 
     &-item {
       width: max-content;
-      padding: 18px;
+      padding: var(--font-size-middle);
     }
 
     &-title {
       width: min-content;
-      font-size: 14px;
+      font-size: var(--font-size);
     }
 
     &-total {
       width: min-content;
-      font-size: 30px;
-      padding-top: 10px;
+      font-size: var(--font-size-large);
+      padding-top: var(--spacing-middle);
     }
 
   }

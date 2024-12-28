@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Flex, type FlexProps } from 'ant-design-vue';
+import QPanel from '../panel.vue';
 import DashboardQuickItem from './components/quick-item.vue';
-import QPanel from '../panel.vue'
 defineOptions({
   name: 'DashboardQuick'
 })
@@ -14,7 +14,7 @@ const WrapperAttrs: FlexProps = {
 
 <template>
 
-  <QPanel title="快捷入口" >
+  <QPanel title="快捷入口">
     <Flex gap="large" justify="space-between">
       <DashboardQuickItem icon-url="/vite.svg" name="假期审批" />
       <DashboardQuickItem icon-url="/vite.svg" name="假期审批" />
@@ -24,11 +24,11 @@ const WrapperAttrs: FlexProps = {
   </QPanel>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .dashboard {
   &-quick {
-    padding: 24px;
-    background-color: #fff;
+    padding: var(--spacing-large);
+    background-color: var(--color-background);
   }
 }
 </style>

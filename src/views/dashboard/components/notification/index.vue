@@ -45,5 +45,3 @@ const notificationList = [
     </List>
   </QPanel>
 </template>
-
-<style scoped lang="scss"></style>

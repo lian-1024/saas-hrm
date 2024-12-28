@@ -14,8 +14,8 @@ const collapsed = ref<boolean>(false);
 
 
 // change collapsed status
-const handleChangeCollapsed= (status?: boolean) => {
-  if(status !== undefined) {
+const handleChangeCollapsed = (status?: boolean) => {
+  if (status !== undefined) {
     collapsed.value = status
   } else {
     collapsed.value = !collapsed.value
@@ -27,40 +27,28 @@ const handleChangeCollapsed= (status?: boolean) => {
 <template>
   <Layout class="layout-default">
     <!-- layout sider -->
-    <QLayoutSider :collapsed="collapsed"/>
+    <QLayoutSider :collapsed="collapsed" />
     <Layout>
       <!-- layout header -->
       <QLayoutHeader :collapsed="collapsed" @changeCollapsed="handleChangeCollapsed" />
       <!-- layout content -->
-      <QLayoutContent/>
+      <QLayoutContent class="layout-content" />
     </Layout>
   </Layout>
 </template>
 
-<style>
-#components-layout-demo-custom-trigger .trigger {
-  font-size: 18px;
-  line-height: 64px;
-  padding: 0 24px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
+<style lang="less" scoped>
+.layout {
+  &-default {
+    height: 100%;
+  }
 
-#components-layout-demo-custom-trigger .trigger:hover {
-  color: #1890ff;
-}
+  &-header {
+    padding-inline: var(--spacing-large);
+  }
 
-#components-layout-demo-custom-trigger .logo {
-  height: 32px;
-  background: rgba(255, 255, 255, 0.3);
-  margin: 16px;
-}
-
-.site-layout .site-layout-background {
-  background: #fff;
-}
-
-.layout-header {
-  padding-inline: var(--qq-spacing-large);
+  &-content {
+    height: 100%;
+  }
 }
 </style>

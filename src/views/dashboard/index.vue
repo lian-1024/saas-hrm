@@ -43,7 +43,7 @@ const LeftPanelAttrs: FlexProps = {
   </Flex>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .dashboard {
   &-calendar {
     width: 500px;

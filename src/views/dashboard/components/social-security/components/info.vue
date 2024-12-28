@@ -26,22 +26,22 @@ defineOptions({
   </Flex>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .social-security {
   &-total {
     margin: 0;
-    font-size: 30px;
-    padding-bottom: 16px;
+    font-size: var(--font-size-xlarge);
+    padding-bottom: var(--spacing-middle);
   }
 
   &-info {
-    background-color: #e6e6e6;
+    background-color: var(--color-background-secondary);
 
     &-item {
-      padding: 16px;
+      padding: var(--spacing-middle);
 
       &-total {
-        font-size: 30px;
+        font-size: var(--font-size-xlarge);
       }
     }
   }

@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { useThemeToken } from '@/composition/useThemeToken';
-import { toPX } from '@/utils/topx';
 import { Flex, TypographyText, type FlexProps } from 'ant-design-vue';
-import type { CSSProperties } from 'ant-design-vue/es/_util/cssinjs/hooks/useStyleRegister';
-import { computed, reactive } from 'vue';
 defineOptions({
   name: "QPanel"
 })
@@ -20,18 +16,21 @@ withDefaults(
   }
 )
 
-const { token } = reactive(useThemeToken())
 
-const WrapperStyles = computed((): CSSProperties => ({
-  padding: toPX(token.paddingLG),
-  backgroundColor: token.colorBgBase
-}))
+
 
 </script>
 
 <template>
-  <Flex :style="WrapperStyles" :vertical="vertical" :gap="gap">
+  <Flex class="panel" :vertical="vertical" :gap="gap">
     <TypographyText>{{ title }}</TypographyText>
     <slot />
   </Flex>
 </template>
+
+<style lang="less" scoped>
+.panel {
+  padding: var(--spacing-large);
+  background: var(--color-background);
+}
+</style>
