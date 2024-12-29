@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { QAvatar } from '@/components/base/Avatar';
+import { FormOfEmployment, FormOfEmploymentMap } from '@/constants/employee';
+import router from '@/router';
 import type { EmployeeVO } from '@/types';
 import { formatDate } from '@/utils/date';
 import { SearchOutlined } from '@ant-design/icons-vue';
@@ -50,46 +52,44 @@ const searchTree = ref<TreeProps['treeData']>([
 const actionsSize: ButtonProps['size'] = 'middle'
 
 
-const columns: TableProps['columns'] = [
+const columns: TableProps<EmployeeVO>['columns'] = [
   {
-    title: "Avatar",
-    dataIndex: "avatar",
-    key: "avatar",
-    fixed: "left"
+    title: "头像",
+    dataIndex: "staffPhoto",
+    key: "staffPhoto",
   },
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    fixed: "left"
+    title: "昵称",
+    dataIndex: "username",
+    key: "username",
   },
   {
-    title: "Phone",
-    dataIndex: "phone",
-    key: "phone"
+    title: "手机号",
+    dataIndex: "mobile",
+    key: "mobile"
   },
   {
-    title: "Job Number",
-    dataIndex: "jobNumber",
-    key: "job-number"
+    title: "工号",
+    dataIndex: "workNumber",
+    key: "workNumber"
   },
   {
-    title: "Employment Form",
-    dataIndex: "employmentForm",
-    key: 'employmentForm'
+    title: "聘用形式",
+    dataIndex: "formOfEmployment",
+    key: 'formOfEmployment'
   },
   {
-    title: 'Department',
-    dataIndex: "department",
-    key: "department"
+    title: '部门',
+    dataIndex: "departmentName",
+    key: "departmentName"
   },
   {
-    title: "On-Boarding Time",
-    dataIndex: 'onBoardingTime',
-    key: "onBoardingTime"
+    title: "入职时间",
+    dataIndex: 'timeOfEntry',
+    key: "timeOfEntry"
   },
   {
-    title: "Operations",
+    title: "操作",
     dataIndex: "operations",
     key: "operations",
     fixed: "right",
@@ -97,16 +97,17 @@ const columns: TableProps['columns'] = [
   }
 ]
 
-const employeeTableDataSource = ref<EmployeeVO[]>([
+const employeeTableDataSource = ref<(EmployeeVO & { key: number | string })[]>([
   {
+    departmentName: "字节跳动",
+    formOfEmployment: FormOfEmployment.Formal,
+    id: Math.random(),
     key: useId(),
-    name: "lianqq",
-    phone: 18500000000,
-    avatar: "/vite.svg",
-    employmentForm: "正式",
-    jobNumber: "6666",
-    department: "字节跳动",
-    onBoardingTime: formatDate(new Date())
+    mobile: "18500000000",
+    staffPhoto: "/vite.svg",
+    timeOfEntry: formatDate(Date()),
+    username: "lianqq",
+    workNumber: "ZUISHUAI-1"
   }
 ])
 
@@ -116,6 +117,12 @@ const tableRowSelection = ref<TableProps['rowSelection']>({
     console.log("selectedRows:", selectedRows);
   }
 })
+
+const handleViewEmployee = (id: number) => {
+  console.log("employee id:", id);
+  router.push(`/employee/detail/${id}`)
+}
+
 
 </script>
 
@@ -146,12 +153,20 @@ const tableRowSelection = ref<TableProps['rowSelection']>({
       <Table class="flex-1 h-full employee-right-table" :columns="columns" :data-source="employeeTableDataSource"
         :row-selection="tableRowSelection">
         <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'avatar'">
-            <QAvatar :src="record.avatar" />
+          <!-- 员工头像 -->
+          <template v-if="column.key === 'staffPhoto'">
+            <QAvatar :src="record.staffPhoto" />
           </template>
-          <template v-if="column.key === 'operations'">
+
+          <!-- 聘用形式 -->
+          <template v-else-if="column.key === 'formOfEmployment'">
+            {{ FormOfEmploymentMap[(record.formOfEmployment) as FormOfEmployment] }}
+          </template>
+
+          <!-- 操作 -->
+          <template v-else-if="column.key === 'operations'">
             <Flex>
-              <Button type="link" size="small">查看</Button>
+              <Button type="link" size="small" @click="handleViewEmployee(record.key)">查看</Button>
               <Button type="link" size="small">角色</Button>
               <Button type="link" size="small">删除</Button>
             </Flex>
