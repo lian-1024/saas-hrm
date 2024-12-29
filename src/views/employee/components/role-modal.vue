@@ -9,10 +9,7 @@ defineOptions({
 const props = defineProps<{
   employeeId: number | string | null
 }>()
-const emits = defineEmits<{
-  (e: "confirm"): any
-  (e: "cancel"): any
-}>()
+
 
 
 const modalStatus = defineModel("open", { default: false })
@@ -69,6 +66,6 @@ watchEffect(() => {
 
 <style scoped lang="scss">
 .modal-content {
-  padding:var(--spacing-middle)
+  padding: var(--spacing-middle)
 }
 </style>

@@ -2,10 +2,10 @@
 import { QAvatar } from '@/components/base/Avatar';
 import { FormOfEmployment, FormOfEmploymentMap } from '@/constants/employee';
 import router from '@/router';
-import type { EmployeeVO } from '@/types';
+import type { EmployeeVO } from '@/types/employee';
 import { formatDate } from '@/utils/date';
 import { SearchOutlined } from '@ant-design/icons-vue';
-import { type ButtonProps, type TableProps, type TreeProps, Button, Flex, Input, Table, Tree } from 'ant-design-vue';
+import { type ButtonProps, type TableProps, type TreeProps, Button, Flex, Input, Popconfirm, Table, Tree } from 'ant-design-vue';
 import { h, ref, useId } from 'vue';
 import RoleModal from './components/role-modal.vue';
 
@@ -127,9 +127,14 @@ const tableRowSelection = ref<TableProps['rowSelection']>({
 })
 
 
-const handleViewEmployee = (id: number) => {
-  console.log("employee id:", id);
-  router.push(`/employee/detail/${id}`)
+const handleViewEmployee = (employeeId: number) => {
+  console.log("employee id:", employeeId);
+  router.push(`/employee/detail/${employeeId}`)
+}
+
+const handleDeleteByEmployeeId = (employeeId: number) => {
+  console.log("employee:", employeeId);
+
 }
 
 
@@ -177,7 +182,9 @@ const handleViewEmployee = (id: number) => {
             <Flex>
               <Button type="link" size="small" @click="handleViewEmployee(record.key)">查看</Button>
               <Button type="link" size="small" @click="openGiveRoleModal(record.key)">角色</Button>
-              <Button type="link" size="small">删除</Button>
+              <Popconfirm @confirm="handleDeleteByEmployeeId(record.key)">
+                <Button type="link" size="small">删除</Button>
+              </Popconfirm>
             </Flex>
           </template>
 
