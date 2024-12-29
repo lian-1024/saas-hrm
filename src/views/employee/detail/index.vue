@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FormOfEmployment } from '@/constants/employee';
-import type { EmployeeInfoVO } from '@/types';
+import type { EmployeeInfoVO } from '@/type/employee';
 import { formatDate } from '@/utils/date';
 import { Button, Col, Flex, Form, FormItem, Input, message, Row, type FormProps, type UploadProps } from 'ant-design-vue';
 import { reactive, ref } from 'vue';
