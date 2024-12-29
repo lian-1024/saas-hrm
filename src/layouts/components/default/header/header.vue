@@ -22,16 +22,21 @@ const LayoutHeaderFlex: FlexProps = {
   <LayoutHeader class="layout-header">
     <Flex v-bind="LayoutHeaderFlex">
       <div>
-        <MenuUnfoldOutlined v-if="collapsed" class="trigger" @click="emits('changeCollapsed')" />
-        <MenuFoldOutlined v-else class="trigger" @click="emits('changeCollapsed')" />
+        <MenuUnfoldOutlined v-if="collapsed" class="trigger layout-header-collapsed-icon"
+          @click="emits('changeCollapsed')" />
+        <MenuFoldOutlined v-else class="trigger layout-header-collapsed-icon" @click="emits('changeCollapsed')" />
       </div>
       <QLayoutHeaderUser />
     </Flex>
   </LayoutHeader>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .layout-header {
   padding-inline: 16px;
+
+  &-collapsed-icon {
+    color: var(--color-background);
+  }
 }
 </style>

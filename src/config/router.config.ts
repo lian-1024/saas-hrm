@@ -25,7 +25,11 @@ export const constantRoutes: RouteRecordRaw[] = [
       {
         // 员工
         path: '/employee',
-        component: () => import("@/views/employee/index.vue")
+        component: () => import("@/views/employee/index.vue"),
+      },
+      {
+        path: "/employee/detail/:id",
+        component: () => import("@/views/employee/detail/index.vue")
       },
       {
         // 系统

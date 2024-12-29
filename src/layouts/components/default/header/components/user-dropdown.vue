@@ -43,7 +43,7 @@ const avatarDropdownAttrs: DropdownProps = {
     <Dropdown v-bind="avatarDropdownAttrs">
       <Space gap="middle">
         <QAvatar size="large" />
-        <TypographyText>
+        <TypographyText class="user-username">
           Lianqq
         </TypographyText>
       </Space>
@@ -54,4 +54,10 @@ const avatarDropdownAttrs: DropdownProps = {
   </Flex>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="less">
+.user {
+  &-username {
+    color: var(--color-background);
+  }
+}
+</style>

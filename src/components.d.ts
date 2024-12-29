@@ -7,12 +7,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    ACheckbox: typeof import('ant-design-vue/es')['Checkbox']
-    ACheckboxGroup: typeof import('ant-design-vue/es')['CheckboxGroup']
-    ACol: typeof import('ant-design-vue/es')['Col']
-    APagination: typeof import('ant-design-vue/es')['Pagination']
-    ARow: typeof import('ant-design-vue/es')['Row']
     ATree: typeof import('ant-design-vue/es')['Tree']
+    AUpload: typeof import('ant-design-vue/es')['Upload']
     Avatar: typeof import('./components/base/Avatar/avatar.vue')['default']
     Calendar: typeof import('./components/base/Calendar/calendar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
