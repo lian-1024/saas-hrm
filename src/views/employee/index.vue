@@ -5,8 +5,9 @@ import router from '@/router';
 import type { EmployeeVO } from '@/types';
 import { formatDate } from '@/utils/date';
 import { SearchOutlined } from '@ant-design/icons-vue';
-import { Button, Flex, Input, Table, Tree, type ButtonProps, type TableProps, type TreeProps } from 'ant-design-vue';
+import { type ButtonProps, type TableProps, type TreeProps, Button, Flex, Input, Table, Tree } from 'ant-design-vue';
 import { h, ref, useId } from 'vue';
+import RoleModal from './components/role-modal.vue';
 
 // 员工管理
 defineOptions({
@@ -110,6 +111,13 @@ const employeeTableDataSource = ref<(EmployeeVO & { key: number | string })[]>([
     workNumber: "ZUISHUAI-1"
   }
 ])
+const giveRoleModalStatus = ref<boolean>(false)
+const currentSelectedEmployee = ref<number | string | null>(null)
+
+const openGiveRoleModal = (employeeId: number | string) => {
+  giveRoleModalStatus.value = true
+  currentSelectedEmployee.value = employeeId
+}
 
 const tableRowSelection = ref<TableProps['rowSelection']>({
   onChange: (selectedRowKeys, selectedRows) => {
@@ -117,6 +125,7 @@ const tableRowSelection = ref<TableProps['rowSelection']>({
     console.log("selectedRows:", selectedRows);
   }
 })
+
 
 const handleViewEmployee = (id: number) => {
   console.log("employee id:", id);
@@ -167,12 +176,16 @@ const handleViewEmployee = (id: number) => {
           <template v-else-if="column.key === 'operations'">
             <Flex>
               <Button type="link" size="small" @click="handleViewEmployee(record.key)">查看</Button>
-              <Button type="link" size="small">角色</Button>
+              <Button type="link" size="small" @click="openGiveRoleModal(record.key)">角色</Button>
               <Button type="link" size="small">删除</Button>
             </Flex>
           </template>
+
+
         </template>
       </Table>
+      <!-- 分配角色 modal -->
+      <RoleModal v-model:open="giveRoleModalStatus" :employee-id="currentSelectedEmployee" />
     </Flex>
   </Flex>
 </template>
