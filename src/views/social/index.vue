@@ -1,12 +1,12 @@
 <script setup lang="ts">
 defineOptions({
-  name: "SystemPage"
+  name: "SocialPage"
 })
 </script>
 
 <template>
   <div>
-    SystemPage
+    SocialPage
   </div>
 </template>
 

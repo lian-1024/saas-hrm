@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { TreeProps } from 'ant-design-vue';
+import { type TreeProps, Tree } from 'ant-design-vue';
 import { ref, useId } from 'vue';
 
 defineOptions({
@@ -47,7 +47,7 @@ const departmentTree = ref<TreeProps['treeData']>([
 
 <template>
   <div class="department-wrapper">
-    <a-tree class="draggable-tree" draggable block-node :tree-data="departmentTree" />
+    <Tree class="draggable-tree" default-expand-all draggable block-node :tree-data="departmentTree" />
 
   </div>
 </template>
