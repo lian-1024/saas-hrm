@@ -1,27 +1,24 @@
 <script setup lang="ts">
-import { Calendar } from '@/components/base/Calendar';
-import type { FlexProps } from 'ant-design-vue';
-import { Flex } from 'ant-design-vue';
-import DashboardHelpLink from './components/help-link/index.vue';
-import DashboardInfo from './components/info/index.vue';
-import DashboardNotification from './components/notification/index.vue';
-import DashboardQuick from './components/quick/index.vue';
-import DashboardSocialSecurity from './components/social-security/index.vue';
+import { Calendar } from '@/components/base/Calendar'
+import type { FlexProps } from 'ant-design-vue'
+import { Flex } from 'ant-design-vue'
+import DashboardHelpLink from './components/help-link/index.vue'
+import DashboardInfo from './components/info/index.vue'
+import DashboardNotification from './components/notification/index.vue'
+import DashboardQuick from './components/quick/index.vue'
+import DashboardSocialSecurity from './components/social-security/index.vue'
 defineOptions({
-  name: "DashboardPage"
+  name: 'DashboardPage',
 })
 
-
 const WrapperAttrs: FlexProps = {
-  gap: "middle"
+  gap: 'middle',
 }
 
 const LeftPanelAttrs: FlexProps = {
-  gap: "middle",
-  vertical: true
+  gap: 'middle',
+  vertical: true,
 }
-
-
 </script>
 
 <template>
@@ -31,9 +28,9 @@ const LeftPanelAttrs: FlexProps = {
       <DashboardQuick />
       <DashboardSocialSecurity />
     </Flex>
-    <Flex vertical gap="middle">
+    <Flex vertical gap="middle" class="dashboard-right">
       <Flex gap="middle">
-        <DashboardHelpLink />
+        <DashboardHelpLink class="dashboard-help-link" />
         <div class="dashboard-calendar">
           <Calendar />
         </div>
@@ -45,8 +42,21 @@ const LeftPanelAttrs: FlexProps = {
 
 <style scoped lang="less">
 .dashboard {
+  &-left {
+    min-width: 600px;
+    flex: 1;
+  }
+
+  &-right {
+    max-width: 600px;
+  }
+
+  &-help-link {
+    min-width: 280px;
+  }
+
   &-calendar {
-    width: 500px;
+    min-width: 280px;
   }
 }
 </style>
