@@ -32,11 +32,6 @@ export const constantRoutes: RouteRecordRaw[] = [
         component: () => import("@/views/employee/detail/index.vue")
       },
       {
-        // 系统
-        path: '/system',
-        component: () => import("@/views/system/index.vue")
-      },
-      {
         // 权限
         path: '/permission',
         component: () => import("@/views/permission/index.vue")
@@ -45,6 +40,21 @@ export const constantRoutes: RouteRecordRaw[] = [
         // 考勤
         path: '/attendance',
         component: () => import("@/views/attendance/index.vue")
+      },
+      {
+        // 审批
+        path: '/approval',
+        component: () => import("@/views/approval/index.vue")
+      },
+      {
+        // 工资
+        path: '/salary',
+        component: () => import("@/views/salary/index.vue")
+      },
+      {
+        // 社保
+        path: '/social',
+        component: () => import("@/views/social/index.vue")
       }
     ]
   }

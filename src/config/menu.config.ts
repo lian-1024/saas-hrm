@@ -6,22 +6,22 @@ import { h } from 'vue';
 
 
 export const SiderMenuItem: MenuProps['items'] = [
-  // 仪表盘
-  generateMenuItem("/dashboard", "Dashboard", h(DashboardOutlined)),
+  // 首页
+  generateMenuItem("/dashboard", "首页", h(DashboardOutlined)),
   // 组织
-  generateMenuItem("/department", "Department", h(ApartmentOutlined)),
+  generateMenuItem("/department", "组织", h(ApartmentOutlined)),
   // 角色
-  generateMenuItem("/role", "Role", h(UserOutlined)),
+  generateMenuItem("/role", "角色", h(UserOutlined)),
   // 员工
-  generateMenuItem("/employee", "Employee", h(DashboardOutlined)),
+  generateMenuItem("/employee", "员工", h(DashboardOutlined)),
   // 权限
-  generateMenuItem("/permission", "Permission", h(LockOutlined)),
+  generateMenuItem("/permission", "权限", h(LockOutlined)),
   // 考勤
-  generateMenuItem("/attendance", "Attendance", h(CalendarOutlined)),
+  generateMenuItem("/attendance", "考勤", h(CalendarOutlined)),
   // 审批
-  generateMenuItem("/approval", "Approval", h(CalendarOutlined)),
+  generateMenuItem("/approval", "审批", h(CalendarOutlined)),
   // 工资
-  generateMenuItem("/salary", "Salary", h(CalendarOutlined)),
+  generateMenuItem("/salary", "工资", h(CalendarOutlined)),
   // 社保
-  generateMenuItem("/social", "Social", h(CalendarOutlined)),
+  generateMenuItem("/social", "社保", h(CalendarOutlined)),
 ]
