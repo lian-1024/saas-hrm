@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { Calendar } from '@/components/base/Calendar'
+import { useRequest } from '@/composables/use-request'
+import HomeService from '@/services/home.service'
+import type { Response } from '@/types/api'
 import type { FlexProps } from 'ant-design-vue'
 import { Flex } from 'ant-design-vue'
 import DashboardDeclarePanel from './components/declare-panel/index.vue'
@@ -19,6 +22,12 @@ const LeftPanelAttrs: FlexProps = {
   gap: 'middle',
   vertical: true,
 }
+
+const { data, loading, error, run } = useRequest<Response<string>>(HomeService.getHomeData, {
+  onSuccess: (res) => {
+    console.log(res)
+  }
+})
 </script>
 
 <template>

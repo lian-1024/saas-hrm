@@ -1,11 +1,6 @@
-import type { AxiosInstance, AxiosResponse } from 'axios'  // 从axios库中导入AxiosInstance和AxiosResponse类型
+import type { Response } from '@/types/api';
+import type { AxiosInstance, AxiosResponse } from 'axios'; // 从axios库中导入AxiosInstance和AxiosResponse类型
 
-// 通用响应接口，定义了响应的基本结构
-export interface Response<T = any> {
-  code: number  // 响应状态码，通常用于表示请求的成功或失败
-  data: T  // 响应数据，类型为泛型T，可以是任意类型
-  message: string  // 响应消息，通常用于描述请求的结果
-}
 
 // 请求配置接口，定义了请求的基本配置
 export interface RequestConfig {
@@ -54,6 +49,7 @@ export class Request {
 
   // 通用请求方法，接收请求配置并返回响应
   async request<T>(config: RequestConfig): Promise<Response<T>> {
+    console.log("request")
     return this.adapter.request<T>(config)  // 调用适配器的request方法发起请求
   }
 
