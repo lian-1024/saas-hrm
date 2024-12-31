@@ -1,11 +1,11 @@
+import { RequestMethods } from '@/constants/api';
 import type { Response } from '@/types/api';
 import type { AxiosInstance, AxiosResponse } from 'axios'; // 从axios库中导入AxiosInstance和AxiosResponse类型
-
 
 // 请求配置接口，定义了请求的基本配置
 export interface RequestConfig {
   url: string  // 请求的URL地址
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'  // 请求方法，可选，默认为GET
+  method?: RequestMethods | string  // 请求方法，可选，默认为GET
   data?: any  // 请求体数据，通常用于POST、PUT等请求
   params?: any  // 请求参数，通常用于GET请求
   headers?: Record<string, string>  // 请求头，键值对形式
@@ -57,7 +57,7 @@ export class Request {
   async get<T>(url: string, params?: any): Promise<Response<T>> {
     return this.request<T>({
       url,
-      method: 'GET',
+      method: RequestMethods.GET,
       params
     })
   }
@@ -66,7 +66,7 @@ export class Request {
   async post<T>(url: string, data?: any): Promise<Response<T>> {
     return this.request<T>({
       url,
-      method: 'POST',
+      method: RequestMethods.POST,
       data
     })
   }
@@ -75,7 +75,7 @@ export class Request {
   async put<T>(url: string, data?: any): Promise<Response<T>> {
     return this.request<T>({
       url,
-      method: 'PUT',
+      method: RequestMethods.PUT,
       data
     })
   }
@@ -84,7 +84,7 @@ export class Request {
   async delete<T>(url: string, params?: any): Promise<Response<T>> {
     return this.request<T>({
       url,
-      method: 'DELETE',
+      method: RequestMethods.DELETE,
       params
     })
   }
