@@ -28,6 +28,8 @@ defineOptions({
 
 <style scoped lang="less">
 .declare {
+  width: 200px;
+
   &-total {
     margin: 0;
     font-size: var(--font-size-xlarge);
@@ -39,9 +41,10 @@ defineOptions({
   &-info {
     padding: var(--spacing-middle);
     background-color: var(--color-background-secondary);
-    width: 240px;
+    width: 200px;
 
     &-item {
+      min-width: 36%;
 
       &-total {
         font-size: var(--font-size-xlarge);

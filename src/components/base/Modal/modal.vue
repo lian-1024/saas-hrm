@@ -11,8 +11,6 @@ const slots = defineSlots<{
   default: () => VNode,
   footer: () => VNode
 }>()
-
-
 </script>
 
 <template>

@@ -4,7 +4,7 @@ import QPanel from '../panel.vue';
 import DeclareChart from './components/chart.vue';
 import DeclareInfo from './components/info.vue';
 defineOptions({
-  name: "SocialSecurity"
+  name: "DeclarePanel"
 })
 
 

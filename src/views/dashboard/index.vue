@@ -2,7 +2,7 @@
 import { Calendar } from '@/components/base/Calendar'
 import type { FlexProps } from 'ant-design-vue'
 import { Flex } from 'ant-design-vue'
-import DashboardSocialSecurity from './components/declare-panel/index.vue'
+import DashboardDeclarePanel from './components/declare-panel/index.vue'
 import DashboardHelpLink from './components/help-link/index.vue'
 import DashboardInfo from './components/info/index.vue'
 import DashboardNotification from './components/notification/index.vue'
@@ -26,7 +26,8 @@ const LeftPanelAttrs: FlexProps = {
     <Flex v-bind="LeftPanelAttrs" class="dashboard-left">
       <DashboardInfo />
       <DashboardQuick />
-      <DashboardSocialSecurity />
+      <DashboardDeclarePanel />
+      <DashboardDeclarePanel />
     </Flex>
     <Flex vertical gap="middle" class="dashboard-right">
       <Flex gap="middle">
