@@ -9,11 +9,13 @@ import router from './router';
 import '@/design/index.less';
 import 'ant-design-vue/dist/reset.css';
 
+import './utils/dayjs';
+
 const bootstrap = () => {
   const app = createApp(App)
   // 注册 pinia
   setupStore(app)
-  // 使用 router 
+  // 使用 router
   app.use(router)
   app.use(TlbsMap)
   // 挂载

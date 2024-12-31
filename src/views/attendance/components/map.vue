@@ -4,7 +4,7 @@ import { BaseMap, MultiCircle, MultiLabel } from 'tlbs-map-vue';
 import { computed, ref } from 'vue';
 
 defineOptions({
-  name: "ScopedMap"
+  name: "AttendanceScopedMap"
 })
 // 范围半径
 const scopedRadius = defineModel("scopedRadius", { default: 500 })

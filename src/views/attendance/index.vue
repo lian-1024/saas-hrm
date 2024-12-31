@@ -1,102 +1,110 @@
 <script setup lang="ts">
-import type { EmployeeAttendanceVO } from '@/types/attendance';
-import { convertDistance } from '@/utils/convert';
-import { CloseOutlined } from '@ant-design/icons-vue';
-import { Button, CheckboxGroup, Drawer, Flex, Slider, Table, TypographyText, type CheckboxGroupProps, type SliderProps, type TableProps } from 'ant-design-vue';
-import { ref, useId } from 'vue';
-import ScopedMap from './components/map.vue';
-// import MarkerDemo from '@/components/base/TMap/index.vue'
+import type { EmployeeAttendanceVO } from '@/types/attendance'
+import { convertDistance } from '@/utils/convert'
+import { generateMenuItem } from '@/utils/generate-menu-item'
+import { CloseOutlined } from '@ant-design/icons-vue'
+import {
+  Button,
+  CheckboxGroup,
+  Drawer,
+  Flex,
+  Menu,
+  Slider,
+  Table,
+  TypographyText,
+  type CheckboxGroupProps,
+  type MenuProps,
+  type SliderProps,
+  type TableProps,
+} from 'ant-design-vue'
+import { reactive, ref, useId } from 'vue'
+import ScopedMap from './components/map.vue'
+import SettingModal from './components/setting/modal.vue'
+
 
 interface EmployeeAttendanceVOWithKey extends EmployeeAttendanceVO {
   key: string | number
 }
 
 defineOptions({
-  name: "AttendancePage"
+  name: 'AttendancePage',
 })
 
 const department: CheckboxGroupProps['options'] = [
   {
-    label: "字节跳动",
-    value: "ByteDance"
+    label: '字节跳动',
+    value: 'ByteDance',
   },
-
 ]
 
 const columns: TableProps<EmployeeAttendanceVOWithKey>['columns'] = [
   {
-    title: "序号",
-    dataIndex: "key",
-    key: "key",
-    width: 100
+    title: '序号',
+    dataIndex: 'key',
+    key: 'key',
+    width: 100,
   },
   {
-    title: "姓名",
-    dataIndex: "username",
+    title: '姓名',
+    dataIndex: 'username',
     key: 'username',
-    width: 150
+    width: 150,
   },
   {
     title: '工号',
-    dataIndex: "workNumber",
-    key: "workNumber",
-    width: 150
+    dataIndex: 'workNumber',
+    key: 'workNumber',
+    width: 150,
   },
   {
-    title: "部门",
+    title: '部门',
     dataIndex: 'departmentName',
-    key: "departmentName",
-    width: 150
+    key: 'departmentName',
+    width: 150,
   },
   {
-    title: "手机",
-    dataIndex: "mobile",
-    key: "mobile",
-    width: 150
-  }
+    title: '手机',
+    dataIndex: 'mobile',
+    key: 'mobile',
+    width: 150,
+  },
 ]
 const employeeDataSource: EmployeeAttendanceVOWithKey[] = [
   {
     key: useId(),
     id: Math.random(),
     departmentId: 1,
-    departmentName: "字节跳动",
-    mobile: "1859999999",
-    username: "lianqq",
-    workNumber: "LIANQQ"
-  }
+    departmentName: '字节跳动',
+    mobile: '1859999999',
+    username: 'lianqq',
+    workNumber: 'LIANQQ',
+  },
 ]
 
 const drawerStatus = ref(false)
 
 
-const companyColumns: TableProps['columns'] = [
-  {
-    title: "公式昵称",
-    key: "name",
-    dataIndex: "name"
-  }
-]
+const formatSliderTip: SliderProps['tipFormatter'] = (value = 0) =>
+  `${convertDistance(value)}内可打卡`
 
-const companyDataSource = [
-  {
-    key: useId(),
-    name: "字节跳动"
-  },
-  {
-    key: useId(),
-    name: "阿里巴巴"
-  },
-  {
-    key: useId(),
-    name: "腾讯"
-  }
-]
-
-const formatSliderTip: SliderProps['tipFormatter'] = (value = 0) => `${convertDistance(value)}内可打卡`
-
+/**范围半径 */
 const scopedRadius = ref(200)
+const selectedCompanyId = ref<string | number>("ByteDance")
 
+const companyMenuItems = reactive([
+  generateMenuItem("ByteDance", "字节跳动"),
+  generateMenuItem("Tencent", "腾讯"),
+  generateMenuItem("Alibaba", "阿里巴巴"),
+])
+
+const handleSelectedCompany: MenuProps['onClick'] = (info) => {
+  console.log("selected:", info);
+  selectedCompanyId.value = info.key
+}
+
+
+// 设置模态框状态
+const settingModalStatus = ref(false)
 </script>
 
 <template>
@@ -108,7 +116,7 @@ const scopedRadius = ref(200)
       </Flex>
       <Flex gap="middle">
         <Button @click="drawerStatus = true">打卡范围</Button>
-        <Button type="primary">设置</Button>
+        <Button type="primary" @click="settingModalStatus = true">设置</Button>
       </Flex>
     </Flex>
     <Flex class="attendance-middle" gap="small" align="center">
@@ -124,7 +132,6 @@ const scopedRadius = ref(200)
     <!-- 打卡范围 setting drawer -->
     <Drawer height="100vh" @close="drawerStatus = false" title="打卡范围设置" v-model:open="drawerStatus" placement="top"
       :closable="false">
-
       <template #extra>
         <CloseOutlined />
       </template>
@@ -137,8 +144,7 @@ const scopedRadius = ref(200)
           <Flex class="attendance-scope-right" vertical gap="middle">
             <!-- 公司列表 -->
             <div class="attendance-scope-company-list flex-1">
-              <Table bordered :row-class-name="(_record, index) => (index % 2 === 1 ? 'table-striped' : '')"
-                :pagination="false" :columns="companyColumns" :data-source="companyDataSource" :show-header="false" />
+              <Menu v-model:active-key="selectedCompanyId" :items="companyMenuItems" @click="handleSelectedCompany" />
             </div>
             <!-- 半径 slider -->
             <div>
@@ -156,12 +162,12 @@ const scopedRadius = ref(200)
         </Flex>
       </template>
     </Drawer>
+    <SettingModal v-model:open="settingModalStatus" />
   </Flex>
 </template>
 
 <style scoped lang="less">
 .attendance {
-
   &-top {
     width: 100%;
     padding: var(--spacing-large);
@@ -174,7 +180,6 @@ const scopedRadius = ref(200)
     &-total {
       font-size: var(--font-size-large);
     }
-
   }
 
   &-middle {
@@ -188,16 +193,14 @@ const scopedRadius = ref(200)
   }
 
   &-scope {
-
     &-right {
       height: 100%;
       min-width: 300px;
 
       :deep(.table-striped) td {
-        background-color: var(--color-background-secondary)
+        background-color: var(--color-background-secondary);
       }
     }
   }
-
 }
 </style>
