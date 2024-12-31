@@ -3,6 +3,7 @@ import { SiderMenuItem } from '@/config/menu.config';
 import router from '@/router';
 import { LayoutSider, Menu, type MenuProps } from 'ant-design-vue';
 import { ref } from 'vue';
+import QLogo from './logo.vue';
 
 
 defineOptions({
@@ -22,7 +23,7 @@ const handleClickMenuItem: MenuProps['onClick'] = ({ key }) => {
 <template>
   <LayoutSider class="layout-sider" v-model:collapsed="collapsed" :trigger="null" collapsible>
     <!-- layout menu -->
-    <div class="logo" />
+    <QLogo />
     <!-- layout menu -->
     <Menu v-model:selectedKeys="selectedKeys" :items="SiderMenuItem" theme="dark" mode="inline"
       @click="handleClickMenuItem" />
