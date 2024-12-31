@@ -28,7 +28,7 @@ const handleChangeCollapsed = (status?: boolean) => {
   <Layout class="layout-default">
     <!-- layout sider -->
     <QLayoutSider :collapsed="collapsed" />
-    <Layout>
+    <Layout class="layout-main">
       <!-- layout header -->
       <QLayoutHeader :collapsed="collapsed" @changeCollapsed="handleChangeCollapsed" />
       <!-- layout content -->
@@ -43,12 +43,14 @@ const handleChangeCollapsed = (status?: boolean) => {
     height: 100%;
   }
 
+  &-main {
+    overflow-y: scroll;
+  }
+
   &-header {
     padding-inline: var(--spacing-large);
   }
 
-  &-content {
-    height: 100%;
-  }
+
 }
 </style>
