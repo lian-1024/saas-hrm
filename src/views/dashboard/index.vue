@@ -2,11 +2,11 @@
 import { Calendar } from '@/components/base/Calendar'
 import type { FlexProps } from 'ant-design-vue'
 import { Flex } from 'ant-design-vue'
+import DashboardSocialSecurity from './components/declare-panel/index.vue'
 import DashboardHelpLink from './components/help-link/index.vue'
 import DashboardInfo from './components/info/index.vue'
 import DashboardNotification from './components/notification/index.vue'
 import DashboardQuick from './components/quick/index.vue'
-import DashboardSocialSecurity from './components/social-security/index.vue'
 defineOptions({
   name: 'DashboardPage',
 })
