@@ -22,7 +22,6 @@ export default defineConfig({
       "/api": {
         target: "https://heimahr.itheima.net", // 真实接口地址, 后端给的基地址
         changeOrigin: true, // 允许跨域
-        rewrite: (path) => path.replace(/^\/api/, ""), // 将ccc替换为空
       },
     }
   }

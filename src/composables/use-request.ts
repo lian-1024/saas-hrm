@@ -1,27 +1,30 @@
-
+import type { Response } from '@/types/api'
 import { ref } from 'vue'
-
-interface UseRequestOptions<TData> {
+interface UseRequestOptions<TData, TParams = any> {
   /**是否手动触发请求 */
   manual?: boolean
   /**默认数据 */
-  defaultData?: TData
+  defaultData?: TData,
+  defaultParams?: TParams
   /**请求成功时触发 */
-  onSuccess?: (data: TData) => void
+  onSuccess?: (data: Response<TData>) => void
   /**请求失败时触发 */
   onError?: (error: any) => void
   /**请求完成时触发 */
   onFinally?: () => void
 }
 
-type UseRequestFnType<TData = any, TParams = any> = (params?: TParams) => Promise<TData>
+// 获取函数参数类型
+type GetFunctionParams<T> = T extends (params: infer P) => any ? P : never
 
-
-
-export const useRequest = <TData = any, TParams = any>(requestFn: UseRequestFnType<TData, TParams>, options: UseRequestOptions<TData>) => {
+export function useRequest<TData = any, TParams = any>(
+  requestFn: (params: TParams) => Promise<Response<TData>>,
+  options: UseRequestOptions<TData, TParams> = {}
+) {
   const {
     manual = false,
     defaultData,
+    defaultParams,
     onSuccess,
     onError,
     onFinally
@@ -39,27 +42,31 @@ export const useRequest = <TData = any, TParams = any>(requestFn: UseRequestFnTy
     loading.value = true
     error.value = null
 
-    return new Promise(async (resolve, reject) => {
-      try {
-        // 发送请求并传递参数
-        const res = await requestFn(params)
-        data.value = res
-        onSuccess?.(res)
-        resolve(res)
-      } catch (err) {
-        error.value = err
-        onError?.(err)
-        reject(err)
-      } finally {
-        loading.value = false
-        onFinally?.()
+    try {
+      const res = await requestFn(params as TParams)
+      data.value = res
+
+      if (!res.success) {
+        console.log("error:", res);
+
+        throw new Error(res.message)
       }
-    })
+
+      onSuccess?.(res)
+      return res
+    } catch (err) {
+      error.value = err
+      onError?.(err)
+      throw err
+    } finally {
+      loading.value = false
+      onFinally?.()
+    }
   }
 
-  // 如果手动触发请求，则不自动触发
+  // 如果不是手动模式，则自动触发
   if (!manual) {
-    run()
+    run(defaultParams)
   }
 
   return {
