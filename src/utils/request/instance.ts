@@ -1,6 +1,4 @@
-import router from '@/router'
 import { useUserStore } from '@/stores'
-import { message } from 'ant-design-vue'
 import axios from 'axios'
 import { Request } from './index'
 
@@ -25,6 +23,8 @@ axiosInstance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`
     }
 
+    console.log("config:", config)
+
     return config
   },
   (error) => {
@@ -37,27 +37,6 @@ axiosInstance.interceptors.response.use(
     return response.data
   },
   (error) => {
-    const { response } = error
-
-    switch (response?.status) {
-      case 401:
-        // token 过期或无效，清除token并跳转登录
-        const userStore = useUserStore()
-        userStore.logout()
-        router.push('/login')
-        break
-      case 403:
-        message.error('没有权限')
-        break
-      case 404:
-        message.error('请求的资源不存在')
-        break
-      case 500:
-        message.error('服务器错误')
-        break
-      default:
-        message.error(error.message || '请求失败')
-    }
 
     return Promise.reject(error)
   }

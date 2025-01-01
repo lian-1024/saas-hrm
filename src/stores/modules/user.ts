@@ -1,10 +1,9 @@
 import { useRequest } from '@/composables/use-request'
 import AuthService from '@/services/auth.service'
 import { message } from 'ant-design-vue'
-import { acceptHMRUpdate, defineStore } from 'pinia'
+import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { pinia } from '..'
-import router from '@/router'
 
 
 export const createUserStore = defineStore('user', () => {
@@ -28,7 +27,7 @@ export const createUserStore = defineStore('user', () => {
         message.success('登录成功')
       }
 
-      router.push('/')
+      console.log("router:push");
 
     },
     onError: (error) => {
@@ -65,10 +64,10 @@ export const createUserStore = defineStore('user', () => {
 })
 
 // 支持热更新
-if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(createUserStore, import.meta.hot))
+// if (import.meta.hot) {
+//   import.meta.hot.accept(acceptHMRUpdate(createUserStore, import.meta.hot))
 
-}
+// }
 
 
 export const useUserStore = () => createUserStore(pinia)

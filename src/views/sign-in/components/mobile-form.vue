@@ -11,8 +11,8 @@ interface FormState extends LoginParams {
 const formRef = ref()
 
 const formState = reactive<FormState>({
-  mobile: '',
-  password: '',
+  mobile: '13800000002',
+  password: 'hm#qd@23!',
   isAgree: true
 })
 
