@@ -11,10 +11,10 @@ import 'ant-design-vue/dist/reset.css';
 
 import './utils/dayjs';
 
-const bootstrap = () => {
+const bootstrap = async () => {
   const app = createApp(App)
   // 注册 pinia
-  setupStore(app)
+  await setupStore(app)
   // 使用 router
   app.use(router)
   app.use(TlbsMap)

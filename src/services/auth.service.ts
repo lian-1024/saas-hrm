@@ -1,14 +1,10 @@
-import type { Response } from '@/types/api'
+import type { LoginParams } from '@/types/api'
 import { request } from '@/utils/request/instance'
 
-interface LoginParams {
-  mobile: string
-  password: string
-}
 
 class AuthService {
-  static async login(data: LoginParams): Promise<Response<string>> {
-    return request.post<string>('/sys/login', data)
+  static login = (params: LoginParams) => {
+    return request.post<string>('/sys/login', params)
   }
 }
 

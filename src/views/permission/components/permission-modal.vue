@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { QModal } from '@/components/base/Modal';
-import type { CreatePermissionParams } from '@/types/permission';
+import type { CreatePermissionParams } from '@/types/api/permission';
 import { Button, Flex, Form, FormItem, Input, Switch, type FormProps } from 'ant-design-vue';
 import { computed, reactive } from 'vue';
 

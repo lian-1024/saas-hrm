@@ -1,22 +1,37 @@
 <script setup lang="ts">
 import { QAvatar } from '@/components/base/Avatar';
+import { useUserStore } from '@/stores/modules/user';
 import { Divider, Flex, type FlexProps, Tag, TypographyText } from 'ant-design-vue';
+import { onMounted } from 'vue';
+import { CountTo } from 'vue3-count-to';
+import type { DashboardInfoItem } from '../../types';
 
 defineOptions({
   name: "DashboardInfo"
 })
 
+
+defineProps<{
+  dashboardInfoList: DashboardInfoItem[]
+}>()
+
+
+const userStore = useUserStore()
+const { getUserInfo } = userStore
 const WrapperAttrs: FlexProps = {
   vertical: true,
   gap: "large",
 }
 
-
-
 const UserInfoWrapperAttrs: FlexProps = {
   gap: "middle"
 }
 
+
+
+onMounted(async () => {
+  await getUserInfo()
+})
 
 </script>
 
@@ -26,22 +41,25 @@ const UserInfoWrapperAttrs: FlexProps = {
       <QAvatar shape="square" :size="66" />
       <div>
         <Flex gap="middle" align="center">
-          <TypographyText class="dashboard-info-name" :level="4" ellipsis>Lianqq</TypographyText>
+          <TypographyText class="dashboard-info-name" :level="4" ellipsis>江苏传智博客教育科技股份有限公司</TypographyText>
           <Tag>体验版</Tag>
         </Flex>
-        <Flex>
-          <TypographyText class="dashboard-info-secondary" type="secondary">管理员</TypographyText>
+        <Flex align="center">
+          <TypographyText class="dashboard-info-secondary" type="secondary">{{ userStore.userInfo?.username }}
+          </TypographyText>
           <Divider type="vertical" />
-          <TypographyText class="dashboard-info-secondary" type="secondary">字节跳动-总裁办</TypographyText>
+          <TypographyText class="dashboard-info-secondary" type="secondary">{{ userStore.userInfo?.company }}-{{
+            userStore.userInfo?.departmentName
+          }}</TypographyText>
         </Flex>
       </div>
     </Flex>
     <Flex wrap="wrap">
-      <div class="dashboard-todo-item" v-for="item in 3" :key="item">
-        <TypographyText class="dashboard-todo-title" type="secondary">组织总人数</TypographyText>
+      <Flex vertical class="dashboard-todo-item" v-for="item in dashboardInfoList" :key="item.title">
+        <TypographyText type="secondary" class="dashboard-todo-title">{{ item.title }}</TypographyText>
         <!-- <TypographyTitle :level="1">999</TypographyTitle> -->
-        <h1 class="dashboard-todo-total">1</h1>
-      </div>
+        <CountTo :start-val="0" :end-val="item.total" :duration="3000" class="dashboard-todo-total" />
+      </Flex>
     </Flex>
   </Flex>
 </template>
@@ -71,14 +89,14 @@ const UserInfoWrapperAttrs: FlexProps = {
     }
 
     &-title {
-      width: min-content;
       font-size: var(--font-size);
     }
 
     &-total {
       width: min-content;
-      font-size: var(--font-size-large);
       padding-top: var(--spacing-middle);
+      font-size: var(--font-size-xlarge);
+      padding-top: var(--spacing-small);
     }
 
   }

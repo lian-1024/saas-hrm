@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { Calendar } from '@/components/base/Calendar'
 import { useRequest } from '@/composables/use-request'
-import HomeService from '@/services/home.service'
-import type { Response } from '@/types/api'
+import DashboardService from '@/services/dashboard.service'
+import { useUserStore } from '@/stores/modules/user'
+import type { HomeDataVO } from '@/types/api/'
 import type { FlexProps } from 'ant-design-vue'
-import { Flex } from 'ant-design-vue'
+import { Flex, message } from 'ant-design-vue'
+import { computed, onMounted, ref } from 'vue'
 import DashboardDeclarePanel from './components/declare-panel/index.vue'
 import DashboardHelpLink from './components/help-link/index.vue'
 import DashboardInfo from './components/info/index.vue'
 import DashboardNotification from './components/notification/index.vue'
 import DashboardQuick from './components/quick/index.vue'
+import type { DashboardInfoItem } from './types'
 defineOptions({
   name: 'DashboardPage',
 })
@@ -23,17 +26,64 @@ const LeftPanelAttrs: FlexProps = {
   vertical: true,
 }
 
-const { data, loading, error, run } = useRequest<Response<string>>(HomeService.getHomeData, {
+
+const dashboardData = ref<HomeDataVO>()
+
+const dashboardInfoList = computed(() => {
+  return transformDashboardInfoList(dashboardData.value)
+})
+
+// 转换数据
+const transformDashboardInfoList = (data?: HomeDataVO): DashboardInfoItem[] => {
+  return [
+    {
+      title: "组织总人数",
+      total: data?.employeeTotal ?? 0
+    },
+    {
+      title: "正式员工",
+      total: data?.regularEmployeeTotal ?? 0
+    },
+    {
+      title: "合同待签署",
+      total: data?.contractSignTotal ?? 0
+    },
+    {
+      title: "待入职",
+      total: data?.toBeEmployed ?? 0
+    },
+    {
+      title: "本月待转正",
+      total: data?.toBeConfirmed ?? 0
+    },
+    {
+      title: "接口总访问量",
+      total: data?.interfaceAccessTotal ?? 0
+    }
+  ]
+}
+
+
+const { loading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
   onSuccess: (res) => {
-    console.log(res)
+    dashboardData.value = res.data
+  },
+  onError: (error) => {
+    console.log("error:", error);
+
+    message.error("获取首页数据失败")
   }
 })
+
+
+
+
 </script>
 
 <template>
   <Flex v-bind="WrapperAttrs">
     <Flex v-bind="LeftPanelAttrs" class="dashboard-left">
-      <DashboardInfo />
+      <DashboardInfo :dashboard-info-list="dashboardInfoList" />
       <DashboardQuick />
       <DashboardDeclarePanel />
       <DashboardDeclarePanel />
