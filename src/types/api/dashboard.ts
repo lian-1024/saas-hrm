@@ -17,7 +17,7 @@ export interface HomeDataVO {
   /**
    * 公积金申报数据
    */
-  providentFund: ProvidentFundVO;
+  providentFund: DashboardChartsVO;
   /**
    * 正式员工总数
    */
@@ -25,7 +25,7 @@ export interface HomeDataVO {
   /**
    * 社保申报数据
    */
-  socialInsurance: SocialInsuranceVO;
+  socialInsurance: DashboardChartsVO;
   /**
    * 本月待转正人数
    */
@@ -43,7 +43,7 @@ export interface HomeDataVO {
 /**
  * 公积金申报数据
  */
-export interface ProvidentFundVO {
+export interface DashboardDeclareVO {
   /**
    * 分类
    */
@@ -78,40 +78,3 @@ export interface ProvidentFundVO {
   yAxis: number[];
 }
 
-/**
- * 社保申报数据
- */
-export interface SocialInsuranceVO {
-  /**
-   * 分类
-   */
-  category: string;
-  /**
-   * 类型
-   */
-  categoryType: string;
-  /**
-   * 申报人数
-   */
-  declarationTotal: number;
-  /**
-   * 已申报人数
-   */
-  declaredTotal: number;
-  /**
-   * 申报中人数
-   */
-  declaringTotal: number;
-  /**
-   * 待申报人数
-   */
-  toDeclareTotal: number;
-  /**
-   * x轴数据
-   */
-  xAxis: string[];
-  /**
-   * y轴
-   */
-  yAxis: number[];
-}

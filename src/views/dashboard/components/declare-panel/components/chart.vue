@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import QEChartUI from '@/components/base/EChartsUI/index.vue'
-import { useECharts, type EChartUIType } from '@/composables/use-echarts'
-import { onMounted, ref } from 'vue'
-
+import QEChartUI from '@/components/base/EChartsUI/index.vue';
+import { useECharts, type EChartUIType } from '@/composables/use-echarts';
+import type { DashboardDeclareVO } from '@/types/api/dashboard';
+import { ref, watch } from 'vue';
 defineOptions({
   name: "DeclareChart"
 })
+
+const props = defineProps<{
+  chartsData: Pick<DashboardDeclareVO, 'xAxis' | 'yAxis'>
+}>()
 
 const chartRef = ref<EChartUIType | null>(null)
 
 const { renderECharts } = useECharts(chartRef!, { theme: "light" })
 
 
-onMounted(async () => {
+const renderChart = async (chartsData: Pick<DashboardDeclareVO, 'xAxis' | 'yAxis'>) => {
   await renderECharts({
     grid: {
       top: 10,
@@ -24,7 +28,7 @@ onMounted(async () => {
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+      data: chartsData.xAxis,
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: {
@@ -44,7 +48,7 @@ onMounted(async () => {
     },
     series: [
       {
-        data: [50, 150, 180, 330, 200, 160, 400],
+        data: chartsData.yAxis,
         type: 'line',
         smooth: true,
         areaStyle: {
@@ -58,7 +62,11 @@ onMounted(async () => {
       }
     ]
   });
-})
+}
+
+watch(() => props.chartsData, (newValue) => {
+  renderChart(newValue)
+}, { immediate: true })
 </script>
 
 <template>

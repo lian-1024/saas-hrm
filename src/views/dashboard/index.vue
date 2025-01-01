@@ -2,11 +2,11 @@
 import { Calendar } from '@/components/base/Calendar'
 import { useRequest } from '@/composables/use-request'
 import DashboardService from '@/services/dashboard.service'
-import { useUserStore } from '@/stores/modules/user'
 import type { HomeDataVO } from '@/types/api/'
+import type { DashboardDeclareVO } from '@/types/api/dashboard'
 import type { FlexProps } from 'ant-design-vue'
 import { Flex, message } from 'ant-design-vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import DashboardDeclarePanel from './components/declare-panel/index.vue'
 import DashboardHelpLink from './components/help-link/index.vue'
 import DashboardInfo from './components/info/index.vue'
@@ -63,10 +63,37 @@ const transformDashboardInfoList = (data?: HomeDataVO): DashboardInfoItem[] => {
   ]
 }
 
+const defaultProvidentFund = {
+  categoryType: "providentFund",
+  category: "公积金申报数据",
+  declarationTotal: 0,
+  toDeclareTotal: 0,
+  declaringTotal: 0,
+  declaredTotal: 0,
+  xAxis: [],
+  yAxis: []
+}
+
+const defaultSocialSecurity = {
+  category: "社保申报数据",
+  categoryType: "socialInsurance",
+  declarationTotal: 0,
+  toDeclareTotal: 0,
+  declaringTotal: 0,
+  declaredTotal: 0,
+  xAxis: [],
+  yAxis: []
+}
+
+const providentFund = ref<DashboardDeclareVO>(defaultProvidentFund)
+const socialSecurity = ref<DashboardDeclareVO>(defaultSocialSecurity)
+
 
 const { loading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
   onSuccess: (res) => {
     dashboardData.value = res.data
+    providentFund.value = res.data.providentFund
+    socialSecurity.value = res.data.socialInsurance
   },
   onError: (error) => {
     console.log("error:", error);
@@ -85,8 +112,8 @@ const { loading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
     <Flex v-bind="LeftPanelAttrs" class="dashboard-left">
       <DashboardInfo :dashboard-info-list="dashboardInfoList" />
       <DashboardQuick />
-      <DashboardDeclarePanel />
-      <DashboardDeclarePanel />
+      <DashboardDeclarePanel :info="providentFund" />
+      <DashboardDeclarePanel :info="socialSecurity" />
     </Flex>
     <Flex vertical gap="middle" class="dashboard-right">
       <Flex gap="middle">
