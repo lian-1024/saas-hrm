@@ -57,5 +57,9 @@ export const constantRoutes: RouteRecordRaw[] = [
         component: () => import("@/views/social/index.vue")
       }
     ]
+  },
+  {
+    path: '/sign-in',
+    component: () => import("@/views/sign-in/index.vue")
   }
 ]
