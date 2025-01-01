@@ -1,11 +1,23 @@
 <script setup lang="ts">
+import type { DashboardDeclareVO } from '@/types/api/dashboard';
 import { Flex, TypographyText } from 'ant-design-vue';
-
+import { computed } from 'vue';
+import { CountTo } from 'vue3-count-to';
 defineOptions({
   name: 'DeclareInfo'
 })
 
+const props = defineProps<{
+  info: Omit<DashboardDeclareVO, 'xAxis' | 'yAxis'>
+}>()
 
+const declareTotalList = computed(() => {
+  return [
+    { label: '已申报人数', value: props.info.declaredTotal },
+    { label: '申报中人数', value: props.info.declaringTotal },
+    { label: '待申报人数', value: props.info.toDeclareTotal },
+  ]
+})
 </script>
 
 <template>
@@ -14,13 +26,13 @@ defineOptions({
       <TypographyText type="secondary">
         申报人数
       </TypographyText>
-      <h1 class="declare-total">999</h1>
+      <CountTo class="declare-total" :start-val="0" :end-val="info.declarationTotal" :duration="3000" />
     </Flex>
 
     <Flex class="declare-info" wrap="wrap" justify="space-between">
-      <Flex vertical v-for="item in 3" :key="item" class="declare-info-item">
-        <TypographyText type="secondary">统计人数</TypographyText>
-        <TypographyText :level="4" class="declare-info-item-total">999</TypographyText>
+      <Flex vertical v-for="item in declareTotalList" :key="item.label" class="declare-info-item">
+        <TypographyText type="secondary">{{ item.label }}</TypographyText>
+        <CountTo class="declare-info-item-total" :start-val="0" :end-val="item.value" :duration="3000" />
       </Flex>
     </Flex>
   </Flex>
@@ -35,6 +47,8 @@ defineOptions({
     font-size: var(--font-size-xlarge);
     padding-bottom: var(--spacing-middle);
     color: var(--color-primary);
+
+
   }
 
 

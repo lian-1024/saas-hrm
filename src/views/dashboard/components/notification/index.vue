@@ -1,7 +1,8 @@
 <script setup lang="ts" generic="">
 import { QAvatar } from '@/components/base/Avatar';
-import { formatDate } from '@/utils/date';
-import { List, ListItem, ListItemMeta } from 'ant-design-vue';
+import type { DashboardNoticeVO } from '@/types/api';
+import { Flex, List, ListItem, ListItemMeta, TypographyLink, TypographyText } from 'ant-design-vue';
+import { computed } from 'vue';
 import QPanel from '../panel.vue';
 
 
@@ -9,34 +10,44 @@ defineOptions({
   name: "DashboardNotification"
 })
 
-const notificationList = [
-  {
-    title: "Hello World",
-    avatar: "/vite.svg",
-    username: "lianqq",
-    createTime: formatDate(new Date())
-  }
-]
 
+const props = defineProps<{
+  noticeList: DashboardNoticeVO[]
+}>()
+
+const computedNoticeList = computed(() => {
+  return props.noticeList.map(notice => {
+    const { notice: noticeContent, createTime } = notice
+    const [name, _, content] = noticeContent.split(' ')
+    console.log("noticeContent:", noticeContent.split(' '));
+    console.log("name:", name, "content:", content);
+    return {
+      name,
+      content,
+      createTime
+    }
+  })
+})
 
 </script>
 
 <template>
   <QPanel title="通知公告">
-    <List :data-source="notificationList">
+    <List :data-source="computedNoticeList">
       <template #renderItem="{ item }">
-        <ListItem>
+        <ListItem class="notification-item">
           <ListItemMeta :description="item.createTime">
             <template #title>
               <RouterLink to="/">
-                <a href="">{{ item.username }}</a>
-                发布了
-                <a href="">{{ item.title }}</a>
-
+                <Flex gap="small">
+                  <TypographyLink>{{ item.name }}</TypographyLink>
+                  <TypographyText type="secondary">发布了</TypographyText>
+                  <TypographyText>{{ item.content }}</TypographyText>
+                </Flex>
               </RouterLink>
             </template>
             <template #avatar>
-              <QAvatar size="large" :src="item.avatar" />
+              <QAvatar size="large" :src="item.icon" />
             </template>
 
           </ListItemMeta>
@@ -45,3 +56,9 @@ const notificationList = [
     </List>
   </QPanel>
 </template>
+
+<style scoped lang="less">
+.notification-item {
+  padding-block: var(--spacing-middle);
+}
+</style>

@@ -38,7 +38,7 @@ onMounted(async () => {
 <template>
   <Flex v-bind="WrapperAttrs" class="dashboard-info">
     <Flex v-bind="UserInfoWrapperAttrs">
-      <QAvatar shape="square" :size="66" />
+      <QAvatar is-other shape="square" :size="66" :src="userStore.userInfo?.staffPhoto" />
       <div>
         <Flex gap="middle" align="center">
           <TypographyText class="dashboard-info-name" :level="4" ellipsis>江苏传智博客教育科技股份有限公司</TypographyText>

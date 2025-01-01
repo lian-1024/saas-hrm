@@ -38,20 +38,9 @@ const quickItems = [
 </script>
 
 <template>
-
   <QPanel title="快捷入口">
     <Flex gap="large" justify="space-between">
       <DashboardQuickItem v-for="item in quickItems" :key="item.name" :icon-url="item.iconUrl" :name="item.name" />
-
     </Flex>
   </QPanel>
 </template>
-
-<style scoped lang="less">
-.dashboard {
-  &-quick {
-    padding: var(--spacing-large);
-    background-color: var(--color-background);
-  }
-}
-</style>

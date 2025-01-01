@@ -19,12 +19,10 @@ const avatarSize = ref(42)
 </script>
 
 <template>
-  <RouterLink :to="props.path ?? '/'">
+  <RouterLink :to="props.path ?? '/'" style="padding-top: var(--spacing-middle);">
     <Flex vertical align="center" gap="small">
       <QAvatar shape="square" :size="avatarSize" :src="props.iconUrl" />
       <TypographyText type="secondary">{{ props.name }}</TypographyText>
     </Flex>
   </RouterLink>
 </template>
-
-<style scoped lang="scss"></style>

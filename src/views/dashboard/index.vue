@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { Calendar } from '@/components/base/Calendar'
+import { QCalendar } from '@/components/base/Calendar'
 import { useRequest } from '@/composables/use-request'
 import DashboardService from '@/services/dashboard.service'
-import { useUserStore } from '@/stores/modules/user'
 import type { HomeDataVO } from '@/types/api/'
+import type { DashboardDeclareVO, DashboardNoticeVO } from '@/types/api/dashboard'
 import type { FlexProps } from 'ant-design-vue'
 import { Flex, message } from 'ant-design-vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import DashboardDeclarePanel from './components/declare-panel/index.vue'
 import DashboardHelpLink from './components/help-link/index.vue'
 import DashboardInfo from './components/info/index.vue'
@@ -63,18 +63,52 @@ const transformDashboardInfoList = (data?: HomeDataVO): DashboardInfoItem[] => {
   ]
 }
 
+const defaultProvidentFund = {
+  categoryType: "providentFund",
+  category: "公积金申报数据",
+  declarationTotal: 0,
+  toDeclareTotal: 0,
+  declaringTotal: 0,
+  declaredTotal: 0,
+  xAxis: [],
+  yAxis: []
+}
 
-const { loading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
+const defaultSocialSecurity = {
+  category: "社保申报数据",
+  categoryType: "socialInsurance",
+  declarationTotal: 0,
+  toDeclareTotal: 0,
+  declaringTotal: 0,
+  declaredTotal: 0,
+  xAxis: [],
+  yAxis: []
+}
+
+const providentFund = ref<DashboardDeclareVO>(defaultProvidentFund)
+const socialSecurity = ref<DashboardDeclareVO>(defaultSocialSecurity)
+
+const noticeList = ref<DashboardNoticeVO[]>([])
+
+const { loading: getDashboardDataLoading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
   onSuccess: (res) => {
     dashboardData.value = res.data
+    providentFund.value = res.data.providentFund
+    socialSecurity.value = res.data.socialInsurance
   },
   onError: (error) => {
-    console.log("error:", error);
-
     message.error("获取首页数据失败")
   }
 })
 
+const { loading: getNoticeLoading } = useRequest(DashboardService.getDashboardNotice, {
+  onSuccess: (res) => {
+    noticeList.value = res.data
+  },
+  onError: (error) => {
+    message.error("获取通知公告失败")
+  }
+})
 
 
 
@@ -85,17 +119,17 @@ const { loading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
     <Flex v-bind="LeftPanelAttrs" class="dashboard-left">
       <DashboardInfo :dashboard-info-list="dashboardInfoList" />
       <DashboardQuick />
-      <DashboardDeclarePanel />
-      <DashboardDeclarePanel />
+      <DashboardDeclarePanel :info="providentFund" />
+      <DashboardDeclarePanel :info="socialSecurity" />
     </Flex>
     <Flex vertical gap="middle" class="dashboard-right">
       <Flex gap="middle">
         <DashboardHelpLink class="dashboard-help-link" />
         <div class="dashboard-calendar">
-          <Calendar />
+          <QCalendar class="dashboard-calendar-inner" />
         </div>
       </Flex>
-      <DashboardNotification />
+      <DashboardNotification :notice-list="noticeList" />
     </Flex>
   </Flex>
 </template>
@@ -117,6 +151,13 @@ const { loading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
 
   &-calendar {
     min-width: 280px;
+    background-color: var(--color-background);
+
+    &-inner {
+      height: 100%;
+      padding-inline: var(--spacing-small);
+      padding-block: var(--spacing-large);
+    }
   }
 }
 </style>

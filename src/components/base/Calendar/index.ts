@@ -1,4 +1,4 @@
-import Calendar from "./calendar.vue";
+import QCalendar from "./calendar.vue";
 export {
-  Calendar
+  QCalendar
 };

@@ -49,7 +49,6 @@ export class Request {
 
   // 通用请求方法，接收请求配置并返回响应
   async request<T>(config: RequestConfig): Promise<Response<T>> {
-    console.log("request")
     return this.adapter.request<T>(config)  // 调用适配器的request方法发起请求
   }
 

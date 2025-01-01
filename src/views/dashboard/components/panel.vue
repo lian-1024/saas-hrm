@@ -6,24 +6,21 @@ defineOptions({
 
 withDefaults(
   defineProps<{
-    title: string,
+    title?: string,
     vertical?: boolean,
     gap?: FlexProps['gap']
   }>(),
   {
+    title: "",
     vertical: true,
-    gap: "large"
+    gap: "middle"
   }
 )
-
-
-
-
 </script>
 
 <template>
   <Flex class="panel" :vertical="vertical" :gap="gap">
-    <TypographyText>{{ title }}</TypographyText>
+    <TypographyText class="panel-title">{{ title }}</TypographyText>
     <slot />
   </Flex>
 </template>
@@ -32,5 +29,10 @@ withDefaults(
 .panel {
   padding: var(--spacing-large);
   background: var(--color-background);
+
+  &-title {
+    font-size: var(--font-size-middle);
+    font-weight: var(--font-weight-light);
+  }
 }
 </style>
