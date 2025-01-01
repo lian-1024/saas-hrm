@@ -4,3 +4,8 @@ export interface Response<T = any> {
   data: T  // 响应数据，类型为泛型T，可以是任意类型
   message: string  // 响应消息，通常用于描述请求的结果
 }
+
+export interface LoginParams {
+  mobile: string
+  password: string
+}
