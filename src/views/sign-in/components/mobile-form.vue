@@ -1,18 +1,14 @@
 <script lang="ts" setup>
-import { useRequest } from '@/composables/use-request'
-import AuthService from '@/services/auth.service'
+import { useUserStore } from '@/stores'
 import type { LoginParams } from '@/types/api'
-import { Button, Checkbox, Form, Input, message, type FormProps } from 'ant-design-vue'
+import { Button, Checkbox, Form, Input, type FormProps } from 'ant-design-vue'
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 interface FormState extends LoginParams {
   isAgree: boolean
 }
 
 const formRef = ref()
-const loading = ref(false)
-const router = useRouter()
 
 const formState = reactive<FormState>({
   mobile: '',
@@ -42,26 +38,13 @@ const rules: FormProps['rules'] = {
   ]
 }
 
+const userStore = useUserStore()
 
-const { run: login } = useRequest(AuthService.login, {
-  manual: true,
-  onSuccess: (data) => {
-    console.log("data:", data)
-    message.success("登录成功")
-  },
-  onError: (error) => {
-    if (error.message) {
-      return message.error(error.message)
-    }
-    message.error("登录失败")
-  }
-})
+
 
 // 表单提交
-const handleFinish: FormProps['onFinish'] = async (values: LoginParams) => {
-  // 发送表单
-  await login(values)
-
+const handleFinish = async (values: FormState) => {
+  await userStore.login(values)
 }
 
 const formLayout: FormProps = {

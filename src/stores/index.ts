@@ -4,10 +4,14 @@ import { registerPiniaPersistPlugin } from './plugins/persist'
 
 const pinia = createPinia()
 
-registerPiniaPersistPlugin(pinia)
 
 export const setupStore = (app: App<Element>) => {
+  registerPiniaPersistPlugin(pinia)
   app.use(pinia)
 }
 
+
+
+export { useUserStore } from './modules/user'
 export { pinia }
+
