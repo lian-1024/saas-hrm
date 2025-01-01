@@ -23,7 +23,6 @@ export function useRequest<TData = any, TParams = any>(
 ) {
   const {
     manual = false,
-    defaultData,
     defaultParams,
     onSuccess,
     onError,
@@ -31,7 +30,7 @@ export function useRequest<TData = any, TParams = any>(
   } = options
 
   /**请求返回的数据 */
-  const data = ref<TData | undefined>(defaultData)
+  const data = ref<Response<TData> | undefined>()
   /**请求状态 */
   const loading = ref(false)
   /**请求错误 */

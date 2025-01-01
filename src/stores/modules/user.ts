@@ -45,7 +45,6 @@ export const createUserStore = defineStore('user', () => {
     manual: true,
     onSuccess: (res) => {
       userInfo.value = res.data
-      console.log("userInfo:", userInfo.value);
     },
     onError: (error) => {
       console.log("getUserInfo error:", error);

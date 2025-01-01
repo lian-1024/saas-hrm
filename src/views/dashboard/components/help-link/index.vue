@@ -1,30 +1,55 @@
 <script setup lang="ts">
-import { generateMenuItem } from '@/utils/generate-menu-item';
-import { BookOutlined, ContactsOutlined, PlusOutlined } from '@ant-design/icons-vue';
-import { Menu, type MenuProps } from 'ant-design-vue';
+import { BookTwoTone, FlagTwoTone, PhoneTwoTone, PlusCircleTwoTone } from '@ant-design/icons-vue';
+import { Flex, TypographyText } from 'ant-design-vue';
 import { h } from 'vue';
 import QPanel from '../panel.vue';
+
 defineOptions({
   name: "DashboardHelpLink"
 })
 
 
-const LinkItem: MenuProps['items'] = [
-  generateMenuItem("/get-start", "Get Start", h(BookOutlined)),
-  generateMenuItem("/online-help-manual", "Online help manual", h(BookOutlined)),
-  generateMenuItem("/contact technical support", "Contact Technical Support", h(ContactsOutlined)),
-  generateMenuItem("/add-link", "Add Link", h(PlusOutlined)),
+const LinkList = [
+  {
+    label: "入门指南",
+    icon: h(FlagTwoTone)
+  },
+  {
+    label: "在线帮助手册",
+    icon: h(BookTwoTone)
+  },
+  {
+    label: "联系技术支持",
+    icon: h(PhoneTwoTone)
+  },
+  {
+    label: "添加链接",
+    icon: h(PlusCircleTwoTone)
+  }
 ]
-
-const handleClickMenu: MenuProps['onClick'] = (info) => {
-  console.log("help link:", info.key);
-
-}
 
 </script>
 
 <template>
   <QPanel title="帮助链接">
-    <Menu :items="LinkItem" @click="handleClickMenu" />
+    <Flex vertical gap="middle">
+      <div class="help-link-item" v-for="item in LinkList" :key="item.label">
+        <component :is="item.icon" />
+        <TypographyText type="secondary">
+          {{ item.label }}
+        </TypographyText>
+      </div>
+    </Flex>
   </QPanel>
 </template>
+
+<style scoped lang="less">
+.help-link-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-block: var(--spacing-middle);
+  padding-inline: var(--spacing-middle);
+  background-color: var(--color-background-secondary);
+}
+</style>

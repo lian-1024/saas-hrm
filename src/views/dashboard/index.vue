@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Calendar } from '@/components/base/Calendar'
+import { QCalendar } from '@/components/base/Calendar'
 import { useRequest } from '@/composables/use-request'
 import DashboardService from '@/services/dashboard.service'
 import type { HomeDataVO } from '@/types/api/'
-import type { DashboardDeclareVO } from '@/types/api/dashboard'
+import type { DashboardDeclareVO, DashboardNoticeVO } from '@/types/api/dashboard'
 import type { FlexProps } from 'ant-design-vue'
 import { Flex, message } from 'ant-design-vue'
 import { computed, ref } from 'vue'
@@ -88,20 +88,27 @@ const defaultSocialSecurity = {
 const providentFund = ref<DashboardDeclareVO>(defaultProvidentFund)
 const socialSecurity = ref<DashboardDeclareVO>(defaultSocialSecurity)
 
+const noticeList = ref<DashboardNoticeVO[]>([])
 
-const { loading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
+const { loading: getDashboardDataLoading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
   onSuccess: (res) => {
     dashboardData.value = res.data
     providentFund.value = res.data.providentFund
     socialSecurity.value = res.data.socialInsurance
   },
   onError: (error) => {
-    console.log("error:", error);
-
     message.error("获取首页数据失败")
   }
 })
 
+const { loading: getNoticeLoading } = useRequest(DashboardService.getDashboardNotice, {
+  onSuccess: (res) => {
+    noticeList.value = res.data
+  },
+  onError: (error) => {
+    message.error("获取通知公告失败")
+  }
+})
 
 
 
@@ -119,10 +126,10 @@ const { loading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
       <Flex gap="middle">
         <DashboardHelpLink class="dashboard-help-link" />
         <div class="dashboard-calendar">
-          <Calendar />
+          <QCalendar class="dashboard-calendar-inner" />
         </div>
       </Flex>
-      <DashboardNotification />
+      <DashboardNotification :notice-list="noticeList" />
     </Flex>
   </Flex>
 </template>
@@ -144,6 +151,13 @@ const { loading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
 
   &-calendar {
     min-width: 280px;
+    background-color: var(--color-background);
+
+    &-inner {
+      height: 100%;
+      padding-inline: var(--spacing-small);
+      padding-block: var(--spacing-large);
+    }
   }
 }
 </style>

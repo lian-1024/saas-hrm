@@ -3,7 +3,7 @@ import { Calendar, type CalendarProps } from 'ant-design-vue';
 import { Dayjs } from 'dayjs';
 import { ref } from 'vue';
 defineOptions({
-  name: "DashboardCalendar"
+  name: "QCalendar"
 })
 
 const value = ref<Dayjs>()
@@ -11,7 +11,6 @@ const value = ref<Dayjs>()
 const onPanelChange: CalendarProps<Dayjs>['onPanelChange'] = (data, mode) => {
   console.log(value, mode);
 }
-
 
 </script>
 

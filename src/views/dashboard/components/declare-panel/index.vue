@@ -37,7 +37,7 @@ const chartsData = computed<Pick<DashboardDeclareVO, 'xAxis' | 'yAxis'>>(() => {
 
 <template>
   <QPanel :title="info.category">
-    <Flex>
+    <Flex gap="middle">
       <DeclareInfo :info="info" />
       <DeclareChart :charts-data="chartsData" />
     </Flex>

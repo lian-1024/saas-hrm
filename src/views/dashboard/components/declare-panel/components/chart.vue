@@ -74,5 +74,3 @@ watch(() => props.chartsData, (newValue) => {
     <QEChartUI height="100%" width="100%" ref="chartRef" />
   </div>
 </template>
-
-<style scoped lang="scss"></style>

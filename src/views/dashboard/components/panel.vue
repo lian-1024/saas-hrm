@@ -16,10 +16,6 @@ withDefaults(
     gap: "middle"
   }
 )
-
-
-
-
 </script>
 
 <template>
@@ -36,7 +32,7 @@ withDefaults(
 
   &-title {
     font-size: var(--font-size-middle);
-    font-weight: 300;
+    font-weight: var(--font-weight-light);
   }
 }
 </style>

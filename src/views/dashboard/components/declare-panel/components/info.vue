@@ -12,7 +12,6 @@ const props = defineProps<{
 }>()
 
 const declareTotalList = computed(() => {
-  console.log(props.info)
   return [
     { label: '已申报人数', value: props.info.declaredTotal },
     { label: '申报中人数', value: props.info.declaringTotal },
