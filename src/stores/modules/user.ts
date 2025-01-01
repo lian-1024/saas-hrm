@@ -1,7 +1,10 @@
 import { useRequest } from '@/composables/use-request'
+import router from '@/router'
 import AuthService from '@/services/auth.service'
+import UserService from '@/services/user.service'
+import type { UserInfoVO } from '@/types/api'
 import { message } from 'ant-design-vue'
-import { defineStore } from 'pinia'
+import { acceptHMRUpdate, defineStore } from 'pinia'
 import { ref } from 'vue'
 import { pinia } from '..'
 
@@ -9,7 +12,7 @@ import { pinia } from '..'
 export const createUserStore = defineStore('user', () => {
   // 状态
   const token = ref<string>('')
-  const userInfo = ref<any>(null)
+  const userInfo = ref<UserInfoVO | null>(null)
 
   // 登录方法
   const { run: login, loading: loginLoading } = useRequest(AuthService.login, {
@@ -17,8 +20,7 @@ export const createUserStore = defineStore('user', () => {
     onSuccess: (res) => {
       // 保存 token
       token.value = res.data
-      console.log("token:", token.value)
-      console.log("res:", res)
+
       // 获取用户信息
       // getUserInfo()
       if (res.message) {
@@ -28,6 +30,7 @@ export const createUserStore = defineStore('user', () => {
       }
 
       console.log("router:push");
+      router.push('/')
 
     },
     onError: (error) => {
@@ -38,13 +41,19 @@ export const createUserStore = defineStore('user', () => {
     }
   })
 
-  // 获取用户信息
-  // const { run: getUserInfo } = useRequest(AuthService.getUserInfo, {
-  //   manual: true,
-  //   onSuccess: (res) => {
-  //     userInfo.value = res
-  //   }
-  // })
+  const { run: getUserInfo, loading: getUserInfoLoading } = useRequest(UserService.getUserInfoByToken, {
+    manual: true,
+    onSuccess: (res) => {
+      userInfo.value = res.data
+      console.log("userInfo:", userInfo.value);
+    },
+    onError: (error) => {
+      console.log("getUserInfo error:", error);
+    }
+  })
+
+
+
 
   // 退出登录
   const logout = () => {
@@ -57,17 +66,21 @@ export const createUserStore = defineStore('user', () => {
     userInfo,
     login,
     loginLoading,
-    logout
+    logout,
+    getUserInfo,
+    getUserInfoLoading
   }
 }, {
   persist: true
 })
 
-// 支持热更新
-// if (import.meta.hot) {
-//   import.meta.hot.accept(acceptHMRUpdate(createUserStore, import.meta.hot))
+// 热更新
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(createUserStore, import.meta.hot))
+}
 
-// }
 
-
-export const useUserStore = () => createUserStore(pinia)
+// 解决未初始化问题
+export const useUserStore = () => {
+  return createUserStore(pinia)
+}

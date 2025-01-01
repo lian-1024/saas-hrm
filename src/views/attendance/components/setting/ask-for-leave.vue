@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AskForLeaveSettingVO } from '@/types/attendance'
+import type { AskForLeaveSettingVO } from '@/types/api/attendance'
 import { Form, FormItem, Select, Switch, Table, type TableProps } from 'ant-design-vue'
 import { ref } from 'vue'
 

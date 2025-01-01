@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PermissionVO } from '@/types/permission';
+import type { PermissionVO } from '@/types/api/permission';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Button, Flex, Modal, Table, type TableProps } from 'ant-design-vue';
 import { h, ref, useId } from 'vue';

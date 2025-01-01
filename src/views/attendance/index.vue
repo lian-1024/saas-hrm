@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { EmployeeAttendanceVO } from '@/types/attendance'
+import type { EmployeeAttendanceVO } from '@/types/api/attendance'
 import { convertDistance } from '@/utils/convert'
 import { generateMenuItem } from '@/utils/generate-menu-item'
 import { CloseOutlined } from '@ant-design/icons-vue'

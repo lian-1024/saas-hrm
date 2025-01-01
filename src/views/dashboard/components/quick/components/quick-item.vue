@@ -15,7 +15,7 @@ interface QuickItemProps {
 
 const props = defineProps<QuickItemProps>()
 
-const avatarSize = ref(52)
+const avatarSize = ref(42)
 </script>
 
 <template>

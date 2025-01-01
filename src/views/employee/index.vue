@@ -2,7 +2,7 @@
 import { QAvatar } from '@/components/base/Avatar';
 import { FormOfEmployment, FormOfEmploymentMap } from '@/constants/employee';
 import router from '@/router';
-import type { EmployeeVO } from '@/types/employee';
+import type { EmployeeVO } from '@/types/api/employee';
 import { formatDate } from '@/utils/date';
 import { SearchOutlined } from '@ant-design/icons-vue';
 import { type ButtonProps, type TableProps, type TreeProps, Button, Flex, Input, Popconfirm, Table, Tree } from 'ant-design-vue';

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AttendanceSettingDTO } from '@/types/attendance';
+import type { AttendanceSettingDTO } from '@/types/api/attendance';
 import { DatePicker, Flex, Form, FormItem, Select, type FormProps } from 'ant-design-vue';
 import { reactive, ref } from 'vue';
 defineOptions({

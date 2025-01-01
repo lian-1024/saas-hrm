@@ -1,13 +1,14 @@
-import { createPinia } from 'pinia'
+import { createPinia, type Pinia } from 'pinia'
 import type { App } from 'vue'
 import { registerPiniaPersistPlugin } from './plugins/persist'
 
-const pinia = createPinia()
+let pinia: Pinia
 
-
-export const setupStore = (app: App<Element>) => {
-  registerPiniaPersistPlugin(pinia)
+export const setupStore = async (app: App<Element>) => {
+  pinia = createPinia()
+  await registerPiniaPersistPlugin(pinia)
   app.use(pinia)
+  return pinia
 }
 
 

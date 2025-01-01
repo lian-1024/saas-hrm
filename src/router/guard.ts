@@ -7,10 +7,11 @@ const whiteList = ['/sign-in']
 export const setupGlobalRouteGuard = (router: Router) => {
   router.beforeEach((to, from, next) => {
     const userStore = useUserStore()
-    console.log("user store token:", userStore.token);
+    const token = userStore.token
+    console.log("user store token:", token);
 
     // 如果有token
-    if (userStore.token) {
+    if (token) {
       if (to.path === '/sign-in') {
         // 已登录且要跳转登录页，重定向到首页
         next({ path: '/dashboard' })

@@ -5,8 +5,3 @@ export interface Response<T = any> {
   message: string  // 响应消息，通常用于描述请求的结果
   success: boolean  // 请求是否成功
 }
-
-export interface LoginParams {
-  mobile: string
-  password: string
-}
