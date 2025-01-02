@@ -3,7 +3,7 @@ import { request } from '@/utils/request/instance';
 
 class RoleService {
   static getRoleList(params: PagingQueryParams) {
-    return request.get<PagingResponse<RoleItemVO>>('/sys/role', { params });
+    return request.get<PagingResponse<RoleItemVO>>('/sys/role', { ...params });
   }
 
   // 更新角色

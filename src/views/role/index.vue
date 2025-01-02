@@ -51,10 +51,12 @@ const roleTableDataSource = ref<PagingResponse<RoleItemVO>>({
   rows: []
 })
 
-const pagingQueryParams = reactive<PagingQueryParams>({
+const defaultPagingQueryParams: PagingQueryParams = {
   page: 1,
   pagesize: 10
-})
+}
+
+const pagingQueryParams = reactive<PagingQueryParams>(defaultPagingQueryParams)
 
 const addRoleModalStatus = ref(false)
 
@@ -147,6 +149,7 @@ const handleDeleteRole = (key: string | number) => {
 const handleChangeTablePagination: PaginationProps['onChange'] = (page, pageSize) => {
   pagingQueryParams.page = page
   pagingQueryParams.pagesize = pageSize
+  getRoleList(pagingQueryParams)
 }
 
 const tablePaginationPosition: TablePaginationConfig['position'] = ['bottomCenter']
@@ -164,8 +167,15 @@ const handleSwitchChange = (checked: boolean, record: RoleItemVO) => {
 };
 
 
-const handleAddRole = (role: RoleItemVO) => {
-  roleTableDataSource.value.rows.push(role)
+const handleConfirmAddRole = () => {
+  // 计算总页数
+  const totalPages = Math.ceil((roleTableDataSource.value.total + 1) / pagingQueryParams.pagesize);
+
+  // 更新查询参数到最后一页
+  pagingQueryParams.page = totalPages;
+
+  // 获取最后一页的数据
+  getRoleList(pagingQueryParams);
 }
 
 const roleIsEnable = computed(() => (id: number | string) => editableData[id]?.state === 1)
@@ -178,7 +188,8 @@ const roleIsEnable = computed(() => (id: number | string) => editableData[id]?.s
       position: tablePaginationPosition,
       pageSizeOptions: tablePaginationPageSizeOptions,
       onChange: handleChangeTablePagination,
-      total: roleTableDataSource.total
+      total: roleTableDataSource.total,
+      current: pagingQueryParams.page
     }" :columns="roleColumns" :dataSource="roleTableDataSource.rows" bordered>
       <template #headerCell="{ title }">
         <TypographyText type="secondary">{{ title }}</TypographyText>
@@ -231,7 +242,7 @@ const roleIsEnable = computed(() => (id: number | string) => editableData[id]?.s
         </template>
       </template>
     </Table>
-    <AddRoleModal @confirm="getRoleList()" v-model:open="addRoleModalStatus" />
+    <AddRoleModal @confirm="handleConfirmAddRole" v-model:open="addRoleModalStatus" />
     <GivePermissionModal :role-id="selectedRoleId" v-model:open="permissionModalStatus" />
   </Flex>
 </template>
