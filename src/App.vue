@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ConfigProvider } from 'ant-design-vue';
+import { App, ConfigProvider } from 'ant-design-vue';
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 
 </script>
@@ -10,6 +10,8 @@ import zhCN from 'ant-design-vue/es/locale/zh_CN';
     inherit: false,
 
   }" :locale="zhCN">
-    <RouterView />
+    <App>
+      <RouterView />
+    </App>
   </ConfigProvider>
 </template>

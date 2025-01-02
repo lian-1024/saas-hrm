@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import { QModal } from '@/components/base/Modal';
 import type { FormInstance, FormProps, TreeSelectProps } from 'ant-design-vue';
-import { Form, Input, Modal, TreeSelect } from 'ant-design-vue';
+import { Button, Flex, Form, Input, TreeSelect } from 'ant-design-vue';
 import { computed, ref } from 'vue';
-
 interface DepartmentFormData {
   name: string;
   code: string;
@@ -88,8 +88,7 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 18 }
 </script>
 
 <template>
-  <Modal :width="600" :open="openStatus" :title="computedTitle" @cancel="closeModal" @ok="handleSubmit"
-    :maskClosable="false" :destroyOnClose="true">
+  <QModal :width="600" :open="openStatus" :title="computedTitle" :maskClosable="false" :footer="null">
     <div class="department-modal">
       <Form ref="formRef" :model="formData" :rules="formRules" :label-col="formLabelCol" :wrapper-col="formWrapperCol">
         <Form.Item label="部门名称" name="name">
@@ -115,7 +114,14 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 18 }
         </Form.Item>
       </Form>
     </div>
-  </Modal>
+
+    <template #footer>
+      <Flex justify="center">
+        <Button type="primary" @click="handleSubmit">确定</Button>
+        <Button @click="closeModal">取消</Button>
+      </Flex>
+    </template>
+  </QModal>
 </template>
 
 <style lang="less" scoped>
