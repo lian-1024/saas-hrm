@@ -1,4 +1,4 @@
-import type { GivePermissionParams, PagingQueryParams, PagingResponse, RoleDetailVO, RoleItemVO, UpdateRoleParams } from '@/types/api';
+import type { AddRoleParams, GivePermissionParams, PagingQueryParams, PagingResponse, RoleDetailVO, RoleItemVO, UpdateRoleParams } from '@/types/api';
 import { request } from '@/utils/request/instance';
 
 class RoleService {
@@ -21,6 +21,10 @@ class RoleService {
 
   static deleteRoleById(id: number | string) {
     return request.delete(`/sys/role/${id}`)
+  }
+
+  static addRole(data: AddRoleParams) {
+    return request.post("/sys/role", data)
   }
 }
 

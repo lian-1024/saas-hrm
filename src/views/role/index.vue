@@ -6,6 +6,7 @@ import type { PagingQueryParams, PagingResponse } from '@/types/api/common';
 import { Button, Flex, Input, message, Popconfirm, Switch, Table, Tag, Textarea, TypographyLink, TypographyText, type PaginationProps, type TablePaginationConfig, type TableProps } from 'ant-design-vue';
 import { cloneDeep } from 'lodash-es';
 import { computed, reactive, ref } from 'vue';
+import AddRoleModal from './components/add-role-modal.vue';
 import GivePermissionModal from './components/give-permission-modal.vue';
 // 角色管理
 defineOptions({
@@ -55,6 +56,8 @@ const pagingQueryParams = reactive<PagingQueryParams>({
   pagesize: 10
 })
 
+const addRoleModalStatus = ref(false)
+
 
 // edit data
 const editableData = reactive<Record<string, RoleItemVO>>({})
@@ -85,7 +88,7 @@ const { run: deleteRoleById } = useRequest(RoleService.deleteRoleById, {
   onSuccess: () => {
     message.success("删除角色成功")
 
-    roleTableDataSource.value.rows = roleTableDataSource.value.rows.filter(row => row.id === selectedRoleId.value)
+    roleTableDataSource.value.rows = roleTableDataSource.value.rows.filter(row => row.id !== selectedRoleId.value)
   },
   onError: (error) => {
     if (error.message) {
@@ -115,7 +118,7 @@ const handleSaveEditRole = async (key: string | number) => {
 
   const newData = editableData[key]
   // 复制对象
-  Object.assign(roleTableDataSource.value.rows.filter(item => item.id !== key)[0], newData)
+  Object.assign(roleTableDataSource.value.rows.filter(item => item.id === key)[0], newData)
   // 请求
   updateRole(newData).finally(() => {
     // 保存之后，从可编辑数据中删除
@@ -140,6 +143,7 @@ const handleDeleteRole = (key: string | number) => {
 
 
 
+
 const handleChangeTablePagination: PaginationProps['onChange'] = (page, pageSize) => {
   pagingQueryParams.page = page
   pagingQueryParams.pagesize = pageSize
@@ -160,12 +164,16 @@ const handleSwitchChange = (checked: boolean, record: RoleItemVO) => {
 };
 
 
+const handleAddRole = (role: RoleItemVO) => {
+  roleTableDataSource.value.rows.push(role)
+}
+
 const roleIsEnable = computed(() => (id: number | string) => editableData[id]?.state === 1)
 </script>
 
 <template>
   <Flex class="role-wrapper" vertical align="start" gap="middle">
-    <Button type="primary">添加角色</Button>
+    <Button type="primary" @click="addRoleModalStatus = true">添加角色</Button>
     <Table class="w-full" :pagination="{
       position: tablePaginationPosition,
       pageSizeOptions: tablePaginationPageSizeOptions,
@@ -208,7 +216,10 @@ const roleIsEnable = computed(() => (id: number | string) => editableData[id]?.s
             <template v-if="!editableData[record.id]">
               <TypographyLink @click="handleGivePermission(record.id)">分配权限</TypographyLink>
               <TypographyLink @click="handleEditRole(record.id)">编辑</TypographyLink>
-              <TypographyLink @click="handleDeleteRole(record.id)">删除</TypographyLink>
+              <Popconfirm @confirm="handleDeleteRole(record.id)" title="您确定要删除吗?">
+                <TypographyLink>删除</TypographyLink>
+
+              </Popconfirm>
             </template>
             <template v-else>
               <TypographyLink @click="handleSaveEditRole(record.id)">保存</TypographyLink>
@@ -220,6 +231,7 @@ const roleIsEnable = computed(() => (id: number | string) => editableData[id]?.s
         </template>
       </template>
     </Table>
+    <AddRoleModal @confirm="getRoleList()" v-model:open="addRoleModalStatus" />
     <GivePermissionModal :role-id="selectedRoleId" v-model:open="permissionModalStatus" />
   </Flex>
 </template>

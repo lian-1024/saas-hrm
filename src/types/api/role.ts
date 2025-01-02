@@ -79,3 +79,19 @@ export interface UpdateRoleParams {
    */
   state: number;
 }
+
+
+export interface AddRoleParams {
+  /**
+   * 角色描述
+   */
+  description: string;
+  /**
+   * 角色名称
+   */
+  name: string;
+  /**
+   * 角色状态，默认是启用的,1启用状态0未启用
+   */
+  state: number;
+}
