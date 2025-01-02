@@ -1,3 +1,5 @@
+import type { PagingQueryParams } from "./common";
+
 export interface Employee {
   /**
  * 员工部门名字
@@ -30,7 +32,7 @@ export interface Employee {
   /**
   * 员工聘用形式, 1正式, 2非正式
   */
-  formOfEmployment: FormOfEmployment;
+  formOfEmployment: 1 | 2;
 }
 
 
@@ -54,3 +56,15 @@ export interface EmployeeInfoVO extends Employee {
 
 }
 
+export interface PagingEmployeeListParams extends PagingQueryParams {
+  /**
+   * 部门id,根据部门查询当前部门及子部门的用户
+   */
+  departmentId: number;
+  /**
+   * 根据名字模糊查询
+   */
+  keyword?: string;
+
+
+}

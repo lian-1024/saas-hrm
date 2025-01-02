@@ -10,7 +10,7 @@ import zhCN from 'ant-design-vue/es/locale/zh_CN';
     inherit: false,
 
   }" :locale="zhCN">
-    <App>
+    <App class="h-full">
       <RouterView />
     </App>
   </ConfigProvider>
