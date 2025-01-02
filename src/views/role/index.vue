@@ -80,6 +80,22 @@ const { run: updateRole } = useRequest(RoleService.updateRole, {
   }
 })
 
+const { run: deleteRoleById } = useRequest(RoleService.deleteRoleById, {
+  manual: true,
+  onSuccess: () => {
+    message.success("删除角色成功")
+
+    roleTableDataSource.value.rows = roleTableDataSource.value.rows.filter(row => row.id === selectedRoleId.value)
+  },
+  onError: (error) => {
+    if (error.message) {
+      message.error(error.message)
+    } else {
+      message.error("删除角色失败")
+    }
+  }
+})
+
 
 const handleGivePermission = (key: string | number) => {
   selectedRoleId.value = key
@@ -99,7 +115,7 @@ const handleSaveEditRole = async (key: string | number) => {
 
   const newData = editableData[key]
   // 复制对象
-  Object.assign(roleTableDataSource.value.rows.filter(item => item.id === key)[0], newData)
+  Object.assign(roleTableDataSource.value.rows.filter(item => item.id !== key)[0], newData)
   // 请求
   updateRole(newData).finally(() => {
     // 保存之后，从可编辑数据中删除
@@ -118,6 +134,8 @@ const handleCancelEditRole = (key: string | number) => {
 // delete role
 const handleDeleteRole = (key: string | number) => {
   console.log("delete role:", key);
+  selectedRoleId.value = key
+  deleteRoleById(key)
 }
 
 

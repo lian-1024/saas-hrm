@@ -18,6 +18,10 @@ class RoleService {
   static givePermission(params: GivePermissionParams) {
     return request.put(`/sys/role/assignPrem`, params);
   }
+
+  static deleteRoleById(id: number | string) {
+    return request.delete(`/sys/role/${id}`)
+  }
 }
 
 export default RoleService
