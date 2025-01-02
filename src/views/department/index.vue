@@ -3,7 +3,7 @@ import { useRequest } from '@/composables/use-request';
 import DepartmentService from '@/services/department.service';
 import { convertToTree } from '@/utils/tree';
 import { DownOutlined } from '@ant-design/icons-vue';
-import { type MenuProps, type TreeProps, Dropdown, Flex, Menu, Modal, Tree, TypographyText } from 'ant-design-vue';
+import { type MenuProps, type TreeProps, Dropdown, Flex, Menu, Modal, Tree, TypographyText, message } from 'ant-design-vue';
 import type { MenuItemType } from 'ant-design-vue/es/menu/src/interface';
 import { h, ref } from 'vue';
 import DepartmentModal from './components/modal.vue';
@@ -13,6 +13,7 @@ defineOptions({
 })
 
 const departmentTree = ref<TreeProps['treeData']>([]);
+const selectedDepartmentId = ref<string>();
 
 
 
@@ -36,20 +37,41 @@ const modalOpen = ref(false)
 const modalType = ref<'add' | 'edit'>("add")
 
 
-const handleOpenModal = (type: "add" | "edit") => {
+const handleOpenModal = (type: "add" | "edit", departmentId?: string) => {
   modalOpen.value = true
   modalType.value = type
+  selectedDepartmentId.value = departmentId
 }
 
 const handleAddSubDepartment = (key: string | number) => {
   console.log("添加子部门:", key)
-  handleOpenModal("add")
+  handleOpenModal("add", key.toString())
 }
 
 const handleEditDepartment = (key: string | number) => {
   console.log("编辑部门", key)
-  handleOpenModal("edit")
+  handleOpenModal("edit", key.toString())
 }
+
+
+const deleteDepartmentConfirm = ref(false)
+
+const { run: deleteDepartment, loading: deleteDepartmentLoading } = useRequest(DepartmentService.deleteDepartment, {
+  manual: true,
+  onSuccess: () => {
+    message.success("删除部门成功")
+  },
+  onError: (error) => {
+    if (error.message) {
+      message.error(error.message)
+    } else {
+      message.error("删除部门失败")
+    }
+  },
+  onFinally: () => {
+    deleteDepartmentConfirm.value = false
+  }
+})
 
 const handleDeleteDepartment = (key: string | number) => {
   console.log("删除部门", key)
@@ -59,10 +81,13 @@ const handleDeleteDepartment = (key: string | number) => {
     content: "确定要删除该部门吗？",
     okText: "确定",
     closable: true,
-
     cancelText: "取消",
-    onOk: () => {
-      console.log("删除部门", key)
+    onOk: async () => {
+      try {
+        await deleteDepartment(key.toString())
+      } catch (error) {
+        return null
+      }
     },
     onCancel: () => {
       console.log("取消删除")
@@ -82,13 +107,11 @@ const handleOperationClick = (info: MenuItemType, key: string | number) => {
   operationClickMap[info.key as keyof typeof operationClickMap](key)
 }
 
-useRequest(DepartmentService.getCompanyDepartmentList, {
+const { loading: getListLoading } = useRequest(DepartmentService.getCompanyDepartmentList, {
   onSuccess: (data) => {
     departmentTree.value = convertToTree(data.data)
-    console.log(departmentTree.value)
   }
 })
-
 
 
 </script>
@@ -96,7 +119,8 @@ useRequest(DepartmentService.getCompanyDepartmentList, {
 
 <template>
   <div class="department-wrapper">
-    <Tree class="department-tree" default-expand-all draggable block-node :tree-data="departmentTree">
+    <Tree v-if="!getListLoading" class="department-tree" default-expand-all draggable block-node
+      :tree-data="departmentTree">
       <template #title="{ title, managerName, key }">
         <Flex class="department-tree-item" justify="space-between">
           <TypographyText>{{ title }}</TypographyText>
@@ -113,7 +137,7 @@ useRequest(DepartmentService.getCompanyDepartmentList, {
         </Flex>
       </template>
     </Tree>
-    <DepartmentModal v-model:open="modalOpen" v-model:type="modalType" :tree-data="departmentTree" />
+    <DepartmentModal v-model:open="modalOpen" :type="modalType" :department-id="selectedDepartmentId" />
   </div>
 </template>
 

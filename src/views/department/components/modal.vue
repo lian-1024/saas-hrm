@@ -1,12 +1,16 @@
 <script lang="ts" setup>
 import { QModal } from '@/components/base/Modal';
-import type { FormInstance, FormProps, TreeSelectProps } from 'ant-design-vue';
-import { Button, Flex, Form, Input, TreeSelect } from 'ant-design-vue';
-import { computed, ref } from 'vue';
+import { useRequest } from '@/composables/use-request';
+import DepartmentService from '@/services/department.service';
+import type { DepartmentDetailVO } from '@/types/api';
+import type { FormInstance, FormProps, SelectProps } from 'ant-design-vue';
+import { Button, Flex, Form, Input, Select, message } from 'ant-design-vue';
+import { computed, ref, watch } from 'vue';
+
 interface DepartmentFormData {
   name: string;
   code: string;
-  manager: string;
+  managerId: string;
   introduce: string;
 }
 
@@ -15,26 +19,32 @@ defineOptions({
 })
 
 const props = defineProps<{
-  treeData: TreeSelectProps['treeData'];
+  type: "add" | "edit";
+  departmentId?: string;
 }>();
 
+const departmentManagerList = ref<SelectProps['options']>([]);
 // 双向绑定
 const openStatus = defineModel<boolean>("open", { default: false });
-const type = defineModel<"add" | "edit">("type", { default: "add" });
 
 // 表单实例
 const formRef = ref<FormInstance>();
 // 表单数据
-const formData = ref<DepartmentFormData>({
+const formData = ref<DepartmentDetailVO>({
   name: '',
   code: '',
-  manager: '',
-  introduce: ''
+  managerId: '',
+  introduce: '',
+  createTime: '',
+  id: 0,
+  managerName: '',
+  pid: 0
 });
+
 
 // 计算标题
 const computedTitle = computed(() => {
-  return type.value === "add" ? "添加子部门" : "编辑部门";
+  return props.type === "add" ? "添加子部门" : "编辑部门";
 });
 
 // 表单验证规则
@@ -47,7 +57,7 @@ const formRules: FormProps['rules'] = {
     { required: true, message: '请输入部门编码', trigger: 'blur', },
     { min: 2, max: 10, message: '部门编码长度为2-10个字符', trigger: 'blur', }
   ],
-  manager: [
+  managerId: [
     { required: true, message: '请选择部门负责人', trigger: 'change', }
   ],
   introduce: [
@@ -56,13 +66,84 @@ const formRules: FormProps['rules'] = {
   ]
 };
 
+
+const { run: addDepartment, loading: addLoading } = useRequest(DepartmentService.addDepartment, {
+  manual: true,
+  onSuccess: (data) => {
+    console.log(data);
+    message.success("新增部门成功")
+  },
+  onError: (error) => {
+    if (error.message) {
+      message.error(error.message)
+    } else {
+      message.error("新增部门失败")
+    }
+  },
+  onFinally: () => closeModal()
+})
+
+useRequest(DepartmentService.getDepartmentManagerList, {
+  onSuccess: ({ data }) => {
+    departmentManagerList.value = data.map(item => ({
+      label: item.username,
+      value: item.id
+    }))
+  }
+})
+
+const { run: getDepartmentDetail, } = useRequest(DepartmentService.getDepartmentDetail, {
+  manual: true,
+  onSuccess: ({ data }) => {
+    formData.value = data
+  }
+})
+
+const { run: updateDepartment, loading: updateDepartmentLoading } = useRequest(DepartmentService.updateDepartment, {
+  manual: true,
+  onSuccess: (data) => {
+    message.success("编辑部门成功")
+  },
+  onError: (error) => {
+    if (error.message) {
+      message.error(error.message)
+    } else {
+      message.error("编辑部门失败")
+    }
+  },
+  onFinally: () => closeModal()
+})
+
+
+
+
+
+watch(() => props.departmentId, (newVal) => {
+  if (newVal) {
+    getDepartmentDetail(newVal)
+  }
+})
+
 // 提交表单
 const handleSubmit = () => {
-  formRef.value?.validate().then(() => {
+  formRef.value?.validate().then(async () => {
     // 表单验证通过
-    console.log('表单数据：', formData.value);
-    // TODO: 调用API保存数据
-    closeModal();
+    if (!props.departmentId) return message.error("请先选择部门")
+
+    switch (props.type) {
+      case 'add':
+        const { id, createTime, managerName, ...rest } = formData.value
+
+        // 调用API保存数据
+        addDepartment({
+          ...rest,
+          pid: props.departmentId
+        })
+        break;
+      case 'edit':
+        updateDepartment(formData.value)
+        break;
+    }
   }).catch(err => {
     console.error('表单验证失败：', err);
   });
@@ -85,10 +166,12 @@ defineExpose({
 const formLabelCol: FormProps['labelCol'] = { span: 6 }
 const formWrapperCol: FormProps['wrapperCol'] = { span: 18 }
 
+const loading = computed(() => addLoading.value)
 </script>
 
 <template>
-  <QModal :width="600" :open="openStatus" :title="computedTitle" :maskClosable="false" :footer="null">
+  <QModal :width="600" :open="openStatus" @cancel="closeModal" :title="computedTitle" closable mask
+    :maskClosable="false">
     <div class="department-modal">
       <Form ref="formRef" :model="formData" :rules="formRules" :label-col="formLabelCol" :wrapper-col="formWrapperCol">
         <Form.Item label="部门名称" name="name">
@@ -99,13 +182,8 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 18 }
           <Input v-model:value="formData.code" placeholder="请输入部门编码" :maxLength="10" show-count />
         </Form.Item>
 
-        <Form.Item label="部门负责人" name="manager">
-          <TreeSelect v-model:value="formData.manager" :tree-data="props.treeData" placeholder="请选择部门负责人"
-            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" show-search tree-default-expand-all :field-names="{
-              children: 'children',
-              label: 'title',
-              value: 'key',
-            }" />
+        <Form.Item label="部门负责人" name="managerId">
+          <Select placeholder="请选择部门负责人" v-model:value="formData.managerId" :options="departmentManagerList" />
         </Form.Item>
 
         <Form.Item label="部门介绍" name="introduce">
@@ -117,7 +195,7 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 18 }
 
     <template #footer>
       <Flex justify="center">
-        <Button type="primary" @click="handleSubmit">确定</Button>
+        <Button type="primary" @click="handleSubmit" :loading="loading">确定</Button>
         <Button @click="closeModal">取消</Button>
       </Flex>
     </template>
