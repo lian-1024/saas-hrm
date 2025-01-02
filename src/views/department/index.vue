@@ -1,56 +1,20 @@
 <script lang="ts" setup>
+import { useRequest } from '@/composables/use-request';
+import DepartmentService from '@/services/department.service';
+import { convertToTree } from '@/utils/tree';
 import { DownOutlined } from '@ant-design/icons-vue';
 import { type MenuProps, type TreeProps, Dropdown, Flex, Menu, Modal, Tree, TypographyText } from 'ant-design-vue';
 import type { MenuItemType } from 'ant-design-vue/es/menu/src/interface';
-import { h, ref, useId } from 'vue';
-
+import { h, ref } from 'vue';
 import DepartmentModal from './components/modal.vue';
 
 defineOptions({
   name: "DepartmentPage"
 })
 
-const departmentTree = ref<TreeProps['treeData']>([
-  {
-    key: useId(),
-    title: "字节跳动",
-    managerName: "lianqq",
-    children: [
-      {
-        key: useId(),
-        title: "总裁办",
-        managerName: "lianqq",
-      },
-      {
-        key: useId(),
-        title: '行政部',
-        managerName: "lianqq",
-      },
-      {
-        key: useId(),
-        title: '人事部',
-        managerName: "lianqq",
-        children: [
-          {
-            key: useId(),
-            title: "财务核算部",
-            managerName: "lianqq",
-          },
-          {
-            key: useId(),
-            title: "税务管理部",
-            managerName: "lianqq",
-          },
-          {
-            key: useId(),
-            title: "薪资管理部",
-            managerName: "lianqq",
-          }
-        ]
-      }
-    ]
-  }
-])
+const departmentTree = ref<TreeProps['treeData']>([]);
+
+
 
 const operations: MenuProps['items'] = [
   {
@@ -93,13 +57,15 @@ const handleDeleteDepartment = (key: string | number) => {
   Modal.error({
     title: "删除部门",
     content: "确定要删除该部门吗？",
-    okText: "确定删除",
-    okButtonProps: {
-      danger: true
-    },
+    okText: "确定",
+    closable: true,
+
     cancelText: "取消",
     onOk: () => {
       console.log("删除部门", key)
+    },
+    onCancel: () => {
+      console.log("取消删除")
     }
   })
 }
@@ -116,6 +82,12 @@ const handleOperationClick = (info: MenuItemType, key: string | number) => {
   operationClickMap[info.key as keyof typeof operationClickMap](key)
 }
 
+useRequest(DepartmentService.getCompanyDepartmentList, {
+  onSuccess: (data) => {
+    departmentTree.value = convertToTree(data.data)
+    console.log(departmentTree.value)
+  }
+})
 
 
 
