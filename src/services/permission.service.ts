@@ -6,6 +6,7 @@ class PermissionService {
   static getPermissionList() {
     return request.get<PermissionVO[]>('/sys/permission')
   }
+  
 
 }
 

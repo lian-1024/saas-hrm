@@ -3,7 +3,7 @@ import { useRequest } from '@/composables/use-request';
 import RoleService from '@/services/role.service';
 import type { RoleItemVO } from '@/types/api';
 import type { PagingQueryParams, PagingResponse } from '@/types/api/common';
-import { Button, Flex, Input, Popconfirm, Switch, Table, Tag, Textarea, TypographyLink, TypographyText, type PaginationProps, type TablePaginationConfig, type TableProps } from 'ant-design-vue';
+import { Button, Flex, Input, message, Popconfirm, Switch, Table, Tag, Textarea, TypographyLink, TypographyText, type PaginationProps, type TablePaginationConfig, type TableProps } from 'ant-design-vue';
 import { cloneDeep } from 'lodash-es';
 import { computed, reactive, ref } from 'vue';
 import GivePermissionModal from './components/give-permission-modal.vue';
@@ -45,15 +45,45 @@ const roleColumns: TableProps['columns'] = [
 
 const permissionModalStatus = ref(false)
 const selectedRoleId = ref()
+const roleTableDataSource = ref<PagingResponse<RoleItemVO>>({
+  total: 0,
+  rows: []
+})
+
+const pagingQueryParams = reactive<PagingQueryParams>({
+  page: 1,
+  pagesize: 10
+})
+
 
 // edit data
 const editableData = reactive<Record<string, RoleItemVO>>({})
 
+const { run: getRoleList } = useRequest(() => RoleService.getRoleList(pagingQueryParams), {
+  onSuccess: ({ data }) => {
+    roleTableDataSource.value = data
+    console.log("roleTableDataSource:", roleTableDataSource.value);
+  }
+})
+
+const { run: updateRole } = useRequest(RoleService.updateRole, {
+  manual: true,
+  onSuccess: () => {
+    message.success("更新角色成功")
+  },
+  onError: (error) => {
+    if (error.message) {
+      message.error(error.message)
+    } else {
+      message.error("更新角色失败")
+    }
+  }
+})
+
+
 const handleGivePermission = (key: string | number) => {
-  console.log("give permission");
   selectedRoleId.value = key
   permissionModalStatus.value = true
-
 }
 
 // handle edit role 
@@ -64,12 +94,19 @@ const handleEditRole = (key: string | number) => {
 }
 
 // save edit role
-const handleSaveEditRole = (key: string | number) => {
+const handleSaveEditRole = async (key: string | number) => {
   console.log("save edit role", key);
-  Object.assign(roleTableDataSource.value.rows.filter(item => item.id === key)[0], editableData[key])
-  // 保存之后，从可编辑数据中删除
-  delete editableData[key]
+
+  const newData = editableData[key]
+  // 复制对象
+  Object.assign(roleTableDataSource.value.rows.filter(item => item.id === key)[0], newData)
+  // 请求
+  updateRole(newData).finally(() => {
+    // 保存之后，从可编辑数据中删除
+    delete editableData[key]
+  })
 }
+
 
 
 // cancel edit role
@@ -83,15 +120,6 @@ const handleDeleteRole = (key: string | number) => {
   console.log("delete role:", key);
 }
 
-const roleTableDataSource = ref<PagingResponse<RoleItemVO>>({
-  total: 0,
-  rows: []
-})
-
-const pagingQueryParams = reactive<PagingQueryParams>({
-  page: 1,
-  pagesize: 10
-})
 
 
 const handleChangeTablePagination: PaginationProps['onChange'] = (page, pageSize) => {
@@ -104,12 +132,7 @@ const tablePaginationPageSizeOptions = ['5', '10', '20', '30', '40', '50']
 
 
 
-const { run: getRoleList } = useRequest(() => RoleService.getRoleList(pagingQueryParams), {
-  onSuccess: ({ data: { rows } }) => {
-    roleTableDataSource.value.rows = rows
 
-  }
-})
 
 // 处理 Switch 状态切换
 const handleSwitchChange = (checked: boolean, record: RoleItemVO) => {
@@ -129,7 +152,7 @@ const roleIsEnable = computed(() => (id: number | string) => editableData[id]?.s
       position: tablePaginationPosition,
       pageSizeOptions: tablePaginationPageSizeOptions,
       onChange: handleChangeTablePagination,
-      total: roleTableDataSource?.total
+      total: roleTableDataSource.total
     }" :columns="roleColumns" :dataSource="roleTableDataSource.rows" bordered>
       <template #headerCell="{ title }">
         <TypographyText type="secondary">{{ title }}</TypographyText>

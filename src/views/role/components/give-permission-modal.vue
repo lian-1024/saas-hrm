@@ -22,7 +22,6 @@ const checkedPermissionKeys = ref<number[]>([])
 
 const { loading } = useRequest(PermissionService.getPermissionList, {
   onSuccess: ({ data }) => {
-    console.log("data:", data);
     permissionsTreeData.value = convertPermissionToTree(data)
   },
   onError: (error) => {
@@ -38,9 +37,7 @@ const { loading } = useRequest(PermissionService.getPermissionList, {
 const { data, run: getRoleDetail } = useRequest(RoleService.getRoleDetail, {
   manual: true,
   onSuccess: ({ data }) => {
-    console.log("data:", data);
     checkedPermissionKeys.value = data.permIds
-    console.log("selectedPermissions:", checkedPermissionKeys.value);
   }
 })
 
@@ -56,17 +53,12 @@ const { loading: givePermissionLoading, run: givePermission } = useRequest(RoleS
 
 
 const handleConfirm = () => {
-  // 校验表单验证通过则关闭
-  // emits('confirm', {})
-  console.log("confirm");
-  console.log("checkedPermissionKeys:", checkedPermissionKeys.value);
   givePermission({ id: props.roleId, permIds: checkedPermissionKeys.value })
 }
 
 const closeModal = () => modalStatus.value = false
 
 const handleCancel = () => closeModal()
-
 
 
 

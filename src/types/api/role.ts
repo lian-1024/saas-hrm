@@ -41,11 +41,11 @@ export interface RoleDetailVO {
   state: number;
 }
 
-export interface UpdateRoleParams {
-  id: number | string;
-  name: string;
-  description: string;
-}
+// export interface UpdateRoleParams {
+//   id: number | string;
+//   name: string;
+//   description: string;
+// }
 
 
 export interface GivePermissionParams {
@@ -57,4 +57,25 @@ export interface GivePermissionParams {
    * 权限点数组
    */
   permIds: number[];
+}
+
+
+
+export interface UpdateRoleParams {
+  /**
+   * 角色描述
+   */
+  description: string;
+  /**
+   * 角色id
+   */
+  id: number;
+  /**
+   * 角色名字
+   */
+  name: string;
+  /**
+   * 角色状态1启用0不启用
+   */
+  state: number;
 }
