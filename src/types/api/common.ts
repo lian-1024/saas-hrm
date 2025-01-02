@@ -5,3 +5,33 @@ export interface Response<T = any> {
   message: string  // 响应消息，通常用于描述请求的结果
   success: boolean  // 请求是否成功
 }
+
+
+export interface PagingQueryParams {
+  /**
+   * 当前页码数
+   */
+  page: number;
+  /**
+   * 当前页面需要的数据条数
+   */
+  pagesize: number;
+  [property: string]: any;
+}
+
+
+/**
+ * 响应数据
+ */
+export interface PagingResponse<T = any> {
+  /**
+   * 角色列表
+   */
+  rows: T[];
+  /**
+   * 数据总数, 指的在后台数据库里一共有多少条数据匹配
+   */
+  total: number;
+  [property: string]: any;
+}
+

@@ -1,116 +1,80 @@
 <script setup lang="ts">
-import { Button, Flex, Input, Pagination, Popconfirm, Table, Tag, TypographyLink, type TableProps } from 'ant-design-vue';
-import type { DataIndex } from 'ant-design-vue/es/vc-table/interface';
+import { useRequest } from '@/composables/use-request';
+import RoleService from '@/services/role.service';
+import type { RoleItemVO } from '@/types/api';
+import type { PagingQueryParams, PagingResponse } from '@/types/api/common';
+import { Button, Flex, Input, Popconfirm, Switch, Table, Tag, Textarea, TypographyLink, TypographyText, type PaginationProps, type TablePaginationConfig, type TableProps } from 'ant-design-vue';
 import { cloneDeep } from 'lodash-es';
-import { reactive, ref, useId } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import GivePermissionModal from './components/give-permission-modal.vue';
-import type { RoleTableItem } from './types';
 // 角色管理
 defineOptions({
   name: "RolePage"
 })
 
-
-const dataIndexText: DataIndex[] = ['key', 'name', 'enable', 'description']
+// 可编辑的列
+const canEditable = ['name', 'state', 'description']
 
 const roleColumns: TableProps['columns'] = [
   {
-    title: 'Key',
-    dataIndex: 'key',
+    title: '序号',
+    dataIndex: 'id',
     key: 'key',
   },
   {
-    title: 'Role Name',
+    title: '角色',
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: 'Enable',
-    dataIndex: "enable",
-    key: "enable",
+    title: '启用',
+    dataIndex: "state",
+    key: "state",
   },
   {
-    title: 'Description',
+    title: '描述',
     dataIndex: 'description',
     key: 'description',
   },
   {
-    title: 'Actions',
+    title: '操作',
     key: 'actions',
   }
 ]
 
 
-const roleDataSource = ref<RoleTableItem[]>([
-  {
-    key: useId(),
-    name: "System Administrator",
-    enable: true,
-    description: "System Administrator"
-  },
-  {
-    key: useId(),
-    name: "Manger",
-    enable: false,
-    description: "Manger Description"
-  },
-  {
-    key: useId(),
-    name: "Commissioner",
-    enable: true,
-    description: "Commissioner Description"
-  }
-])
-
-
-const permissionModalVisible = ref(false)
-const editRoleModalVisible = ref(false)
-
+const permissionModalStatus = ref(false)
+const selectedRoleId = ref()
 
 // edit data
-const editableData = reactive<Record<string, RoleTableItem>>({})
+const editableData = reactive<Record<string, RoleItemVO>>({})
 
-const currentPage = ref<number>(1)
-
-
-const handleGivePermission = () => {
+const handleGivePermission = (key: string | number) => {
   console.log("give permission");
-  permissionModalVisible.value = true
+  selectedRoleId.value = key
+  permissionModalStatus.value = true
 
 }
 
 // handle edit role 
 const handleEditRole = (key: string | number) => {
-  console.log("edit role");
-  editRoleModalVisible.value = true
-
-  editableData[key] = cloneDeep(roleDataSource.value.filter(item => key === item.key)[0])
-  console.log("editableDate", editableData[key]);
-
+  console.log("edit role", key);
+  // 将当前行数据克隆到editableData（可编辑数据当中）
+  editableData[key] = cloneDeep(roleTableDataSource.value.rows.filter(item => item.id === key)[0])
 }
 
 // save edit role
 const handleSaveEditRole = (key: string | number) => {
-  const filterData = roleDataSource.value.filter(item => key === item.key)[0]
-
-
-  const newEditData = {
-    ...editableData[key],
-    enable: editableData[key].enable === 'true' ? true : false
-  }
-
-  console.log("filter data:", filterData);
-  console.log("new edit data:", newEditData);
-  Object.assign(roleDataSource.value.filter(item => key === item.key)[0], newEditData)
-
-  console.log("role data source:", roleDataSource.value);
-
+  console.log("save edit role", key);
+  Object.assign(roleTableDataSource.value.rows.filter(item => item.id === key)[0], editableData[key])
+  // 保存之后，从可编辑数据中删除
   delete editableData[key]
 }
 
 
 // cancel edit role
 const handleCancelEditRole = (key: string | number) => {
+  // 取消编辑
   delete editableData[key]
 }
 
@@ -119,47 +83,103 @@ const handleDeleteRole = (key: string | number) => {
   console.log("delete role:", key);
 }
 
+const roleTableDataSource = ref<PagingResponse<RoleItemVO>>({
+  total: 0,
+  rows: []
+})
 
+const pagingQueryParams = reactive<PagingQueryParams>({
+  page: 1,
+  pagesize: 10
+})
+
+
+const handleChangeTablePagination: PaginationProps['onChange'] = (page, pageSize) => {
+  pagingQueryParams.page = page
+  pagingQueryParams.pagesize = pageSize
+}
+
+const tablePaginationPosition: TablePaginationConfig['position'] = ['bottomCenter']
+const tablePaginationPageSizeOptions = ['5', '10', '20', '30', '40', '50']
+
+
+
+const { run: getRoleList } = useRequest(() => RoleService.getRoleList(pagingQueryParams), {
+  onSuccess: ({ data: { rows } }) => {
+    roleTableDataSource.value.rows = rows
+
+  }
+})
+
+// 处理 Switch 状态切换
+const handleSwitchChange = (checked: boolean, record: RoleItemVO) => {
+  // checked 是切换之后的值
+  // 将 boolean 转换为 0/1
+  editableData[record.id].state = checked ? 1 : 0;
+};
+
+
+const roleIsEnable = computed(() => (id: number | string) => editableData[id]?.state === 1)
 </script>
 
 <template>
   <Flex class="role-wrapper" vertical align="start" gap="middle">
     <Button type="primary">添加角色</Button>
-    <Table :columns="roleColumns" :dataSource="roleDataSource" bordered>
+    <Table class="w-full" :pagination="{
+      position: tablePaginationPosition,
+      pageSizeOptions: tablePaginationPageSizeOptions,
+      onChange: handleChangeTablePagination,
+      total: roleTableDataSource?.total
+    }" :columns="roleColumns" :dataSource="roleTableDataSource.rows" bordered>
+      <template #headerCell="{ title }">
+        <TypographyText type="secondary">{{ title }}</TypographyText>
+      </template>
       <template #bodyCell="{ column, record, text }">
-        <template v-if="dataIndexText.includes(column.dataIndex!)">
-          <Input v-if="editableData[record.key]" v-model:value="editableData[record.key][column.dataIndex]" />
+
+        <!-- 当前列是否时可操作的 -->
+        <template v-if="canEditable.includes(String(column.dataIndex))">
+          <!-- 如果当前列是可编辑的，则显示输入框 -->
+          <template v-if="editableData[record.id]">
+            <Input v-if="column.key === 'name'" v-model:value="editableData[record.id][column.key]" />
+            <Textarea v-else-if="column.key === 'description'" v-model:value="editableData[record.id][column.key]" />
+            <Switch v-else-if="column.key === 'state'" :checked="roleIsEnable(record.id)"
+              @change="(checked) => handleSwitchChange(checked as boolean, record as RoleItemVO)" />
+
+          </template>
+          <!-- 如果当前列是不可编辑的，则显示文本 -->
           <template v-else>
-            <template v-if="column.key === 'enable'">
-              <Tag color="blue">
-                {{ record.enable ? "Yes" : "No" }}
+            <!-- 如果当前列是状态，则显示标签 -->
+            <template v-if="column.key === 'state'">
+              <Tag :color="record.state === 1 ? 'blue' : 'default'">
+                {{ record.state === 1 ? "已启用" : "未启用" }}
               </Tag>
             </template>
-            <template v-else> {{ text }} </template>
+            <!-- 如果当前列是其他，则显示文本 -->
+            <template v-else>
+              {{ text }}
+            </template>
           </template>
         </template>
 
+
         <template v-if="column.key === 'actions'">
           <Flex gap="small" wrap="wrap">
-            <template v-if="editableData[record.key]">
-              <TypographyLink @click="handleSaveEditRole(record.key)">Save</TypographyLink>
-              <Popconfirm title="Are you sure you want to cancel the edit"
-                @confirm="() => handleCancelEditRole(record.key)">
-                <TypographyLink>Cancel</TypographyLink>
-              </Popconfirm>
+            <template v-if="!editableData[record.id]">
+              <TypographyLink @click="handleGivePermission(record.id)">分配权限</TypographyLink>
+              <TypographyLink @click="handleEditRole(record.id)">编辑</TypographyLink>
+              <TypographyLink @click="handleDeleteRole(record.id)">删除</TypographyLink>
             </template>
             <template v-else>
-              <TypographyLink @click="handleGivePermission">Give Permission</TypographyLink>
-              <TypographyLink @click="() => handleEditRole(record.key)">Edit</TypographyLink>
-              <TypographyLink @click="handleDeleteRole(record.key)">Delete</TypographyLink>
+              <TypographyLink @click="handleSaveEditRole(record.id)">保存</TypographyLink>
+              <Popconfirm title="确定要取消吗？" @confirm="handleCancelEditRole(record.id)">
+                <TypographyLink>取消</TypographyLink>
+              </Popconfirm>
             </template>
           </Flex>
         </template>
       </template>
     </Table>
-    <Pagination v-model:current="currentPage" :total="500" />
-    <GivePermissionModal v-model:visible="permissionModalVisible" @confirm="() => permissionModalVisible = false"
-      @cancel="() => permissionModalVisible = false" />
+    <GivePermissionModal :role-id="selectedRoleId" v-model:open="permissionModalStatus" />
   </Flex>
 </template>
 
