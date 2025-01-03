@@ -8,7 +8,7 @@ import EmployeeService from '@/services/employee.service';
 import type { PagingResponse } from '@/types/api';
 import type { EmployeeVO, PagingEmployeeListParams } from '@/types/api/employee';
 import { convertDepartmentToTree } from '@/utils/convert';
-import { type TableProps, type TreeProps, Button, Flex, InputSearch, message, Popconfirm, Table, Tree } from 'ant-design-vue';
+import { Button, Flex, InputSearch, message, Popconfirm, Table, Tree, type ButtonProps, type PaginationProps, type TableProps, type TreeProps } from 'ant-design-vue';
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
 import { reactive, ref } from 'vue';
 import RoleModal from './components/role-modal.vue';
@@ -21,7 +21,7 @@ defineOptions({
 
 const departmentTree = ref<TreeProps['treeData']>()
 const searchEmployeeParams = reactive<PagingEmployeeListParams>({
-  departmentId: 0,
+  departmentId: departmentTree.value?.[0]?.id ?? 1,
   keyword: "",
   page: 1,
   pagesize: 10
@@ -140,6 +140,12 @@ const handleSelectDepartment: TreeProps['onSelect'] = (selectedKeys) => {
   searchEmployeeParams.departmentId = Number(selectedKeys[0])
 }
 
+const handleChangeTablePagination: PaginationProps['onChange'] = (page, pageSize) => {
+  searchEmployeeParams.page = page
+  searchEmployeeParams.pagesize = pageSize
+  getEmployeeList(searchEmployeeParams)
+}
+
 </script>
 
 <template>
@@ -173,6 +179,7 @@ const handleSelectDepartment: TreeProps['onSelect'] = (selectedKeys) => {
         pageSizeOptions: tablePaginationPageSizeOptions,
         total: employeeTableDataSource.total,
         current: searchEmployeeParams.page,
+        onChange: handleChangeTablePagination,
         showTotal: total => `共 ${total} 条数据`
       }" class="flex-1 h-full employee-right-table" :columns="columns" :data-source="employeeTableDataSource.rows"
         :row-selection="tableRowSelection">

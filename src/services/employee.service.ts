@@ -1,9 +1,9 @@
-import type { EmployeeDetailVO, EmployeeVO, GiveEmployeeRoleParams, PagingEmployeeListParams, PagingResponse, UpdateWithAddEmployeeParams, AddEmployeeParams } from '@/types/api';
+import type { EmployeeDetailVO, EmployeeVO, GiveEmployeeRoleParams, PagingEmployeeListParams, PagingResponse, UpdateWithAddEmployeeParams } from '@/types/api';
 import { request } from '@/utils/request/instance';
 
 class EmployeeService {
   static getEmployeeList(params: PagingEmployeeListParams) {
-    return request.get<PagingResponse<EmployeeVO>>('/sys/user', { params })
+    return request.get<PagingResponse<EmployeeVO>>('/sys/user', { ...params })
   }
 
   static getEmployeeDetailById(id: string) {

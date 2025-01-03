@@ -1,4 +1,5 @@
 import type { FormOfEmployment } from "@/constants/employee";
+import type { PagingQueryParams } from "./common";
 
 export interface Employee {
   /**
@@ -74,7 +75,7 @@ export interface EmployeeDetailVO extends EmployeeInfoVO {
 
 }
 
-export interface PagingEmployeeListParams {
+export interface PagingEmployeeListParams extends PagingQueryParams {
   /**
    * 部门id,根据部门查询当前部门及子部门的用户
    */
