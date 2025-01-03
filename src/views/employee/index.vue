@@ -10,7 +10,7 @@ import type { EmployeeVO, PagingEmployeeListParams } from '@/types/api/employee'
 import { convertDepartmentToTree } from '@/utils/tree';
 import { type ButtonProps, type TableProps, type TreeProps, Button, Flex, InputSearch, Popconfirm, Table, Tree } from 'ant-design-vue';
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import RoleModal from './components/role-modal.vue';
 // 员工管理
 defineOptions({
@@ -18,14 +18,14 @@ defineOptions({
 })
 
 
-
-const departmentTree = ref<TreeProps['treeData']>()
-const searchEmployeeParams = reactive<PagingEmployeeListParams>({
-  departmentId: 0,
-  keyword: "",
+const defaultPagingParams = {
+  departmentId: 1,
   page: 1,
-  pagesize: 10
-})
+  pagesize: 10,
+  keyword: ""
+}
+const departmentTree = ref<TreeProps['treeData']>()
+const pagingEmployeeParams = reactive<PagingEmployeeListParams>({ ...defaultPagingParams, departmentId: Number(defaultPagingParams.departmentId) })
 
 const actionsSize: ButtonProps['size'] = 'middle'
 
@@ -107,8 +107,9 @@ const { loading: getDepartmentLoading } = useRequest(DepartmentService.getCompan
 })
 
 // 分页获取员工列表
-const { loading: getEmployeeListLoading, run: getEmployeeList } = useRequest(() => EmployeeService.getEmployeeList(searchEmployeeParams), {
+const { loading: getEmployeeListLoading, run: getEmployeeList } = useRequest(() => EmployeeService.getEmployeeList(pagingEmployeeParams), {
   onSuccess: ({ data }) => {
+
     employeeTableDataSource.rows = data.rows.map(item => ({ ...item, key: item.id }))
     employeeTableDataSource.total = data.total
   }
@@ -127,15 +128,26 @@ const handleDeleteByEmployeeId = (employeeId: number) => {
 
 const handleSelectDepartment: TreeProps['onSelect'] = (selectedKeys) => {
   // 获取当前选中的部门 id
-  searchEmployeeParams.departmentId = Number(selectedKeys[0])
+  pagingEmployeeParams.departmentId = Number(selectedKeys[0])
 }
 
+// 当分页发生变化时，重新获取员工列表
+const handleChangeTablePagination = (page: number, pageSize: number) => {
+  pagingEmployeeParams.page = page
+  pagingEmployeeParams.pagesize = pageSize
+  getEmployeeList(pagingEmployeeParams)
+}
+
+// 监听部门 id 的变化，重新获取员工列表
+watch(() => pagingEmployeeParams.departmentId, (newVal) => {
+  getEmployeeList(pagingEmployeeParams)
+})
 </script>
 
 <template>
   <Flex gap="small" class="h-full">
     <Flex vertical class="employee-left" gap="middle">
-      <InputSearch placeholder="请输入员工姓名全员搜索" v-model:value="searchEmployeeParams.keyword" />
+      <InputSearch placeholder="请输入员工姓名全员搜索" v-model:value="pagingEmployeeParams.keyword" />
       <Tree v-if="!getDepartmentLoading" class="draggable-tree" draggable block-node :tree-data="departmentTree"
         default-expand-all @select="handleSelectDepartment" />
 
@@ -162,7 +174,8 @@ const handleSelectDepartment: TreeProps['onSelect'] = (selectedKeys) => {
         position: tablePaginationPosition,
         pageSizeOptions: tablePaginationPageSizeOptions,
         total: employeeTableDataSource.total,
-        current: searchEmployeeParams.page,
+        current: pagingEmployeeParams.page,
+        onChange: handleChangeTablePagination,
         showTotal: total => `共 ${total} 条数据`
       }" class="flex-1 h-full employee-right-table" :columns="columns" :data-source="employeeTableDataSource.rows"
         :row-selection="tableRowSelection">

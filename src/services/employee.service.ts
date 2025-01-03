@@ -3,7 +3,7 @@ import { request } from '@/utils/request/instance';
 
 class EmployeeService {
   static getEmployeeList(params: PagingEmployeeListParams) {
-    return request.get<PagingResponse<EmployeeVO>>('/sys/user', { params })
+    return request.get<PagingResponse<EmployeeVO>>('/sys/user', { ...params })
   }
 }
 
