@@ -7,7 +7,7 @@ import DepartmentService from '@/services/department.service';
 import EmployeeService from '@/services/employee.service';
 import type { PagingResponse } from '@/types/api';
 import type { EmployeeVO, PagingEmployeeListParams } from '@/types/api/employee';
-import { convertDepartmentToTree } from '@/utils/tree';
+import { convertDepartmentToTree } from '@/utils/convert';
 import { type ButtonProps, type TableProps, type TreeProps, Button, Flex, InputSearch, Popconfirm, Table, Tree } from 'ant-design-vue';
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
 import { reactive, ref } from 'vue';

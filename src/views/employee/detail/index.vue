@@ -1,30 +1,38 @@
 <script setup lang="ts">
+import { useRequest } from '@/composables/use-request';
 import { FormOfEmployment } from '@/constants/employee';
-import type { EmployeeInfoVO } from '@/type/employee';
-import { formatDate } from '@/utils/date';
-import { Button, Col, Flex, Form, FormItem, Input, message, Row, type FormProps, type UploadProps } from 'ant-design-vue';
-import { reactive, ref } from 'vue';
-
+import DepartmentService from '@/services/department.service';
+import EmployeeService from '@/services/employee.service';
+import type { EmployeeDetailVO } from '@/types/api';
+import { convertDepartmentToCascader } from '@/utils/convert';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons-vue';
+import type { CascaderProps } from 'ant-design-vue';
+import { Button, Cascader, Col, DatePicker, Flex, Form, FormItem, Input, message, Row, Select, Upload, type FormProps, type UploadProps } from 'ant-design-vue';
+import { onMounted, reactive, ref } from 'vue';
+import { useRoute } from 'vue-router';
 defineOptions({
   name: "EmployeeDetailPage"
 })
 
 
-
-const formState = reactive<EmployeeInfoVO>({
+const defaultEmployee: EmployeeDetailVO = {
   id: 1,
-  workNumber: "ZUISHUAI-1",
-  mobile: "18500000000",
-  departmentName: "字节跳动",
-  correctionTime: formatDate(Date()),
+  workNumber: "",
+  mobile: "",
+  departmentName: "",
+  departmentId: 1,
+  correctionTime: '',
   roleIds: [1],
   formOfEmployment: FormOfEmployment.Formal,
-  staffPhoto: '/vite.svg',
-  timeOfEntry: formatDate(Date()),
-  username: "lianqq"
-})
+  staffPhoto: '',
+  timeOfEntry: '',
+  username: ""
+}
 
-
+const formState = reactive<EmployeeDetailVO>(defaultEmployee)
+const selectedDepartmentId = ref<string[]>([])
+const route = useRoute()
+const cascaderOptions = ref<CascaderProps['options']>([])
 const formLabelCol: FormProps['labelCol'] = { span: 8 }
 const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
 
@@ -68,6 +76,49 @@ const beforeUpload: UploadProps['beforeUpload'] = (file) => {
   }
   return isJpgOrPng && isLt2M;
 };
+
+
+const { run: getEmployeeDetailById } = useRequest(EmployeeService.getEmployeeDetailById, {
+  manual: true,
+  onSuccess: ({ data }) => {
+    console.log(data)
+    Object.assign(formState, data)
+    selectedDepartmentId.value = [data.departmentId.toString()]
+  }
+})
+const { data: departmentList } = useRequest(DepartmentService.getCompanyDepartmentList, {
+  onSuccess: ({ data }) => {
+    console.log(data)
+    cascaderOptions.value = convertDepartmentToCascader(data)
+  }
+})
+
+const { run: updateEmployeeDetail } = useRequest(EmployeeService.updateEmployeeDetail, {
+  manual: true,
+  onSuccess: () => {
+    message.success('更新成功')
+  }
+})
+
+
+const formOfEmploymentOptions = [
+  { label: '正式', value: FormOfEmployment.Formal },
+  { label: '非正式', value: FormOfEmployment.InFormal },
+]
+
+const handleSave = () => {
+  console.log(formState)
+  console.log(selectedDepartmentId.value.slice(-1)[0])
+  updateEmployeeDetail(route.params.id as string, {
+    ...formState,
+    departmentId: Number(selectedDepartmentId.value.slice(-1)[0]),
+  })
+}
+
+
+onMounted(() => {
+  getEmployeeDetailById(route.params.id as string)
+})
 </script>
 
 <template>
@@ -83,34 +134,36 @@ const beforeUpload: UploadProps['beforeUpload'] = (file) => {
         <Input v-model:value="formState.mobile" disabled />
       </FormItem>
       <FormItem label="部门" name="departmentName">
-        <Input v-model:value="formState.departmentName" />
+        <Cascader :display-render="({ labels }) => labels.join('-')" placeholder="请选择部门" :options="cascaderOptions"
+          v-model:value="selectedDepartmentId" />
       </FormItem>
       <FormItem label="聘用形式" name="formOfEmployment">
-        <Input v-model:value="formState.formOfEmployment" />
+        <!-- <Input v-model:value="formState.formOfEmployment" /> -->
+        <Select placeholder="请选择聘用形式" v-model:value="formState.formOfEmployment" :options="formOfEmploymentOptions" />
       </FormItem>
       <FormItem label="入职时间" name="timeOfEntry">
-        <Input v-model:value="formState.timeOfEntry" />
+        <DatePicker value-format="YYYY-MM-DD" v-model:value="formState.timeOfEntry" />
       </FormItem>
       <FormItem label="转正时间" name="correctionTime">
-        <Input v-model:value="formState.correctionTime" />
+        <DatePicker value-format="YYYY-MM-DD" v-model:value="formState.correctionTime" />
       </FormItem>
       <FormItem label="员工头像" name="staffPhoto">
-        <a-upload v-model:file-list="fileList" name="avatar" list-type="picture-card" class="avatar-uploader"
+        <Upload v-model:file-list="fileList" name="avatar" list-type="picture-card" class="avatar-uploader"
           :show-upload-list="false" action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
           :before-upload="beforeUpload" @change="handleChange">
-          <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
+          <img v-if="formState.staffPhoto" :src="formState.staffPhoto" alt="avatar" />
           <div v-else>
-            <loading-outlined v-if="loading"></loading-outlined>
-            <plus-outlined v-else></plus-outlined>
+            <LoadingOutlined v-if="loading"></LoadingOutlined>
+            <PlusOutlined v-else></PlusOutlined>
             <div class="ant-upload-text">Upload</div>
           </div>
-        </a-upload>
+        </Upload>
       </FormItem>
       <FormItem>
         <Row>
           <Col :span="12" />
           <Col>
-          <Button type="primary">保存更新</Button>
+          <Button type="primary" @click="handleSave">保存更新</Button>
           </Col>
 
         </Row>
