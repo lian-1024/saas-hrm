@@ -71,7 +71,7 @@ const handleCancel = () => {
 </script>
 
 <template>
-  <QModal v-model:open="modalStatus" title="员工导入">
+  <QModal v-model:open="modalStatus" title="员工导入" mask mask-closable>
     <div class="import-wrapper">
       <UploadDragger v-bind="uploadProps">
         <p class="ant-upload-drag-icon">

@@ -8,10 +8,10 @@ import EmployeeService from '@/services/employee.service';
 import type { PagingResponse } from '@/types/api';
 import type { EmployeeVO, PagingEmployeeListParams } from '@/types/api/employee';
 import { convertDepartmentToTree } from '@/utils/convert';
-import { Button, Flex, InputSearch, message, Popconfirm, Table, Tree, type ButtonProps, type PaginationProps, type TableProps, type TreeProps } from 'ant-design-vue';
+import { Button, Flex, InputSearch, message, Popconfirm, Table, Tree, TypographyText, type ButtonProps, type PaginationProps, type TableProps, type TreeProps } from 'ant-design-vue';
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
 import FileSaver from 'file-saver';
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import ImportExcelModal from './components/import-excel-modal.vue';
 import RoleModal from './components/role-modal.vue';
 // 员工管理
@@ -159,6 +159,10 @@ const handleChangeTablePagination: PaginationProps['onChange'] = (page, pageSize
   getEmployeeList(searchEmployeeParams)
 }
 
+watch(() => searchEmployeeParams.departmentId, (newValue) => {
+  getEmployeeList(searchEmployeeParams)
+})
+
 </script>
 
 <template>
@@ -197,6 +201,9 @@ const handleChangeTablePagination: PaginationProps['onChange'] = (page, pageSize
         showTotal: total => `共 ${total} 条数据`
       }" class="flex-1 h-full employee-right-table" :columns="columns" :data-source="employeeTableDataSource.rows"
         :row-selection="tableRowSelection">
+        <template #headerCell="{ title }">
+          <TypographyText type="secondary" :level="5" class="table-header-title">{{ title }}</TypographyText>
+        </template>
         <template #bodyCell="{ column, record }">
           <!-- 员工头像 -->
           <template v-if="column.key === 'staffPhoto'">
@@ -248,6 +255,10 @@ const handleChangeTablePagination: PaginationProps['onChange'] = (page, pageSize
     &-table {
       padding: var(--spacing-middle);
       background-color: var(--color-background);
+
+      .table-header-title {
+        white-space: nowrap;
+      }
     }
   }
 }
