@@ -3,7 +3,7 @@ import { request } from '@/utils/request/instance';
 
 class EmployeeService {
   static getEmployeeList(params: PagingEmployeeListParams) {
-    return request.get<PagingResponse<EmployeeVO>>('/sys/user', { params });
+    return request.get<PagingResponse<EmployeeVO>>('/sys/user', { params })
   }
 
   static getEmployeeDetailById(id: string) {
@@ -14,8 +14,8 @@ class EmployeeService {
     return request.put(`/sys/user/${id}`, { data });
   }
 
-  static giveEmployeeRole(params: GiveEmployeeRoleParams) {
-    return request.put('/sys/user/assignRoles', { data: params });
+  static giveEmployeeRole(data: GiveEmployeeRoleParams) {
+    return request.put('/sys/user/assignRoles', { data });
   }
 
   static deleteEmployee(id: string) {
