@@ -7,7 +7,8 @@ const axiosInstance = axios.create({
   baseURL: '/api',
   timeout: 20000,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    "responseType": "blob"
   }
 })
 
@@ -33,13 +34,17 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    return response.data
+    // 检查响应头或其他逻辑来决定如何处理响应
+    if (response.headers['content-type'].includes('application/json')) {
+      return response.data; // 处理为JSON
+    } else {
+      return response; // 直接返回Blob数据
+    }
   },
   (error) => {
-
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
 export const request = new Request(axiosInstance)
 

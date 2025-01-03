@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { QModal } from '@/components/base/Modal';
-import { Button, CheckboxGroup, Flex, type CheckboxGroupProps } from 'ant-design-vue';
+import { useRequest } from '@/composables/use-request';
+import EmployeeService from '@/services/employee.service';
+import RoleService from '@/services/role.service';
+import { Button, CheckboxGroup, Flex, message, type CheckboxGroupProps } from 'ant-design-vue';
 import { ref, watchEffect } from 'vue';
 defineOptions({
   name: 'RoleModal'
@@ -14,51 +17,82 @@ const props = defineProps<{
 
 const modalStatus = defineModel("open", { default: false })
 
-const selectedRole = ref<CheckboxGroupProps['value']>()
-const selectedRoleOptions = ref<CheckboxGroupProps['options']>([
-  {
-    value: "system-management",
-    label: "系统管理员"
-  },
-  {
-    value: "manager",
-    label: "人事经理"
-  },
-  {
-    value: "commissioner",
-    label: "人事专员"
+const selectedRole = ref<CheckboxGroupProps['value']>([])
+
+
+const roleOptions = ref<CheckboxGroupProps['options']>([])
+
+
+
+
+// 获取角色列表
+const { data: roleList, run: getRoleList } = useRequest(RoleService.getRoleListEnable, {
+  onSuccess: ({ data }) => {
+    roleOptions.value = data.map(item => ({
+      value: item.id,
+      label: item.name
+    }))
   }
-])
+})
+
+// 获取员工详情
+const { data: employeeDetail, run: getEmployeeDetail } = useRequest(EmployeeService.getEmployeeDetailById, {
+  manual: true,
+  onSuccess: ({ data }) => {
+    selectedRole.value = data.roleIds
+  }
+})
+
+const { run: giveEmployeeRole } = useRequest(EmployeeService.giveEmployeeRole, {
+  manual: true,
+  onSuccess: () => {
+    message.success("分配角色成功")
+  },
+  onError: (error) => {
+    if (error.message) {
+      message.error(error.message)
+    } else {
+      message.error("分配角色失败")
+    }
+  }
+})
 
 
 
-const handleConfirmModification = () => {
-  console.log("confirm:", selectedRole.value);
-  // post data 
-  // loading ...
+
+const closeModal = () => {
   modalStatus.value = false
 }
 
-const handleCancelModification = () => {
-  console.log("cancel");
-  modalStatus.value = false
+const handleConfirm = () => {
+  giveEmployeeRole({
+    id: props.employeeId,
+    roleIds: selectedRole.value
+  })
+  closeModal()
 }
 
+const handleCancel = () => {
+  closeModal()
+}
+
+// 监听员工id变化
 watchEffect(() => {
-  // 这里可以根据员工id 获取员工角色
-  console.log("employeeId change:", props.employeeId);
+  if (props.employeeId) {
+    getEmployeeDetail(props.employeeId)
+  }
 })
 </script>
 
 <template>
-  <QModal v-model:open="modalStatus" title="分配角色" @cancel="handleCancelModification">
+  <QModal :width="800" mask v-model:open="modalStatus" title="分配角色" @cancel="handleCancel">
     <div class="modal-content">
-      <CheckboxGroup :value="selectedRole" :options="selectedRoleOptions" />
+      <CheckboxGroup v-model:value="selectedRole" :options="roleOptions" />
     </div>
     <template #footer>
       <Flex gap="small" justify="center">
-        <Button type="primary" @click="handleConfirmModification">确定</Button>
-        <Button @click="handleCancelModification">取消</Button>
+        <Button type="primary" @click="handleConfirm">确定</Button>
+        <Button @click="handleCancel">取消</Button>
       </Flex>
     </template>
   </QModal>

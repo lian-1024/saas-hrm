@@ -47,44 +47,28 @@ export class Request {
     }
   }
 
-  // 通用请求方法，接收请求配置并返回响应
-  async request<T>(config: RequestConfig): Promise<Response<T>> {
-    return this.adapter.request<T>(config)  // 调用适配器的request方法发起请求
+  // 通用请求方法，接收URL和配置，返回响应
+  async request<T>(url: string, config: Omit<RequestConfig, 'url'>): Promise<Response<T>> {
+    return this.adapter.request<T>({ url, ...config });  // 调用适配器的request方法发起请求
   }
 
-  // GET请求方法，接收URL和参数，返回响应
-  async get<T>(url: string, params?: any): Promise<Response<T>> {
-    return this.request<T>({
-      url,
-      method: RequestMethods.GET,
-      params
-    })
+  // GET请求方法，接收URL和配置，返回响应
+  async get<T>(url: string, config: Omit<RequestConfig, 'url'> = {}): Promise<Response<T>> {
+    return this.request<T>(url, { ...config, method: RequestMethods.GET });
   }
 
-  // POST请求方法，接收URL和数据，返回响应
-  async post<T>(url: string, data?: any): Promise<Response<T>> {
-    return this.request<T>({
-      url,
-      method: RequestMethods.POST,
-      data
-    })
+  // POST请求方法，接收URL和配置，返回响应
+  async post<T>(url: string, config: Omit<RequestConfig, 'url'> = {}): Promise<Response<T>> {
+    return this.request<T>(url, { ...config, method: RequestMethods.POST });
   }
 
-  // PUT请求方法，接收URL和数据，返回响应
-  async put<T>(url: string, data?: any): Promise<Response<T>> {
-    return this.request<T>({
-      url,
-      method: RequestMethods.PUT,
-      data
-    })
+  // PUT请求方法，接收URL和配置，返回响应
+  async put<T>(url: string, config: Omit<RequestConfig, 'url'> = {}): Promise<Response<T>> {
+    return this.request<T>(url, { ...config, method: RequestMethods.PUT });
   }
 
-  // DELETE请求方法，接收URL和参数，返回响应
-  async delete<T>(url: string, params?: any): Promise<Response<T>> {
-    return this.request<T>({
-      url,
-      method: RequestMethods.DELETE,
-      params
-    })
+  // DELETE请求方法，接收URL和配置，返回响应
+  async delete<T>(url: string, config: Omit<RequestConfig, 'url'> = {}): Promise<Response<T>> {
+    return this.request<T>(url, { ...config, method: RequestMethods.DELETE });
   }
 }

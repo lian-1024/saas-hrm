@@ -95,3 +95,14 @@ export interface AddRoleParams {
    */
   state: number;
 }
+
+export interface EnableRoleItem {
+  /**
+   * 角色id
+   */
+  id: number;
+  /**
+   * 角色名称
+   */
+  name: string;
+}

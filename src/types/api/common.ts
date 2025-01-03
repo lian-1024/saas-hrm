@@ -16,7 +16,6 @@ export interface PagingQueryParams {
    * 当前页面需要的数据条数
    */
   pagesize: number;
-  [property: string]: any;
 }
 
 
@@ -32,6 +31,5 @@ export interface PagingResponse<T = any> {
    * 数据总数, 指的在后台数据库里一共有多少条数据匹配
    */
   total: number;
-  [property: string]: any;
 }
 
