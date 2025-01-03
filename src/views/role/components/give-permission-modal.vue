@@ -2,7 +2,7 @@
 import { useRequest } from '@/composables/use-request';
 import PermissionService from '@/services/permission.service';
 import RoleService from '@/services/role.service';
-import { convertPermissionToTree } from '@/utils/tree';
+import { convertPermissionToTree } from '@/utils/convert';
 import { message, Modal, Tree } from 'ant-design-vue';
 import { ref, watch } from 'vue';
 defineOptions({

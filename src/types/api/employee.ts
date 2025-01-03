@@ -98,3 +98,14 @@ export interface UpdateEmployeeDetailParams extends Employee {
    */
   departmentId: number;
 }
+
+export interface GiveEmployeeRoleParams {
+  /**
+   * 员工id
+   */
+  id: string;
+  /**
+   * 员工角色id数组
+   */
+  roleIds: string[];
+}

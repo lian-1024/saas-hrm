@@ -1,4 +1,4 @@
-import type { EmployeeDetailVO, EmployeeVO, PagingEmployeeListParams, PagingResponse, UpdateEmployeeDetailParams } from '@/types/api';
+import type { EmployeeDetailVO, EmployeeVO, GiveEmployeeRoleParams, PagingEmployeeListParams, PagingResponse, UpdateEmployeeDetailParams } from '@/types/api';
 import { request } from '@/utils/request/instance';
 
 class EmployeeService {
@@ -13,7 +13,9 @@ class EmployeeService {
   static updateEmployeeDetail(id: string, data: UpdateEmployeeDetailParams) {
     return request.put(`/sys/user/${id}`, data)
   }
-
+  static giveEmployeeRole(params: GiveEmployeeRoleParams) {
+    return request.put('/sys/user/assignRoles', params)
+  }
 }
 
 

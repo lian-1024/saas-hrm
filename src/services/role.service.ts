@@ -1,4 +1,4 @@
-import type { AddRoleParams, GivePermissionParams, PagingQueryParams, PagingResponse, RoleDetailVO, RoleItemVO, UpdateRoleParams } from '@/types/api';
+import type { AddRoleParams, EnableRoleItem, GiveEmployeeRoleParams, GivePermissionParams, PagingQueryParams, PagingResponse, RoleDetailVO, RoleItemVO, UpdateRoleParams } from '@/types/api';
 import { request } from '@/utils/request/instance';
 
 class RoleService {
@@ -26,6 +26,12 @@ class RoleService {
   static addRole(data: AddRoleParams) {
     return request.post("/sys/role", data)
   }
+
+  static getRoleListEnable() {
+    return request.get<EnableRoleItem[]>('/sys/role/list/enabled')
+  }
+
+
 }
 
 export default RoleService
