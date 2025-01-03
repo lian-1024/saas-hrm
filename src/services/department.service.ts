@@ -7,7 +7,7 @@ class DepartmentService {
   }
 
   static addDepartment(data: AddDepartmentParams) {
-    return request.post<DepartmentItemVO>('/company/department', data)
+    return request.post<DepartmentItemVO>('/company/department', { data })
   }
 
   static getDepartmentManagerList() {
@@ -19,7 +19,7 @@ class DepartmentService {
   }
 
   static updateDepartment(data: UpdateDepartmentParams) {
-    return request.put<DepartmentDetailVO>(`/company/department/${data.id}`, data)
+    return request.put<DepartmentDetailVO>(`/company/department/${data.id}`, { data })
   }
 
   static deleteDepartment(id: string) {

@@ -10,7 +10,9 @@ import type { EmployeeVO, PagingEmployeeListParams } from '@/types/api/employee'
 import { convertDepartmentToTree } from '@/utils/convert';
 import { Button, Flex, InputSearch, message, Popconfirm, Table, Tree, type ButtonProps, type PaginationProps, type TableProps, type TreeProps } from 'ant-design-vue';
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
+import FileSaver from 'file-saver';
 import { reactive, ref } from 'vue';
+import ImportExcelModal from './components/import-excel-modal.vue';
 import RoleModal from './components/role-modal.vue';
 // 员工管理
 defineOptions({
@@ -26,6 +28,8 @@ const searchEmployeeParams = reactive<PagingEmployeeListParams>({
   page: 1,
   pagesize: 10
 })
+
+const importExcelModalStatus = ref<boolean>(false)
 
 const actionsSize: ButtonProps['size'] = 'middle'
 
@@ -127,6 +131,15 @@ const { run: deleteEmployee } = useRequest(EmployeeService.deleteEmployee, {
   }
 })
 
+const { run: exportEmployeeList } = useRequest(EmployeeService.exportEmployeeList, {
+  manual: true,
+  onSuccess: (res) => {
+    console.log(res)
+    FileSaver.saveAs(res.data as Blob, '员工列表.xlsx')
+  }
+})
+
+
 const handleViewEmployee = (employeeId: number) => {
   router.push(`/employee/detail/${employeeId}`)
 }
@@ -151,7 +164,8 @@ const handleChangeTablePagination: PaginationProps['onChange'] = (page, pageSize
 <template>
   <Flex gap="small" class="h-full">
     <Flex vertical class="employee-left" gap="middle">
-      <InputSearch placeholder="请输入员工姓名全员搜索" v-model:value="searchEmployeeParams.keyword" />
+      <InputSearch @search="getEmployeeList(searchEmployeeParams)" placeholder="请输入员工姓名全员搜索"
+        v-model:value="searchEmployeeParams.keyword" />
       <Tree v-if="!getDepartmentLoading" class="draggable-tree" draggable block-node :tree-data="departmentTree"
         default-expand-all @select="handleSelectDepartment" />
 
@@ -165,10 +179,10 @@ const handleChangeTablePagination: PaginationProps['onChange'] = (page, pageSize
           <Button type="primary" :size="actionsSize" @click="handleAddEmployee">
             添加员工
           </Button>
-          <Button :size="actionsSize">
+          <Button :size="actionsSize" @click="importExcelModalStatus = true">
             excel导入
           </Button>
-          <Button :size="actionsSize">
+          <Button :size="actionsSize" @click="exportEmployeeList">
             excel导出
           </Button>
         </Flex>
@@ -210,6 +224,7 @@ const handleChangeTablePagination: PaginationProps['onChange'] = (page, pageSize
       </Table>
       <!-- 分配角色 modal -->
       <RoleModal v-model:open="giveRoleModalStatus" :employee-id="currentSelectedEmployee" />
+      <ImportExcelModal v-model:open="importExcelModalStatus" />
     </Flex>
   </Flex>
 </template>
@@ -220,7 +235,6 @@ const handleChangeTablePagination: PaginationProps['onChange'] = (page, pageSize
     max-width: 280px;
     padding: var(--spacing-large);
     background-color: var(--color-background);
-    overflow-y: scroll;
   }
 
   &-right {

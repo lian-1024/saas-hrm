@@ -41,8 +41,10 @@ export function useRequest<TData = any>(
       const res = await requestFn(...args)
       data.value = res
 
-      if (!res.success) {
-        throw new Error(res.message)
+      if (res.success !== undefined) {
+        if (!res.success) {
+          throw new Error(res.message)
+        }
       }
 
       onSuccess?.(res)
