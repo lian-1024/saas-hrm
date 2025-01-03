@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useRequest } from '@/composables/use-request';
 import { FormOfEmployment } from '@/constants/employee';
+import router from '@/router';
 import DepartmentService from '@/services/department.service';
 import EmployeeService from '@/services/employee.service';
-import type { EmployeeDetailVO } from '@/types/api';
+import type { UpdateWithAddEmployeeParams } from '@/types/api';
 import { convertDepartmentToCascader } from '@/utils/convert';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons-vue';
-import type { CascaderProps } from 'ant-design-vue';
+import type { CascaderProps, FormInstance } from 'ant-design-vue';
 import { Button, Cascader, Col, DatePicker, Flex, Form, FormItem, Input, message, Row, Select, Upload, type FormProps, type UploadProps } from 'ant-design-vue';
 import { onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -15,27 +16,49 @@ defineOptions({
 })
 
 
-const defaultEmployee: EmployeeDetailVO = {
+const defaultEmployee: UpdateWithAddEmployeeParams = {
   id: 1,
   workNumber: "",
   mobile: "",
-  departmentName: "",
   departmentId: 1,
   correctionTime: '',
-  roleIds: [1],
   formOfEmployment: FormOfEmployment.Formal,
   staffPhoto: '',
   timeOfEntry: '',
   username: ""
 }
 
-const formState = reactive<EmployeeDetailVO>(defaultEmployee)
+const formState = reactive<UpdateWithAddEmployeeParams>(defaultEmployee)
 const selectedDepartmentId = ref<string[]>([])
 const route = useRoute()
 const cascaderOptions = ref<CascaderProps['options']>([])
 const formLabelCol: FormProps['labelCol'] = { span: 8 }
 const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
-
+const formRules: FormProps['rules'] = {
+  username: [
+    { required: true, message: '请输入员工姓名', trigger: 'blur' },
+    { min: 1, max: 4, message: '员工名字长度为1-4位字符', trigger: 'blur' }
+  ],
+  mobile: [
+    { required: true, message: '请输入手机号', trigger: 'blur' },
+    { pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确', trigger: 'blur' }
+  ],
+  timeOfEntry: [
+    { required: true, message: '请选择入职日期', trigger: 'change' },
+    { type: 'date', message: '入职日期格式不正确', trigger: 'change' }
+  ],
+  correctionTime: [
+    { required: true, message: '请选择转正日期', trigger: 'change' },
+    { type: 'date', message: '转正日期格式不正确', trigger: 'change' }
+  ],
+  departmentId: [
+    { required: true, message: '请选择部门', trigger: 'change' }
+  ],
+  formOfEmployment: [
+    { required: true, message: '请选择聘用形式', trigger: 'change' }
+  ]
+};
+const formRef = ref<FormInstance | null>(null)
 
 function getBase64(img: Blob, callback: (base64Url: string) => void) {
   const reader = new FileReader();
@@ -100,30 +123,52 @@ const { run: updateEmployeeDetail } = useRequest(EmployeeService.updateEmployeeD
   }
 })
 
+const { run: addEmployee } = useRequest(EmployeeService.addEmployee, {
+  manual: true,
+  onSuccess: () => {
+    message.success('新增成功')
+    router.push('/employee')
+  }
+})
+
 
 const formOfEmploymentOptions = [
   { label: '正式', value: FormOfEmployment.Formal },
   { label: '非正式', value: FormOfEmployment.InFormal },
 ]
 
+// 保存操作
 const handleSave = () => {
-  console.log(formState)
-  console.log(selectedDepartmentId.value.slice(-1)[0])
-  updateEmployeeDetail(route.params.id as string, {
-    ...formState,
-    departmentId: Number(selectedDepartmentId.value.slice(-1)[0]),
+  const selectedId = Number(selectedDepartmentId.value.slice(-1)[0])
+  formState.departmentId = selectedId
+  formRef.value?.validate().then((res) => {
+    if (route.params.id) {
+      updateEmployeeDetail(route.params.id as string, {
+        ...formState,
+        departmentId: selectedId,
+      })
+    } else {
+      const { id, ...rest } = formState
+      addEmployee({
+        ...rest,
+        departmentId: selectedId,
+      })
+    }
   })
 }
 
 
 onMounted(() => {
-  getEmployeeDetailById(route.params.id as string)
+  if (route.params.id) {
+    getEmployeeDetailById(route.params.id as string)
+  }
 })
 </script>
 
 <template>
   <Flex class="detail-wrapper h-full" justify="star">
-    <Form class="detail-form" :model="formState" :label-col="formLabelCol" :wrapper-col="formWrapperCol">
+    <Form ref="formRef" :rules="formRules" class="detail-form" :model="formState" :label-col="formLabelCol"
+      :wrapper-col="formWrapperCol">
       <FormItem label="姓名" name="username">
         <Input v-model:value="formState.username" placeholder="请输入员工姓名全称" />
       </FormItem>
@@ -131,9 +176,9 @@ onMounted(() => {
         <Input v-model:value="formState.workNumber" disabled />
       </FormItem>
       <FormItem label="手机" name="mobile">
-        <Input v-model:value="formState.mobile" disabled />
+        <Input v-model:value="formState.mobile" :disabled="!!route.params.id" />
       </FormItem>
-      <FormItem label="部门" name="departmentName">
+      <FormItem label="部门" name="departmentId">
         <Cascader :display-render="({ labels }) => labels.join('-')" placeholder="请选择部门" :options="cascaderOptions"
           v-model:value="selectedDepartmentId" />
       </FormItem>
@@ -163,7 +208,7 @@ onMounted(() => {
         <Row>
           <Col :span="12" />
           <Col>
-          <Button type="primary" @click="handleSave">保存更新</Button>
+          <Button type="primary" @click="handleSave">保存{{ route.params.id && "更新" }}</Button>
           </Col>
 
         </Row>

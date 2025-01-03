@@ -1,5 +1,4 @@
 import type { FormOfEmployment } from "@/constants/employee";
-import type { PagingQueryParams } from "./common";
 
 export interface Employee {
   /**
@@ -75,7 +74,7 @@ export interface EmployeeDetailVO extends EmployeeInfoVO {
 
 }
 
-export interface PagingEmployeeListParams extends PagingQueryParams {
+export interface PagingEmployeeListParams {
   /**
    * 部门id,根据部门查询当前部门及子部门的用户
    */
@@ -88,7 +87,7 @@ export interface PagingEmployeeListParams extends PagingQueryParams {
 }
 
 
-export interface UpdateEmployeeDetailParams extends Employee {
+export interface UpdateWithAddEmployeeParams extends Omit<Employee, 'departmentName'> {
   /**
    * 员工转正日期, 格式: 2020-01-01
    */
@@ -108,4 +107,39 @@ export interface GiveEmployeeRoleParams {
    * 员工角色id数组
    */
   roleIds: string[];
+}
+
+export interface AddEmployeeParams {
+  /**
+   * 员工转正日期, 格式: 2020-01-01
+   */
+  correctionTime: string;
+  /**
+   * 员工部门id
+   */
+  departmentId: number;
+  /**
+   * 员工聘用形式, 1正式, 2非正式
+   */
+  formOfEmployment: number;
+  /**
+   * 员工手机号, 校验: 符合手机号格式
+   */
+  mobile: string;
+  /**
+   * 头像信息
+   */
+  staffPhoto?: string;
+  /**
+   * 员工入职日期, 格式: 2020-01-01
+   */
+  timeOfEntry: string;
+  /**
+   * 员工名字, 校验: 1-4位字符
+   */
+  username: string;
+  /**
+   * 员工工号
+   */
+  workNumber: string;
 }

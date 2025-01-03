@@ -8,7 +8,7 @@ import EmployeeService from '@/services/employee.service';
 import type { PagingResponse } from '@/types/api';
 import type { EmployeeVO, PagingEmployeeListParams } from '@/types/api/employee';
 import { convertDepartmentToTree } from '@/utils/convert';
-import { type ButtonProps, type TableProps, type TreeProps, Button, Flex, InputSearch, message, Popconfirm, Table, Tree } from 'ant-design-vue';
+import { type TableProps, type TreeProps, Button, Flex, InputSearch, message, Popconfirm, Table, Tree } from 'ant-design-vue';
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
 import { reactive, ref } from 'vue';
 import RoleModal from './components/role-modal.vue';
@@ -128,10 +128,12 @@ const { run: deleteEmployee } = useRequest(EmployeeService.deleteEmployee, {
 })
 
 const handleViewEmployee = (employeeId: number) => {
-  console.log("employee id:", employeeId);
   router.push(`/employee/detail/${employeeId}`)
 }
 
+const handleAddEmployee = () => {
+  router.push(`/employee/detail`);
+}
 
 const handleSelectDepartment: TreeProps['onSelect'] = (selectedKeys) => {
   // 获取当前选中的部门 id
@@ -154,7 +156,7 @@ const handleSelectDepartment: TreeProps['onSelect'] = (selectedKeys) => {
           群发通知
         </Button>
         <Flex gap="small">
-          <Button type="primary" :size="actionsSize">
+          <Button type="primary" :size="actionsSize" @click="handleAddEmployee">
             添加员工
           </Button>
           <Button :size="actionsSize">

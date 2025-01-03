@@ -28,8 +28,8 @@ export const constantRoutes: RouteRecordRaw[] = [
         component: () => import("@/views/employee/index.vue"),
       },
       {
-        path: "/employee/detail/:id",
-        component: () => import("@/views/employee/detail/index.vue")
+        path: "/employee/detail/:id?",
+        component: () => import("@/views/employee/form/index.vue")
       },
       {
         // 权限
