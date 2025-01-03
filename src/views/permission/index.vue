@@ -1,14 +1,12 @@
 <script setup lang="ts">
+import { useRequest } from '@/composables/use-request';
+import PermissionService from '@/services/permission.service';
 import type { PermissionVO } from '@/types/api/permission';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Button, Flex, Modal, Table, type TableProps } from 'ant-design-vue';
-import { h, ref, useId } from 'vue';
+import { h, ref } from 'vue';
 import PermissionModal from './components/permission-modal.vue';
 
-interface DataItem extends PermissionVO {
-  key: number | string
-  children?: DataItem[]
-}
 
 // 权限管理
 defineOptions({
@@ -40,22 +38,21 @@ const columns: TableProps['columns'] = [
   }
 ]
 
-const dataSource: DataItem[] = [
-  {
-    key: useId(),
-    id: Math.random(),
-    code: "department",
-    description: "组织架构",
-    name: "组织架构",
-    pid: 0,
-    type: 1,
-    enVisible: 1
-  }
-]
+const permissionList = ref<PermissionVO[]>([])
 
 const permissionModalStatus = ref<boolean>(false)
 const isEdit = ref<boolean>(false)
 const currentSelectedPermissionId = ref()
+
+
+const { run: getPermissionList } = useRequest(PermissionService.getPermissionList, {
+  onSuccess: ({ data }) => {
+    console.log("data:", data);
+    permissionList.value = data
+  }
+})
+
+
 
 const handleAddPermission = (permissionId: number) => {
   currentSelectedPermissionId.value = permissionId
@@ -84,7 +81,7 @@ const handleShowConfirmDelete = (permissionId: number) => {
     icon: h(ExclamationCircleOutlined),
     onOk: async () => await handleConfirmDeletePermission(permissionId),
   })
-}
+} 
 </script>
 
 <template>
@@ -92,7 +89,7 @@ const handleShowConfirmDelete = (permissionId: number) => {
     <div>
       <Button type="primary">添加权限</Button>
     </div>
-    <Table class="permission-table" :data-source="dataSource" :columns="columns" bordered>
+    <Table class="permission-table" :data-source="permissionList" :columns="columns" bordered>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'operations'">
           <Flex>
@@ -104,8 +101,8 @@ const handleShowConfirmDelete = (permissionId: number) => {
       </template>
     </Table>
 
-    <PermissionModal :permission-id="currentSelectedPermissionId" :is-edit="isEdit"
-      v-model:open="permissionModalStatus" />
+    <PermissionModal :permission-id="currentSelectedPermissionId" :is-edit="isEdit" v-model:open="permissionModalStatus"
+      :permission-list="permissionList" />
   </Flex>
 </template>
 

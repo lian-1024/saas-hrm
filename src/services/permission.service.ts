@@ -1,4 +1,4 @@
-import type { PermissionVO } from "@/types/api";
+import type { AddPermissionParams, PermissionVO } from "@/types/api";
 import { request } from "@/utils/request/instance";
 
 class PermissionService {
@@ -6,7 +6,12 @@ class PermissionService {
   static getPermissionList() {
     return request.get<PermissionVO[]>('/sys/permission')
   }
-  
+
+  static addPermission(data: AddPermissionParams) {
+    return request.post("/sys/permission", { data })
+  }
+
+
 
 }
 

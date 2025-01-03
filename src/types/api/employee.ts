@@ -142,5 +142,5 @@ export interface AddEmployeeParams {
   /**
    * 员工工号
    */
-  workNumber: string;
+  workNumber: string
 }

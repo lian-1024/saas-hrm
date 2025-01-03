@@ -3,9 +3,9 @@ import { request } from '@/utils/request/instance'
 
 
 class AuthService {
-  static login = (params: LoginParams) => {
+  static login = (data: LoginParams) => {
     return request.post<string>('/sys/login', {
-      params
+      data
     })
   }
 }
