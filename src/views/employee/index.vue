@@ -8,7 +8,7 @@ import EmployeeService from '@/services/employee.service';
 import type { PagingResponse } from '@/types/api';
 import type { EmployeeVO, PagingEmployeeListParams } from '@/types/api/employee';
 import { convertDepartmentToTree } from '@/utils/convert';
-import { type ButtonProps, type TableProps, type TreeProps, Button, Flex, InputSearch, Popconfirm, Table, Tree } from 'ant-design-vue';
+import { type ButtonProps, type TableProps, type TreeProps, Button, Flex, InputSearch, message, Popconfirm, Table, Tree } from 'ant-design-vue';
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
 import { reactive, ref } from 'vue';
 import RoleModal from './components/role-modal.vue';
@@ -113,17 +113,25 @@ const { loading: getEmployeeListLoading, run: getEmployeeList } = useRequest(() 
     employeeTableDataSource.total = data.total
   }
 })
-
+const { run: deleteEmployee } = useRequest(EmployeeService.deleteEmployee, {
+  manual: true,
+  onSuccess: () => {
+    message.success("删除员工成功")
+  },
+  onError: (error) => {
+    if (error.message) {
+      message.error(error.message)
+    } else {
+      message.error("删除员工失败")
+    }
+  }
+})
 
 const handleViewEmployee = (employeeId: number) => {
   console.log("employee id:", employeeId);
   router.push(`/employee/detail/${employeeId}`)
 }
 
-const handleDeleteByEmployeeId = (employeeId: number) => {
-  console.log("employee:", employeeId);
-
-}
 
 const handleSelectDepartment: TreeProps['onSelect'] = (selectedKeys) => {
   // 获取当前选中的部门 id
@@ -182,7 +190,7 @@ const handleSelectDepartment: TreeProps['onSelect'] = (selectedKeys) => {
             <Flex>
               <Button type="link" size="small" @click="handleViewEmployee(record.key)">查看</Button>
               <Button type="link" size="small" @click="openGiveRoleModal(record.key)">角色</Button>
-              <Popconfirm @confirm="handleDeleteByEmployeeId(record.key)">
+              <Popconfirm @confirm="deleteEmployee(record.key)" title="确定要删除吗？">
                 <Button type="link" size="small">删除</Button>
               </Popconfirm>
             </Flex>

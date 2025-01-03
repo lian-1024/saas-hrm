@@ -16,6 +16,10 @@ class EmployeeService {
   static giveEmployeeRole(params: GiveEmployeeRoleParams) {
     return request.put('/sys/user/assignRoles', params)
   }
+
+  static deleteEmployee(id: string) {
+    return request.delete(`/sys/user/${id}`)
+  }
 }
 
 
