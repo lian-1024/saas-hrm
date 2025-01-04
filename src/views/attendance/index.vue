@@ -2,6 +2,7 @@
 import { useRequest } from '@/composables/use-request'
 import { ATTENDANCE_STATUS, type AttendanceStatusKey } from '@/constants/attendance'
 import AttendanceService from '@/services/attendance.service'
+import DepartmentService from '@/services/department.service'
 import type { AttendancePagingParams, AttendanceRow } from '@/types/api'
 import type { EmployeeAttendanceVO } from '@/types/api/attendance'
 import { convertDistance } from '@/utils/convert'
@@ -16,10 +17,11 @@ import {
   Slider,
   Table,
   TypographyText,
+  TypographyTitle,
   type CheckboxGroupProps,
   type MenuProps,
   type SliderProps,
-  type TableProps,
+  type TableProps
 } from 'ant-design-vue'
 import { h, reactive, ref, watch } from 'vue'
 import ScopedMap from './components/map.vue'
@@ -32,12 +34,7 @@ defineOptions({
   name: 'AttendancePage',
 })
 
-const department: CheckboxGroupProps['options'] = [
-  {
-    label: '字节跳动',
-    value: 'ByteDance',
-  },
-]
+const departmentOptions = ref<CheckboxGroupProps['options']>([])
 
 const baseColumns: TableProps<EmployeeAttendanceVOWithKey>['columns'] = [
   {
@@ -137,11 +134,12 @@ const formatTableData = (records: AttendanceRow[]): EmployeeAttendanceVOWithKey[
     }
   })
 }
+const selectedDepartmentIds = ref<string[]>([])
 
 const attendancePagingParams = reactive<AttendancePagingParams>({
   page: 1,
   pagesize: 10,
-  deptID: "0"
+  deptID: selectedDepartmentIds.value.join(",")
 })
 
 const { run: getAttendanceList } = useRequest(AttendanceService.getAttendanceList, {
@@ -164,7 +162,7 @@ const { run: getAttendanceList } = useRequest(AttendanceService.getAttendanceLis
 const handleChangeTablePagination = (page: number, pageSize: number) => {
   attendancePagingParams.page = page
   attendancePagingParams.pagesize = pageSize
-  getAttendanceList({ ...attendancePagingParams, deptID: selectedDepartmentId.value })
+  getAttendanceList(attendancePagingParams)
 }
 
 // 生成日期列
@@ -213,6 +211,20 @@ watch(() => attendanceInfo.dayOfMonth, (newDays) => {
 })
 
 
+useRequest(DepartmentService.getCompanyDepartmentList, {
+  onSuccess: ({ data }) => {
+    departmentOptions.value = data.map((item) => ({
+      label: item.name,
+      value: item.id
+    }))
+  }
+})
+
+
+watch(() => selectedDepartmentIds.value, () => {
+  attendancePagingParams.deptID = selectedDepartmentIds.value.join(",")
+  getAttendanceList(attendancePagingParams)
+})
 
 
 </script>
@@ -229,9 +241,9 @@ watch(() => attendanceInfo.dayOfMonth, (newDays) => {
         <Button type="primary" @click="settingModalStatus = true">设置</Button>
       </Flex>
     </Flex>
-    <Flex class="attendance-middle" gap="small" align="center">
-      <TypographyText strong>部门:</TypographyText>
-      <CheckboxGroup :options="department" />
+    <Flex class="attendance-middle" gap="small" align="flex-start">
+      <TypographyTitle class="attendance-middle-label" :level="5">部门:</TypographyTitle>
+      <CheckboxGroup :options="departmentOptions" v-model:value="selectedDepartmentIds" />
     </Flex>
     <div class="attendance-table">
       <Table :pagination="{
@@ -293,8 +305,13 @@ watch(() => attendanceInfo.dayOfMonth, (newDays) => {
   }
 
   &-middle {
-    padding: var(--spacing-large);
+    padding-block: var(--spacing-large);
+    padding-inline: calc(var(--spacing-large) * 2);
     background-color: var(--color-background);
+
+    &-label {
+      min-width: max-content;
+    }
   }
 
   &-table {
