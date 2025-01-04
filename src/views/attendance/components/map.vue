@@ -6,6 +6,11 @@ import { computed, ref } from 'vue';
 defineOptions({
   name: "AttendanceScopedMap"
 })
+
+defineProps<{
+  scopedRadius: number,
+  scopedCenter: number[]
+}>()
 // 范围半径
 const scopedRadius = defineModel("scopedRadius", { default: 500 })
 const scopedCenter = defineModel("scopedCenter", { default: { lat: 39.91799, lng: 116.397027 } })

@@ -191,3 +191,37 @@ export interface AttendancePagingParams extends PagingQueryParams {
   deptID: string;
 }
 
+
+export interface CompanyVO {
+  /**
+   * 公司打卡地址
+   */
+  address: string;
+  /**
+   * 标识id
+   */
+  id: number;
+  /**
+   * 公司名称
+   */
+  name: string;
+  /**
+   * 公司联系电话
+   */
+  phone: string;
+  /**
+   * 经纬度-[经度, 纬度]
+   */
+  point: number[];
+  /**
+   * 公司打卡半径(单位米)
+   */
+  radius: number;
+}
+
+
+export interface UpdateCompanyParams {
+  list: CompanyVO[];
+}
+
+

@@ -5,27 +5,21 @@ import AttendanceService from '@/services/attendance.service'
 import DepartmentService from '@/services/department.service'
 import type { AttendancePagingParams, AttendanceRow } from '@/types/api'
 import type { EmployeeAttendanceVO } from '@/types/api/attendance'
-import { convertDistance } from '@/utils/convert'
-import { generateMenuItem } from '@/utils/generate-menu-item'
-import { CloseOutlined } from '@ant-design/icons-vue'
 import {
   Button,
   CheckboxGroup,
-  Drawer,
   Flex,
-  Menu,
-  Slider,
   Table,
   TypographyText,
   TypographyTitle,
+  message,
   type CheckboxGroupProps,
-  type MenuProps,
-  type SliderProps,
   type TableProps
 } from 'ant-design-vue'
 import { h, reactive, ref, watch } from 'vue'
-import ScopedMap from './components/map.vue'
+import CompanyDrawerCompanyDrawer from './components/drawer.vue'
 import SettingModal from './components/setting/modal.vue'
+
 interface EmployeeAttendanceVOWithKey extends EmployeeAttendanceVO {
   key: string | number | null
 }
@@ -83,22 +77,8 @@ const employeeDataSource = reactive({
 
 const drawerStatus = ref(false)
 const settingModalStatus = ref(false)
-const scopedRadius = ref(200)
 const selectedDepartmentId = ref<string>()
 
-const formatSliderTip: SliderProps['tipFormatter'] = (value = 0) =>
-  `${convertDistance(value)}内可打卡`
-
-const companyMenuItems = reactive([
-  generateMenuItem("ByteDance", "字节跳动"),
-  generateMenuItem("Tencent", "腾讯"),
-  generateMenuItem("Alibaba", "阿里巴巴"),
-])
-
-const handleSelectedCompany: MenuProps['onClick'] = (info) => {
-  console.log("selected:", info);
-  selectedDepartmentId.value = info.key.toString()
-}
 
 const attendanceInfo = reactive({
   month: 1,
@@ -221,6 +201,10 @@ useRequest(DepartmentService.getCompanyDepartmentList, {
 })
 
 
+
+
+
+
 watch(() => selectedDepartmentIds.value, () => {
   attendancePagingParams.deptID = selectedDepartmentIds.value.join(",")
   getAttendanceList(attendancePagingParams)
@@ -255,35 +239,7 @@ watch(() => selectedDepartmentIds.value, () => {
         showTotal: total => `共 ${total} 条数据`
       }" :columns="attendanceColumns" :data-source="employeeDataSource.rows" :scroll="{ x: 'max-content' }" bordered />
     </div>
-    <Drawer height="100vh" @close="drawerStatus = false" title="打卡范围设置" v-model:open="drawerStatus" placement="top"
-      :closable="false">
-      <template #extra>
-        <CloseOutlined />
-      </template>
-      <template #default>
-        <Flex class="h-full" gap="middle">
-          <div class="flex-1 h-full">
-            <ScopedMap :scoped-radius="scopedRadius" />
-          </div>
-          <Flex class="attendance-scope-right" vertical gap="middle">
-            <div class="attendance-scope-company-list flex-1">
-              <Menu v-model:active-key="selectedDepartmentId" :items="companyMenuItems"
-                @click="handleSelectedCompany" />
-            </div>
-            <div>
-              <TypographyText type="secondary">半径</TypographyText>
-              <Slider :max="1000" v-model:value="scopedRadius" :tip-formatter="formatSliderTip" />
-            </div>
-          </Flex>
-        </Flex>
-      </template>
-      <template #footer>
-        <Flex justify="end" gap="middle">
-          <Button>取消</Button>
-          <Button type="primary">批量保存</Button>
-        </Flex>
-      </template>
-    </Drawer>
+    <CompanyDrawerCompanyDrawer v-model:open="drawerStatus" />
     <SettingModal v-model:open="settingModalStatus" />
   </Flex>
 </template>
