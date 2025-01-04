@@ -34,3 +34,5 @@ export interface PermissionVO extends Permission { }
 
 
 export interface AddPermissionParams extends Permission { }
+
+export interface UpdatePermissionParams extends Permission { }

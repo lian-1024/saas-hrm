@@ -5,7 +5,7 @@ import { OpenStatus } from '@/constants/common';
 import PermissionService from '@/services/permission.service';
 import type { Permission, PermissionVO } from '@/types/api/permission';
 import { Button, Flex, Form, FormItem, Input, message, Switch, type FormInstance, type FormProps } from 'ant-design-vue';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 
 interface PermissionModalProps {
   permissionId: number
@@ -24,7 +24,7 @@ const permissionForm = reactive<Omit<Permission, 'id'>>({
   description: "",
   enVisible: 0,
   type: 0,
-  pid: 1
+  pid: props.permissionId
 })
 
 
@@ -33,8 +33,13 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 18 }
 
 const modalTitle = computed(() => props.isEdit ? "编辑权限点" : "新增权限点")
 
-const closeModal = () => modalStatus.value = false
+const closeModal = () => {
+  if (formRef.value) {
+    formRef.value.resetFields()
+  }
+  modalStatus.value = false
 
+}
 
 
 /**是否开启 */
@@ -50,6 +55,8 @@ const permissionFormRules: FormProps['rules'] = {
     {
       validator: async (_, value) => {
         return new Promise((resolve, reject) => {
+          if (props.isEdit) return resolve()
+
           const isExist = props.permissionList.filter(item => item.name === value).length > 0
           if (isExist) reject('权限名称已存在')
 
@@ -73,6 +80,7 @@ const permissionFormRules: FormProps['rules'] = {
     {
       validator: async (_, value) => {
         return new Promise((resolve, reject) => {
+          if (props.isEdit) return resolve()
           const isExist = props.permissionList.filter(item => item.code === value).length > 0
           if (isExist) reject('权限标识已存在')
           resolve();
@@ -89,15 +97,8 @@ const permissionFormRules: FormProps['rules'] = {
   ]
 
 };
-const handleEditPermission = () => {
-  console.log("Edit ID:", props.permissionId);
 
-  console.log("编辑");
-}
 
-const handleAddPermission = async () => {
-
-}
 
 const { run: addPermission } = useRequest(PermissionService.addPermission, {
   manual: true,
@@ -107,7 +108,23 @@ const { run: addPermission } = useRequest(PermissionService.addPermission, {
   }
 })
 
-const {} = useRequest(PermissionService)
+const { run: getPermissionById } = useRequest(PermissionService.getPermissionById, {
+  manual: true,
+  onSuccess: ({ data }) => {
+    Object.assign(permissionForm, data)
+  }
+})
+
+const { run: updatePermission } = useRequest(PermissionService.updatePermission, {
+  manual: true,
+  onSuccess: () => {
+    message.success("编辑权限点成功")
+    closeModal()
+  },
+  onError: (error) => {
+    message.error(error.message || "编辑权限点失败")
+  }
+})
 
 // confirm 
 const handleConfirm = async () => {
@@ -115,19 +132,23 @@ const handleConfirm = async () => {
   formRef.value.validate().then(async res => {
     console.log("res:", res);
     if (props.isEdit) {
-      handleEditPermission()
+      await updatePermission({ id: props.permissionId, ...res })
     } else {
-      await addPermission(res)
+      await addPermission({ ...res, pid: props.permissionId })
     }
   })
-
 }
 
-const handleCancel = () => modalStatus.value = false
+watch(() => modalStatus.value, (newVal) => {
+  if (newVal && props.isEdit) {
+    getPermissionById(props.permissionId)
+  }
+})
+
 </script>
 
 <template>
-  <QModal v-model:open="modalStatus" @cancel="handleCancel" :title="modalTitle" closable>
+  <QModal v-model:open="modalStatus" @cancel="closeModal" :title="modalTitle" closable>
     <Form ref="formRef" class="permission-form" :rules="permissionFormRules" :model="permissionForm"
       :label-col="formLabelCol" :wrapper-col="formWrapperCol">
       <FormItem label="权限名称" name="name">
@@ -147,7 +168,7 @@ const handleCancel = () => modalStatus.value = false
     <template #footer>
       <Flex justify="center" gap="small">
         <Button type="primary" @click="handleConfirm">确定</Button>
-        <Button @click="handleCancel">取消</Button>
+        <Button @click="closeModal">取消</Button>
       </Flex>
     </template>
   </QModal>

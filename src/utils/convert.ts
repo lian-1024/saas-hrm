@@ -14,6 +14,10 @@ interface PermissionTreeNode {
 }
 
 
+interface PermissionTableTreeNode extends PermissionVO {
+  children: PermissionTableTreeNode[]
+}
+
 export const convertDistance = (value: number): string => {
   switch (true) {
     case value < 1000:
@@ -74,3 +78,14 @@ export function convertDepartmentToCascader(departments: DepartmentItemVO[], par
     }));
 }
 
+
+export const convertPermissionToTableTree = (permissions: PermissionVO[], parentId: number = 0): PermissionTableTreeNode[] => {
+  return permissions
+    .filter(permission => permission.pid === parentId)
+    .map(permission => ({
+      ...permission,
+      children: convertPermissionToTableTree(permissions, permission.id)
+    }))
+    .filter(node => node !== null);
+
+}

@@ -1,4 +1,4 @@
-import type { AddPermissionParams, PermissionVO } from "@/types/api";
+import type { AddPermissionParams, PermissionVO, UpdatePermissionParams } from "@/types/api";
 import { request } from "@/utils/request/instance";
 
 class PermissionService {
@@ -11,8 +11,17 @@ class PermissionService {
     return request.post("/sys/permission", { data })
   }
 
+  static getPermissionById(id: number) {
+    return request.get<PermissionVO>(`/sys/permission/${id}`)
+  }
 
+  static deletePermissionById(id: number) {
+    return request.delete(`/sys/permission/${id}`)
+  }
 
+  static updatePermission({ id, ...data }: UpdatePermissionParams) {
+    return request.put(`/sys/permission/${id}`, { data })
+  }
 }
 
 export default PermissionService
