@@ -1,4 +1,4 @@
-import type {PagingResponse} from './common'
+import type { PagingQueryParams, PagingResponse } from './common';
 export interface EmployeeAttendanceVO {
   /**
    * 考勤记录, item 类型: object
@@ -186,3 +186,8 @@ export interface AttendanceRecord {
    */
   userId: number | null;
 }
+
+export interface AttendancePagingParams extends PagingQueryParams {
+  deptID: string;
+}
+

@@ -2,7 +2,7 @@
 import { useRequest } from '@/composables/use-request'
 import { ATTENDANCE_STATUS, type AttendanceStatusKey } from '@/constants/attendance'
 import AttendanceService from '@/services/attendance.service'
-import type { AttendanceRow } from '@/types/api'
+import type { AttendancePagingParams, AttendanceRow } from '@/types/api'
 import type { EmployeeAttendanceVO } from '@/types/api/attendance'
 import { convertDistance } from '@/utils/convert'
 import { generateMenuItem } from '@/utils/generate-menu-item'
@@ -24,7 +24,6 @@ import {
 import { h, reactive, ref, watch } from 'vue'
 import ScopedMap from './components/map.vue'
 import SettingModal from './components/setting/modal.vue'
-
 interface EmployeeAttendanceVOWithKey extends EmployeeAttendanceVO {
   key: string | number | null
 }
@@ -80,12 +79,15 @@ const baseColumns: TableProps<EmployeeAttendanceVOWithKey>['columns'] = [
 
 const attendanceColumns = ref<TableProps<EmployeeAttendanceVOWithKey>['columns']>(baseColumns)
 
-const employeeDataSource = ref<EmployeeAttendanceVOWithKey[]>([])
+const employeeDataSource = reactive({
+  total: 0,
+  rows: [] as EmployeeAttendanceVOWithKey[]
+})
 
 const drawerStatus = ref(false)
 const settingModalStatus = ref(false)
 const scopedRadius = ref(200)
-const selectedCompanyId = ref<string | number>("ByteDance")
+const selectedDepartmentId = ref<string>()
 
 const formatSliderTip: SliderProps['tipFormatter'] = (value = 0) =>
   `${convertDistance(value)}内可打卡`
@@ -98,7 +100,7 @@ const companyMenuItems = reactive([
 
 const handleSelectedCompany: MenuProps['onClick'] = (info) => {
   console.log("selected:", info);
-  selectedCompanyId.value = info.key
+  selectedDepartmentId.value = info.key.toString()
 }
 
 const attendanceInfo = reactive({
@@ -136,23 +138,40 @@ const formatTableData = (records: AttendanceRow[]): EmployeeAttendanceVOWithKey[
   })
 }
 
+const attendancePagingParams = reactive<AttendancePagingParams>({
+  page: 1,
+  pagesize: 10,
+  deptID: "0"
+})
+
 const { run: getAttendanceList } = useRequest(AttendanceService.getAttendanceList, {
   onSuccess: ({ data }) => {
     const { yearOfReport, monthOfReport, tobeTaskCount, data: { rows } } = data
 
-    attendanceInfo.month = monthOfReport
     attendanceInfo.tobeTaskCount = tobeTaskCount
     attendanceInfo.dayOfMonth = new Date(yearOfReport, monthOfReport, 0).getDate()
     attendanceInfo.attendanceRecord = rows
-
-    employeeDataSource.value = formatTableData(rows)
+    console.log("data:", data);
+    employeeDataSource.rows = formatTableData(rows)
+    employeeDataSource.total = data.data.total
   }
 })
+
+
+
+
+// 当分页发生变化时，重新获取员工列表
+const handleChangeTablePagination = (page: number, pageSize: number) => {
+  attendancePagingParams.page = page
+  attendancePagingParams.pagesize = pageSize
+  getAttendanceList({ ...attendancePagingParams, deptID: selectedDepartmentId.value })
+}
 
 // 生成日期列
 const generateDateColumns = (days: number, month: number) => {
   const dateColumns: TableProps<EmployeeAttendanceVOWithKey>['columns'] = []
 
+  // 循环生成日期列
   for (let day = 1; day <= days; day++) {
     dateColumns.push({
       title: `${month}/${day}`,
@@ -161,9 +180,21 @@ const generateDateColumns = (days: number, month: number) => {
       width: 80,
       align: 'center',
       customRender: ({ text }) => {
+        // 根据考勤状态生成颜色
         const status = ATTENDANCE_STATUS[text as AttendanceStatusKey]
         if (!status) return text
-        return h(TypographyText, { style: { color: status.color } }, status.text)
+        // 修改为返回 VNode 函数
+        return h(
+          TypographyText,
+          {
+            style: {
+              color: status.color
+            }
+          },
+          {
+            default: () => status.text
+          }
+        )
       }
     })
   }
@@ -180,6 +211,10 @@ watch(() => attendanceInfo.dayOfMonth, (newDays) => {
     ]
   }
 })
+
+
+
+
 </script>
 
 <template>
@@ -199,8 +234,14 @@ watch(() => attendanceInfo.dayOfMonth, (newDays) => {
       <CheckboxGroup :options="department" />
     </Flex>
     <div class="attendance-table">
-      <Table :columns="attendanceColumns" :data-source="employeeDataSource" :pagination="{ position: ['bottomCenter'] }"
-        :scroll="{ x: 'max-content' }" bordered />
+      <Table :pagination="{
+        position: ['bottomCenter'],
+        pageSize: attendancePagingParams.pagesize,
+        total: employeeDataSource.total,
+        current: attendancePagingParams.page,
+        onChange: handleChangeTablePagination,
+        showTotal: total => `共 ${total} 条数据`
+      }" :columns="attendanceColumns" :data-source="employeeDataSource.rows" :scroll="{ x: 'max-content' }" bordered />
     </div>
     <Drawer height="100vh" @close="drawerStatus = false" title="打卡范围设置" v-model:open="drawerStatus" placement="top"
       :closable="false">
@@ -214,7 +255,8 @@ watch(() => attendanceInfo.dayOfMonth, (newDays) => {
           </div>
           <Flex class="attendance-scope-right" vertical gap="middle">
             <div class="attendance-scope-company-list flex-1">
-              <Menu v-model:active-key="selectedCompanyId" :items="companyMenuItems" @click="handleSelectedCompany" />
+              <Menu v-model:active-key="selectedDepartmentId" :items="companyMenuItems"
+                @click="handleSelectedCompany" />
             </div>
             <div>
               <TypographyText type="secondary">半径</TypographyText>
