@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRequest } from '@/composables/use-request';
 import DepartmentService from '@/services/department.service';
-import { convertToTree } from '@/utils/tree';
+import { convertDepartmentToTree } from '@/utils/convert';
 import { DownOutlined } from '@ant-design/icons-vue';
 import { type MenuProps, type TreeProps, Dropdown, Flex, Menu, Modal, Tree, TypographyText, message } from 'ant-design-vue';
 import type { MenuItemType } from 'ant-design-vue/es/menu/src/interface';
@@ -109,7 +109,7 @@ const handleOperationClick = (info: MenuItemType, key: string | number) => {
 
 const { loading: getListLoading } = useRequest(DepartmentService.getCompanyDepartmentList, {
   onSuccess: (data) => {
-    departmentTree.value = convertToTree(data.data)
+    departmentTree.value = convertDepartmentToTree(data.data)
   }
 })
 
