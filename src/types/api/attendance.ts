@@ -362,3 +362,143 @@ export interface UpdateAttendanceSettingParams {
    */
   morningStartTime: string;
 }
+
+
+export interface LeaveSetting {
+  /**
+   * 公司id
+   */
+  companyId: string;
+  /**
+   * 部门id
+   */
+  departmentId: string;
+  /**
+   * 主键id
+   */
+  id: number;
+  /**
+   * 是否可用0不可用1可用
+   */
+  isEnable: number;
+  /**
+   * 请假类型, 年假 60000
+   * 事假 60100
+   * 病假 60200
+   * 婚假  60300
+   * 丧假 60400
+   * 产假  60500
+   * 奖励产假 60600
+   * 陪产假 60700
+   * 探亲假 60800
+   * 工伤假 60900
+   * 调休假 61000
+   * 产检假 61100
+   * 流产假 61200
+   * 长期病假 61300
+   */
+  leaveType: string;
+}
+
+
+export interface UpdateLeaveSettingParams {
+  /**
+   * 部门ID
+   */
+  departmentId: string;
+  /**
+   * 是否开启
+   */
+  isEnable: number;
+  /**
+   * 请假类型, 年假 60000
+   * 事假 60100
+   * 病假 60200
+   * 婚假  60300
+   * 丧假 60400
+   * 产假  60500
+   * 奖励产假 60600
+   * 陪产假 60700
+   * 探亲假 60800
+   * 工伤假 60900
+   * 调休假 61000
+   * 产检假 61100
+   * 流产假 61200
+   * 长期病假 61300
+   */
+  leaveType: string;
+  /**
+   * 请假类型名称
+   */
+  name: string;
+}
+
+
+export interface DeductionSetting {
+  /**
+   * 旷工天数
+   */
+  absenceDays: string;
+  /**
+   * 旷工次数上限
+   */
+  absenceTimesUpperLimt: string;
+  /**
+   * 公司id
+   */
+  companyId: number;
+  /**
+   * 扣款金额下限
+   */
+  dedAmonutLowerLimit: string;
+  /**
+   * 扣款金额上限
+   */
+  dedAmonutUpperLimit: string;
+  /**
+   * 考勤规则类型：5100，5200,5300, 51000:表示迟到扣款,
+   * 52000:表示早退扣款,
+   * 53000:表示旷工扣款
+   */
+  dedTypeCode: string;
+  /**
+   * 部门id
+   */
+  departmentId: number;
+  /**
+   * 罚款工资倍数
+   */
+  fineSalaryMultiples: string;
+  /**
+   * 主键id
+   */
+  id: number;
+  /**
+   * 是否旷工0不旷工1旷工
+   */
+  isAbsenteeism: number;
+  /**
+   * 是否可用 1开启 0关闭
+   */
+  isEnable: number;
+  /**
+   * 考勤规则名称
+   */
+  // name: string;
+  /**
+   * 时间段下限
+   */
+  periodLowerLimit: string;
+  /**
+   * 时间段上限
+   */
+  periodUpperLimit: string;
+  /**
+   * 次数下限
+   */
+  timesLowerLimit: string;
+  /**
+   * 次数上限
+   */
+  timesUpperLimit: string;
+}

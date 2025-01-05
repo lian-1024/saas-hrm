@@ -1,4 +1,4 @@
-import type { AttendanceSetting, UpdateAttendanceParams } from '@/types/api'
+import type { AttendanceSetting, DeductionSetting, LeaveSetting, UpdateAttendanceParams, UpdateLeaveSettingParams } from '@/types/api'
 import { request } from '@/utils/request/instance'
 
 class AttendanceSettingService {
@@ -8,6 +8,18 @@ class AttendanceSettingService {
 
   static updateAttendanceSetting(data: UpdateAttendanceParams) {
     return request.put("/cfg/atte", { data })
+  }
+
+  static getLeaveSettingByDepartmentId(departmentId: number) {
+    return request.get<LeaveSetting[]>("/cfg/leave/list", { params: { departmentId } })
+  }
+
+  static updateLeaveSetting(data: UpdateLeaveSettingParams) {
+    return request.post("/cfg/leave", { data })
+  }
+
+  static getDeductionSettingByDepartmentId(departmentId: number) {
+    return request.get<DeductionSetting[]>("/cfg/ded/list", { params: { departmentId } })
   }
 }
 

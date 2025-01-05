@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { useRequest } from '@/composables/use-request';
 import AttendanceSettingService from '@/services/attendance-setting.service';
-import DepartmentService from '@/services/department.service';
 import type { UpdateAttendanceSettingParams } from '@/types/api/attendance';
-import { DatePicker, Flex, Form, FormItem, message, Select, type FormInstance, type FormProps } from 'ant-design-vue';
+import { DatePicker, Flex, Form, FormItem, message, Select, type FormInstance, type FormProps, type SelectProps } from 'ant-design-vue';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 defineOptions({
@@ -11,9 +10,10 @@ defineOptions({
 })
 
 
+const props = defineProps<{
+  departmentOptions: SelectProps['options']
+}>()
 
-
-const departmentOptions = ref()
 
 const formRules: FormProps['rules'] = {
   departmentId: [
@@ -36,14 +36,7 @@ const formState = reactive<UpdateAttendanceSettingParams>({
 const formLabelCol: FormProps['labelCol'] = { span: 4 }
 const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
 
-const { run: getCompanyDepartmentList } = useRequest(DepartmentService.getCompanyDepartmentList, {
-  manual: true,
-  onSuccess: ({ data }) => {
 
-    departmentOptions.value = data.map((item) => ({ label: item.name, value: item.id }))
-    formState.companyId = data[0].id
-  }
-})
 
 const { run: getAttendanceSettingById } = useRequest(AttendanceSettingService.getAttendanceSettingById, {
   manual: true,
@@ -60,7 +53,7 @@ const { run: updateAttendanceSetting } = useRequest(AttendanceSettingService.upd
   onSuccess: () => {
     message.success("更新考勤设置成功");
     formRef.value?.resetFields()
-    
+
   },
   onError: (error) => {
     message.error("更新考勤设置失败")
@@ -74,9 +67,10 @@ const { run: updateAttendanceSetting } = useRequest(AttendanceSettingService.upd
 
 onMounted(async () => {
   try {
-    await getCompanyDepartmentList()
-
-    getAttendanceSettingById(formState.departmentId)
+    if (!props.departmentOptions) return
+    const departmentId = props.departmentOptions[0].value || 0
+    formState.departmentId = +departmentId
+    getAttendanceSettingById(departmentId)
   } catch {
     message.error("似乎有些小问题")
   }
