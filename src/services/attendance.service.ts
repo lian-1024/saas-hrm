@@ -1,4 +1,4 @@
-import type { AttendanceList, CompanyVO, PagingQueryParams, UpdateCompanyParams } from '@/types/api';
+import type { AttendanceAdtStatu, AttendanceList, CompanyVO, PagingQueryParams, UpdateAttendanceParams, UpdateCompanyParams } from '@/types/api';
 import { request } from '@/utils/request/instance';
 
 class AttendanceService {
@@ -14,6 +14,16 @@ class AttendanceService {
 
   static updateCompanyList(data: UpdateCompanyParams) {
     return request.put("/company/list", { data })
+  }
+
+
+  static updateAttendance(id: string, data: UpdateAttendanceParams) {
+    return request.put(`/attendances/${id}`, { data })
+  }
+
+  static getAttendancesAdtStatuList(userId?: string) {
+
+    return request.get<AttendanceAdtStatu[]>(`/attendances/adtStatu/list`, { params: { userId } })
   }
 }
 

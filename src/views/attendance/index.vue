@@ -19,6 +19,7 @@ import { h, reactive, ref, watch } from 'vue'
 import CompanyDrawerCompanyDrawer from './components/drawer.vue'
 import SettingModal from './components/setting/modal.vue'
 import TablePopover from './components/table-popover.vue'
+import UpdateAttendance from './components/update-attendance.vue'
 
 interface EmployeeAttendance extends EmployeeAttendanceVO {
   key: string | number | null
@@ -26,7 +27,7 @@ interface EmployeeAttendance extends EmployeeAttendanceVO {
 }
 
 defineOptions({
-  name: 'AttendancePage',
+  name: 'At,endancePage',
 })
 
 const departmentOptions = ref<CheckboxGroupProps['options']>([])
@@ -93,7 +94,7 @@ const attendanceInfo = reactive({
 const formatTableData = (records: AttendanceRow[]): EmployeeAttendance[] => {
   const { yearOfReport, monthOfReport } = attendanceInfo
   return records.map(record => {
-
+    console.log("record", record)
     const baseInfo = {
       key: record.id,
       id: record.id,
@@ -153,6 +154,17 @@ const handleChangeTablePagination = (page: number, pageSize: number) => {
   getAttendanceList(attendancePagingParams)
 }
 
+const updateModalOpenStatus = ref(false)
+
+
+const updateAttendanceProps = reactive({
+  day: '',
+  adtStatu: 0,
+  userId: 0,
+  departmentId: 0
+})
+
+
 // 生成日期列
 const generateDateColumns = (days: number) => {
   const dateColumns: TableProps<EmployeeAttendance>['columns'] = []
@@ -185,9 +197,21 @@ const generateDateColumns = (days: number) => {
           adtInTime: attendanceRecord?.adtInTime,
           adtOutTime: attendanceRecord?.adtOutTime,
           adtInPlace: attendanceRecord?.adtInPlace,
-          adtOutPlace: attendanceRecord?.adtOutPlace
+          adtOutPlace: attendanceRecord?.adtOutPlace,
+          onClick: () => {
+            // 在这里处理点击事件
+            updateAttendanceProps.userId = record.id ?? 0
+            updateAttendanceProps.day = day.toString()
+            updateAttendanceProps.adtStatu = text
+            updateAttendanceProps.departmentId = record.departmentId
+            console.log("update", updateAttendanceProps)
+
+            updateModalOpenStatus.value = true
+          }
         })
       },
+
+
     })
   }
 
@@ -225,6 +249,8 @@ watch(() => selectedDepartmentIds.value, () => {
 })
 
 
+
+
 </script>
 
 <template>
@@ -255,6 +281,9 @@ watch(() => selectedDepartmentIds.value, () => {
     </div>
     <CompanyDrawerCompanyDrawer v-model:open="drawerStatus" />
     <SettingModal v-model:open="settingModalStatus" />
+    <UpdateAttendance :day="updateAttendanceProps.day" :adtStatu="updateAttendanceProps.adtStatu"
+      :userId="updateAttendanceProps.userId" :departmentId="updateAttendanceProps.departmentId"
+      v-model:open="updateModalOpenStatus" @update="getAttendanceList(attendancePagingParams)" />
   </Flex>
 </template>
 

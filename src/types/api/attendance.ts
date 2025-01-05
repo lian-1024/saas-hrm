@@ -119,7 +119,8 @@ export interface AttendanceList {
    * 待处理的考勤数量
    */
   tobeTaskCount: number;
-  [property: string]: any;
+  yearOfReport: number
+
 }
 
 
@@ -233,3 +234,44 @@ export interface UpdateCompanyParams {
 }
 
 
+export interface UpdateAttendanceParams {
+  /**
+    * 考勤状态, 1正常 2旷工 3迟到 4早退 5外出 6出差 7年假 8事假 9病假 10婚假 11丧假 12产假 13奖励产假 14陪产假 15探亲假 16工伤假 17调休
+    * 18产检假 19流产假 20长期病假 21测试架 22补签
+    */
+  adtStatu: string;
+  /**
+   * 考勤日期
+   */
+  day: string;
+  /**
+   * 部门ID
+   */
+  departmentId: string;
+  /**
+   * 用户ID
+   */
+  userId: string;
+}
+
+
+
+
+export interface AttendanceAdtStatu {
+  /**
+   * 考勤状态, 考勤状态 1正常 2旷工 3迟到 4早退 5外出 6出差 7年假 8事假 9病假 10婚假 11丧假 12产假 13奖励产假 14陪产假 15探亲假 16工伤假
+   * 17调休 18产检假 19流产假 20长期病假 21补签 22休息
+   */
+  adtStatu: string;
+  /**
+   * 考勤状态名称, 考勤状态 1正常 2旷工 3迟到 4早退 5外出 6出差 7年假 8事假 9病假 10婚假 11丧假 12产假 13奖励产假 14陪产假 15探亲假 16工伤假
+   * 17调休 18产检假 19流产假 20长期病假 21补签 22休息
+   */
+  adtStatuName: string;
+  /**
+   * 部门名称
+   */
+  departmentName: string;
+
+  userId: string;
+}
