@@ -502,3 +502,56 @@ export interface DeductionSetting {
    */
   timesUpperLimit: string;
 }
+
+
+export interface UpdateDeductionSettingParams {
+  /**
+    * 旷工天数
+    */
+  absenceDays: string;
+  /**
+   * 旷工次数上限
+   */
+  absenceTimesUpperLimt: string;
+  /**
+   * 扣款金额下限
+   */
+  dedAmonutLowerLimit: string;
+  /**
+   * 扣款金额上限
+   */
+  dedAmonutUpperLimit: string;
+  /**
+   * 扣款类型:5100,5200,5300, 扣款类型，5100：迟到扣款，5200：早退扣钱，5300：旷工扣钱
+   */
+  dedTypeCode: string;
+  /**
+   * 部门ID
+   */
+  departmentId: number;
+  /**
+   * 罚款工资倍数
+   */
+  fineSalaryMultiples: string;
+  /**
+   * 是否可用 1开启 0 关闭
+   */
+  isEnable: string;
+  /**
+   * 迟到时间段下限
+   */
+  periodLowerLimit: string;
+  /**
+   * 迟到时间段上限
+   */
+  periodUpperLimit: string;
+  /**
+   * 次数下限
+   */
+  timesLowerLimit: string;
+  /**
+   * 次数上限
+   */
+  timesUpperLimit: string;
+}
+

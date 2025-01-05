@@ -3,7 +3,7 @@ import { useRequest } from '@/composables/use-request';
 import { EnableStatus } from '@/constants/common';
 import AttendanceSettingService from '@/services/attendance-setting.service';
 import type { DeductionSetting } from '@/types/api';
-import { type SelectProps, Col, Flex, Form, FormItem, Input, Row, Select, Switch, TypographyText } from 'ant-design-vue';
+import { Col, Flex, Form, FormItem, Input, message, Row, Select, Switch, TypographyText, type SelectProps } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
 defineOptions({
   name: "TabDeduction"
@@ -25,9 +25,6 @@ const props = defineProps<{
   departmentOptions: SelectProps['options']
 }>()
 
-const handleSubmit = () => {
-  console.log("submit TabDeduction");
-}
 
 const selectedDepartmentId = ref()
 const deductionSetting = ref<DeductionSetting[]>([])
@@ -40,9 +37,6 @@ const { run: getDeductionSettingByDepartmentId } = useRequest(AttendanceSettingS
   }
 })
 
-defineExpose({
-  handleSubmit
-})
 
 onMounted(() => {
   if (!props.departmentOptions) return
@@ -61,6 +55,26 @@ const handleSwitchChange = (checked: boolean, record: DeductionSetting) => {
 }
 
 const deductionText = (deductionName: string) => DeductionNameMap[deductionName as DeductionName]
+
+
+
+const { run: updateDeductionSetting } = useRequest(AttendanceSettingService.updateDeductionSetting, {
+  manual: true,
+  onSuccess: () => {
+    message.success('更新考勤规则成功')
+  },
+  onError: () => {
+    message.error('更新考勤规则失败')
+  }
+})
+
+const handleSubmit = async () => {
+  await updateDeductionSetting(deductionSetting.value)
+}
+
+defineExpose({
+  handleSubmit
+})
 
 </script>
 
