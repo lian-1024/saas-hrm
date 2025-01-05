@@ -275,3 +275,90 @@ export interface AttendanceAdtStatu {
 
   userId: string;
 }
+
+
+/**
+ * 考勤配置
+ */
+export interface AttendanceSetting {
+  /**
+   * 下午下班时间
+   */
+  afternoonEndTime: string;
+  /**
+   * 下午上班时间
+   */
+  afternoonStartTime: string;
+  /**
+   * 企业id
+   */
+  companyId: string;
+  /**
+   * 创建人
+   */
+  createBy?: null | string;
+  /**
+   * 创建时间
+   */
+  createDate?: null | string;
+  /**
+   * 部门ID
+   */
+  departmentId: string;
+  /**
+   * 配置ID
+   */
+  id: string;
+  /**
+   * 上午下班时间
+   */
+  morningEndTime: string;
+  /**
+   * 上午上班时间
+   */
+  morningStartTime: string;
+  /**
+   * 备注
+   */
+  remarks?: null | string;
+  /**
+   * 修改人
+   */
+  updateBy?: null | string;
+  /**
+   * 修改时间, format: date-time
+   */
+  updateDate?: null | string;
+}
+
+
+export interface UpdateAttendanceSettingParams {
+  /**
+   * 下午下班时间
+   */
+  afternoonEndTime: string;
+  /**
+   * 下午上班时间
+   */
+  afternoonStartTime: string;
+  /**
+   * 企业id
+   */
+  companyId: number;
+  /**
+   * 部门ID
+   */
+  departmentId: number;
+  /**
+   * 配置ID
+   */
+  id?: number | null;
+  /**
+   * 上午下班时间
+   */
+  morningEndTime: string;
+  /**
+   * 上午上班时间
+   */
+  morningStartTime: string;
+}

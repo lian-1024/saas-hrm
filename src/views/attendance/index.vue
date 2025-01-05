@@ -94,7 +94,6 @@ const attendanceInfo = reactive({
 const formatTableData = (records: AttendanceRow[]): EmployeeAttendance[] => {
   const { yearOfReport, monthOfReport } = attendanceInfo
   return records.map(record => {
-    console.log("record", record)
     const baseInfo = {
       key: record.id,
       id: record.id,
@@ -138,7 +137,6 @@ const { run: getAttendanceList } = useRequest(AttendanceService.getAttendanceLis
     attendanceInfo.attendanceRecord = rows
     attendanceInfo.yearOfReport = yearOfReport
     attendanceInfo.monthOfReport = monthOfReport
-    console.log("data:", data);
     employeeDataSource.rows = formatTableData(rows)
     employeeDataSource.total = data.data.total
   }
@@ -242,8 +240,8 @@ useRequest(DepartmentService.getCompanyDepartmentList, {
 
 
 watch(() => selectedDepartmentIds.value, () => {
-  attendancePagingParams.deptID = selectedDepartmentIds.value.join(",")
-  getAttendanceList(attendancePagingParams)
+  const deptID = selectedDepartmentIds.value.join(",")
+  getAttendanceList(deptID)
 })
 
 

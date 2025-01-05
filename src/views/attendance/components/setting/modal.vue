@@ -64,7 +64,7 @@ const setComponentRef = (el: any, pane: string) => {
 }
 
 // 确认保存
-const handleConfirm = () => {
+const handleConfirm = async () => {
   // 获取当前选中的tab
   const currentTab = activeKey.value
   const refs = {
@@ -78,7 +78,8 @@ const handleConfirm = () => {
 
   // 调用当前选中的tab的handleSubmit方法
   if (currentRef?.value?.handleSubmit) {
-    currentRef.value.handleSubmit()
+    await currentRef.value.handleSubmit()
+    modalStatus.value = false
   }
 }
 </script>
