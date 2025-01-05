@@ -66,9 +66,6 @@ watch(() => props.userId, (newValue) => {
 })
 
 const handleConfirm = () => {
-  // TODO: 调用更新考勤状态的接口
-  // openStatus.value = false
-  console.log("selectedStatus", selectedStatus.value)
   updateAttendance(props.userId, {
     adtStatu: selectedStatus.value,
     day: dayjs(props.day).format('YYYYMMDD'),

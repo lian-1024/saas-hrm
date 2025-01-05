@@ -201,11 +201,9 @@ const generateDateColumns = (days: number) => {
           onClick: () => {
             // 在这里处理点击事件
             updateAttendanceProps.userId = record.id ?? 0
-            updateAttendanceProps.day = day.toString()
+            updateAttendanceProps.day = date
             updateAttendanceProps.adtStatu = text
             updateAttendanceProps.departmentId = record.departmentId
-            console.log("update", updateAttendanceProps)
-
             updateModalOpenStatus.value = true
           }
         })

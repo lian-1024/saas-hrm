@@ -246,7 +246,6 @@ watch(() => pagingEmployeeParams.departmentId, (newVal) => {
     </Flex>
   </Flex>
 </template>
-
 <style scoped lang="less">
 .employee {
   &-left {

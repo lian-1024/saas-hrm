@@ -107,7 +107,7 @@ const { run: addPermission } = useRequest(PermissionService.addPermission, {
   }
 })
 
-const {} = useRequest(PermissionService)
+const { } = useRequest(PermissionService)
 
 // confirm 
 const handleConfirm = async () => {
