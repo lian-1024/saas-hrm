@@ -3,7 +3,7 @@ import { useRequest } from '@/composables/use-request'
 import { ATTENDANCE_STATUS, type AttendanceStatusKey } from '@/constants/attendance'
 import AttendanceService from '@/services/attendance.service'
 import DepartmentService from '@/services/department.service'
-import type { AttendancePagingParams, AttendanceRow } from '@/types/api'
+import type { AttendancePagingParams, AttendanceRecord, AttendanceRow } from '@/types/api'
 import type { EmployeeAttendanceVO } from '@/types/api/attendance'
 import {
   Button,
@@ -12,16 +12,17 @@ import {
   Table,
   TypographyText,
   TypographyTitle,
-  message,
   type CheckboxGroupProps,
   type TableProps
 } from 'ant-design-vue'
 import { h, reactive, ref, watch } from 'vue'
 import CompanyDrawerCompanyDrawer from './components/drawer.vue'
 import SettingModal from './components/setting/modal.vue'
+import TablePopover from './components/table-popover.vue'
 
-interface EmployeeAttendanceVOWithKey extends EmployeeAttendanceVO {
+interface EmployeeAttendance extends EmployeeAttendanceVO {
   key: string | number | null
+  attendanceRecord: AttendanceRecord[]
 }
 
 defineOptions({
@@ -30,7 +31,7 @@ defineOptions({
 
 const departmentOptions = ref<CheckboxGroupProps['options']>([])
 
-const baseColumns: TableProps<EmployeeAttendanceVOWithKey>['columns'] = [
+const baseColumns: TableProps<EmployeeAttendance>['columns'] = [
   {
     title: '序号',
     dataIndex: 'key',
@@ -68,11 +69,11 @@ const baseColumns: TableProps<EmployeeAttendanceVOWithKey>['columns'] = [
   },
 ]
 
-const attendanceColumns = ref<TableProps<EmployeeAttendanceVOWithKey>['columns']>(baseColumns)
+const attendanceColumns = ref<TableProps<EmployeeAttendance>['columns']>(baseColumns)
 
 const employeeDataSource = reactive({
   total: 0,
-  rows: [] as EmployeeAttendanceVOWithKey[]
+  rows: [] as EmployeeAttendance[]
 })
 
 const drawerStatus = ref(false)
@@ -81,15 +82,18 @@ const selectedDepartmentId = ref<string>()
 
 
 const attendanceInfo = reactive({
-  month: 1,
+  monthOfReport: 1,
   tobeTaskCount: 0,
   dayOfMonth: 0,
+  yearOfReport: 2026,
   attendanceRecord: [] as AttendanceRow[]
 })
 
 // 格式化表格数据
-const formatTableData = (records: AttendanceRow[]): EmployeeAttendanceVOWithKey[] => {
+const formatTableData = (records: AttendanceRow[]): EmployeeAttendance[] => {
+  const { yearOfReport, monthOfReport } = attendanceInfo
   return records.map(record => {
+
     const baseInfo = {
       key: record.id,
       id: record.id,
@@ -98,13 +102,15 @@ const formatTableData = (records: AttendanceRow[]): EmployeeAttendanceVOWithKey[
       mobile: record.mobile,
       username: record.username,
       workNumber: record.workNumber,
+      attendanceRecord: record.attendanceRecord
     }
+
 
     const attendanceData = record.attendanceRecord.reduce((acc, curr) => {
       const day = parseInt(curr.day.slice(6))
       return {
         ...acc,
-        [`day${day}`]: curr.adtStatu
+        [`${yearOfReport}/${monthOfReport}/${day}`]: curr.adtStatu
       }
     }, {} as Record<string, number>)
 
@@ -129,6 +135,8 @@ const { run: getAttendanceList } = useRequest(AttendanceService.getAttendanceLis
     attendanceInfo.tobeTaskCount = tobeTaskCount
     attendanceInfo.dayOfMonth = new Date(yearOfReport, monthOfReport, 0).getDate()
     attendanceInfo.attendanceRecord = rows
+    attendanceInfo.yearOfReport = yearOfReport
+    attendanceInfo.monthOfReport = monthOfReport
     console.log("data:", data);
     employeeDataSource.rows = formatTableData(rows)
     employeeDataSource.total = data.data.total
@@ -146,34 +154,40 @@ const handleChangeTablePagination = (page: number, pageSize: number) => {
 }
 
 // 生成日期列
-const generateDateColumns = (days: number, month: number) => {
-  const dateColumns: TableProps<EmployeeAttendanceVOWithKey>['columns'] = []
+const generateDateColumns = (days: number) => {
+  const dateColumns: TableProps<EmployeeAttendance>['columns'] = []
+
+  const { yearOfReport, monthOfReport } = attendanceInfo
 
   // 循环生成日期列
   for (let day = 1; day <= days; day++) {
+
+    const date = `${yearOfReport}/${monthOfReport}/${day}`
     dateColumns.push({
-      title: `${month}/${day}`,
-      dataIndex: `day${day}`,
-      key: `day${day}`,
+      title: `${monthOfReport}/${day}`,
+      dataIndex: date,
+      key: date,
       width: 80,
       align: 'center',
-      customRender: ({ text }) => {
-        // 根据考勤状态生成颜色
+      customRender: ({ text, record }) => {
+        const attendanceRecord = record.attendanceRecord.find(item => item.day === date)
         const status = ATTENDANCE_STATUS[text as AttendanceStatusKey]
+
         if (!status) return text
-        // 修改为返回 VNode 函数
-        return h(
-          TypographyText,
-          {
-            style: {
-              color: status.color
-            }
-          },
-          {
-            default: () => status.text
-          }
-        )
-      }
+
+        // popover
+        return h(TablePopover, {
+          username: record.username,
+          yearOfReport: yearOfReport,
+          monthOfReport: monthOfReport,
+          dayOfReport: day,
+          adtStatu: text,
+          adtInTime: attendanceRecord?.adtInTime,
+          adtOutTime: attendanceRecord?.adtOutTime,
+          adtInPlace: attendanceRecord?.adtInPlace,
+          adtOutPlace: attendanceRecord?.adtOutPlace
+        })
+      },
     })
   }
 
@@ -185,7 +199,7 @@ watch(() => attendanceInfo.dayOfMonth, (newDays) => {
   if (newDays > 0) {
     attendanceColumns.value = [
       ...baseColumns,
-      ...generateDateColumns(newDays, attendanceInfo.month)
+      ...generateDateColumns(newDays)
     ]
   }
 })

@@ -152,7 +152,6 @@ export interface AttendanceRow {
    * 工号
    */
   workNumber: string;
-  [property: string]: any;
 }
 
 export interface AttendanceRecord {
@@ -169,6 +168,15 @@ export interface AttendanceRecord {
    * 17调休 18产检假 19流产假 20长期病假 21补签 22休息
    */
   adtStatu: number;
+  /**
+   * 上班打卡地点
+   */
+  adtInPlace: string
+  /**
+   * 下班打卡地点
+   */
+  adtOutPlace: string
+
   /**
    * 考勤日期
    */
