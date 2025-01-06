@@ -16,6 +16,25 @@ const { run: getExportTemplate } = useRequest(EmployeeService.getExportTemplate,
   }
 })
 
+
+// 自定义上传方法
+const handleUploadFile: UploadProps['customRequest'] = (options) => {
+  const { file, onSuccess, onError } = options
+
+  // 构建 FormData
+  const formData = new FormData()
+  formData.append('file', file)
+
+  // 调用上传服务
+  uploadEmployee(formData)
+    .then((res) => {
+      onSuccess?.(res)
+    })
+    .catch((err) => {
+      onError?.(err)
+    })
+}
+
 // 上传配置
 const uploadProps: UploadProps = {
   name: 'file',
@@ -35,7 +54,7 @@ const uploadProps: UploadProps = {
 }
 
 // 处理上传
-const { run: uploadEmployee, loading } = useRequest(EmployeeService.uploadEmployee, {
+const { run: uploadEmployee, loading: uploadEmployeeLoading } = useRequest(EmployeeService.uploadEmployee, {
   manual: true,
   onSuccess: () => {
     message.success("导入成功")
@@ -46,23 +65,6 @@ const { run: uploadEmployee, loading } = useRequest(EmployeeService.uploadEmploy
   }
 })
 
-// 自定义上传方法
-function handleUploadFile(options: Parameters<Required<UploadProps>['customRequest']>[0]) {
-  const { file, onSuccess, onError } = options
-
-  // 构建 FormData
-  const formData = new FormData()
-  formData.append('file', file)
-
-  // 调用上传服务
-  uploadEmployee(formData)
-    .then((res) => {
-      onSuccess?.(res)
-    })
-    .catch((err) => {
-      onError?.(err)
-    })
-}
 
 // 取消上传
 const handleCancel = () => {
@@ -88,7 +90,7 @@ const handleCancel = () => {
     <template #footer>
       <Flex justify="flex-end" gap="small">
         <Button @click="handleCancel">取消</Button>
-        <Button type="primary" :loading="loading">确定</Button>
+        <Button type="primary" :loading="uploadEmployeeLoading">确定</Button>
       </Flex>
     </template>
   </QModal>

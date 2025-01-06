@@ -2,9 +2,10 @@
 import EmployeeService from '@/modules/employee/services/employee.service';
 import RoleService from '@/modules/role/services/role.service';
 import { QModal } from '@/shared/components/base/modal';
+import { QSpin } from '@/shared/components/base/spin';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { Button, CheckboxGroup, Flex, message, type CheckboxGroupProps } from 'ant-design-vue';
-import { ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 defineOptions({
   name: 'RoleModal'
 })
@@ -26,7 +27,7 @@ const roleOptions = ref<CheckboxGroupProps['options']>([])
 
 
 // 获取角色列表
-const { data: roleList, run: getRoleList } = useRequest(RoleService.getRoleListEnable, {
+const { loading: getRoleListEnableLoading } = useRequest(RoleService.getRoleListEnable, {
   onSuccess: ({ data }) => {
     roleOptions.value = data.map(item => ({
       value: item.id,
@@ -36,14 +37,14 @@ const { data: roleList, run: getRoleList } = useRequest(RoleService.getRoleListE
 })
 
 // 获取员工详情
-const { data: employeeDetail, run: getEmployeeDetail } = useRequest(EmployeeService.getEmployeeDetailById, {
+const { run: getEmployeeDetail, loading: getEmployeeDetailLoading } = useRequest(EmployeeService.getEmployeeDetailById, {
   manual: true,
   onSuccess: ({ data }) => {
     selectedRole.value = data.roleIds
   }
 })
 
-const { run: giveEmployeeRole } = useRequest(EmployeeService.giveEmployeeRole, {
+const { run: giveEmployeeRole, loading: giveEmployeeRoleLoading } = useRequest(EmployeeService.giveEmployeeRole, {
   manual: true,
   onSuccess: () => {
     message.success("分配角色成功")
@@ -82,13 +83,18 @@ watchEffect(() => {
     getEmployeeDetail(props.employeeId)
   }
 })
+
+const loading = computed(() => getRoleListEnableLoading.value || getEmployeeDetailLoading.value)
 </script>
 
 <template>
-  <QModal :width="800" mask v-model:open="modalStatus" title="分配角色" @cancel="handleCancel">
-    <div class="modal-content">
-      <CheckboxGroup v-model:value="selectedRole" :options="roleOptions" />
-    </div>
+  <QModal :confirm-loading="giveEmployeeRoleLoading" :width="800" mask v-model:open="modalStatus" title="分配角色"
+    @cancel="handleCancel">
+    <QSpin :spinning="loading">
+      <div class="modal-content">
+        <CheckboxGroup v-model:value="selectedRole" :options="roleOptions" />
+      </div>
+    </QSpin>
     <template #footer>
       <Flex gap="small" justify="center">
         <Button type="primary" @click="handleConfirm">确定</Button>

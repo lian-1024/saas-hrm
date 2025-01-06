@@ -3,13 +3,14 @@ import router from '@/core/router';
 import DepartmentService from '@/modules/department/services/department.service';
 import { FormOfEmployment } from '@/modules/employee/constants';
 import EmployeeService from '@/modules/employee/services/employee.service';
+import type { UpdateWithAddEmployeeParams } from '@/modules/employee/types';
+import { QSpin } from '@/shared/components/base/spin';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { DepartmentTree } from '@/shared/utils/convert/department';
-import type { UpdateWithAddEmployeeParams } from '@/modules/employee/types';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import type { CascaderProps, FormInstance } from 'ant-design-vue';
 import { Button, Cascader, Col, DatePicker, Flex, Form, FormItem, Input, message, Row, Select, Upload, type FormProps, type UploadProps } from 'ant-design-vue';
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 defineOptions({
   name: "EmployeeDetailPage"
@@ -67,23 +68,23 @@ function getBase64(img: Blob, callback: (base64Url: string) => void) {
 }
 
 const fileList = ref([]);
-const loading = ref<boolean>(false);
+const uploadLoading = ref<boolean>(false);
 const imageUrl = ref<string>('');
 
 const handleChange: UploadProps['onChange'] = (info) => {
   if (info.file.status === 'uploading') {
-    loading.value = true;
+    uploadLoading.value = true;
     return;
   }
   if (info.file.status === 'done') {
     // Get this url from response in real world.
     getBase64(info.file.originFileObj!, (base64Url: string) => {
       imageUrl.value = base64Url;
-      loading.value = false;
+      uploadLoading.value = false;
     });
   }
   if (info.file.status === 'error') {
-    loading.value = false;
+    uploadLoading.value = false;
     message.error('upload error');
   }
 };
@@ -101,7 +102,7 @@ const beforeUpload: UploadProps['beforeUpload'] = (file) => {
 };
 
 
-const { run: getEmployeeDetailById } = useRequest(EmployeeService.getEmployeeDetailById, {
+const { run: getEmployeeDetailById, loading: getEmployeeDetailByIdLoading } = useRequest(EmployeeService.getEmployeeDetailById, {
   manual: true,
   onSuccess: ({ data }) => {
     console.log(data)
@@ -109,27 +110,31 @@ const { run: getEmployeeDetailById } = useRequest(EmployeeService.getEmployeeDet
     selectedDepartmentId.value = [data.departmentId.toString()]
   }
 })
-const { data: departmentList } = useRequest(DepartmentService.getCompanyDepartmentList, {
+const { data: departmentList, loading: getCompanyDepartmentListLoading } = useRequest(DepartmentService.getCompanyDepartmentList, {
   onSuccess: ({ data }) => {
     console.log(data)
     cascaderOptions.value = DepartmentTree.toCascader(data)
   }
 })
 
-const { run: updateEmployeeDetail } = useRequest(EmployeeService.updateEmployeeDetail, {
+const loading = computed(() => getEmployeeDetailByIdLoading.value || getCompanyDepartmentListLoading.value)
+
+const { run: updateEmployeeDetail, loading: updateEmployeeDetailLoading } = useRequest(EmployeeService.updateEmployeeDetail, {
   manual: true,
   onSuccess: () => {
     message.success('更新成功')
   }
 })
 
-const { run: addEmployee } = useRequest(EmployeeService.addEmployee, {
+const { run: addEmployee, loading: addEmployeeLoading } = useRequest(EmployeeService.addEmployee, {
   manual: true,
   onSuccess: () => {
     message.success('新增成功')
     router.push('/employee')
   }
 })
+
+const confirmLoading = computed(() => updateEmployeeDetailLoading.value || addEmployeeLoading.value)
 
 
 
@@ -167,55 +172,58 @@ onMounted(() => {
 </script>
 
 <template>
-  <Flex class="detail-wrapper h-full" justify="star">
-    <Form ref="formRef" :rules="formRules" class="detail-form" :model="formState" :label-col="formLabelCol"
-      :wrapper-col="formWrapperCol">
-      <FormItem label="姓名" name="username">
-        <Input v-model:value="formState.username" placeholder="请输入员工姓名全称" />
-      </FormItem>
-      <FormItem label="工号" name="workNumber">
-        <Input v-model:value="formState.workNumber" disabled />
-      </FormItem>
-      <FormItem label="手机" name="mobile">
-        <Input v-model:value="formState.mobile" :disabled="!!route.params.id" />
-      </FormItem>
-      <FormItem label="部门" name="departmentId">
-        <Cascader :display-render="({ labels }) => labels.join('-')" placeholder="请选择部门" :options="cascaderOptions"
-          v-model:value="selectedDepartmentId" />
-      </FormItem>
-      <FormItem label="聘用形式" name="formOfEmployment">
-        <!-- <Input v-model:value="formState.formOfEmployment" /> -->
-        <Select placeholder="请选择聘用形式" v-model:value="formState.formOfEmployment" :options="formOfEmploymentOptions" />
-      </FormItem>
-      <FormItem label="入职时间" name="timeOfEntry">
-        <DatePicker value-format="YYYY-MM-DD" v-model:value="formState.timeOfEntry" />
-      </FormItem>
-      <FormItem label="转正时间" name="correctionTime">
-        <DatePicker value-format="YYYY-MM-DD" v-model:value="formState.correctionTime" />
-      </FormItem>
-      <FormItem label="员工头像" name="staffPhoto">
-        <Upload v-model:file-list="fileList" name="avatar" list-type="picture-card" class="avatar-uploader"
-          :show-upload-list="false" action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          :before-upload="beforeUpload" @change="handleChange">
-          <img v-if="formState.staffPhoto" :src="formState.staffPhoto" alt="avatar" />
-          <div v-else>
-            <LoadingOutlined v-if="loading"></LoadingOutlined>
-            <PlusOutlined v-else></PlusOutlined>
-            <div class="ant-upload-text">Upload</div>
-          </div>
-        </Upload>
-      </FormItem>
-      <FormItem>
-        <Row>
-          <Col :span="12" />
-          <Col>
-          <Button type="primary" @click="handleSave">保存{{ route.params.id && "更新" }}</Button>
-          </Col>
+  <QSpin :spinning="loading">
+    <Flex class="detail-wrapper h-full" justify="star">
+      <Form ref="formRef" :rules="formRules" class="detail-form" :model="formState" :label-col="formLabelCol"
+        :wrapper-col="formWrapperCol">
+        <FormItem label="姓名" name="username">
+          <Input v-model:value="formState.username" placeholder="请输入员工姓名全称" />
+        </FormItem>
+        <FormItem label="工号" name="workNumber">
+          <Input v-model:value="formState.workNumber" disabled />
+        </FormItem>
+        <FormItem label="手机" name="mobile">
+          <Input v-model:value="formState.mobile" :disabled="!!route.params.id" />
+        </FormItem>
+        <FormItem label="部门" name="departmentId">
+          <Cascader :display-render="({ labels }) => labels.join('-')" placeholder="请选择部门" :options="cascaderOptions"
+            v-model:value="selectedDepartmentId" />
+        </FormItem>
+        <FormItem label="聘用形式" name="formOfEmployment">
+          <!-- <Input v-model:value="formState.formOfEmployment" /> -->
+          <Select placeholder="请选择聘用形式" v-model:value="formState.formOfEmployment" :options="formOfEmploymentOptions" />
+        </FormItem>
+        <FormItem label="入职时间" name="timeOfEntry">
+          <DatePicker value-format="YYYY-MM-DD" v-model:value="formState.timeOfEntry" />
+        </FormItem>
+        <FormItem label="转正时间" name="correctionTime">
+          <DatePicker value-format="YYYY-MM-DD" v-model:value="formState.correctionTime" />
+        </FormItem>
+        <FormItem label="员工头像" name="staffPhoto">
+          <Upload v-model:file-list="fileList" name="avatar" list-type="picture-card" class="avatar-uploader"
+            :show-upload-list="false" action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            :before-upload="beforeUpload" @change="handleChange">
+            <img v-if="formState.staffPhoto" :src="formState.staffPhoto" alt="avatar" />
+            <div v-else>
+              <LoadingOutlined v-if="uploadLoading"></LoadingOutlined>
+              <PlusOutlined v-else></PlusOutlined>
+              <div class="ant-upload-text">Upload</div>
+            </div>
+          </Upload>
+        </FormItem>
+        <FormItem>
+          <Row>
+            <Col :span="12" />
+            <Col>
+            <Button type="primary" @click="handleSave" :loading="confirmLoading">保存{{ route.params.id && "更新"
+              }}</Button>
+            </Col>
 
-        </Row>
-      </FormItem>
-    </Form>
-  </Flex>
+          </Row>
+        </FormItem>
+      </Form>
+    </Flex>
+  </QSpin>
 </template>
 
 <style scoped lang="less">
