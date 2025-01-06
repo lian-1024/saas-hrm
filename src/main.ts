@@ -6,10 +6,10 @@ import router from '@/core/router/index';
 import App from './App.vue';
 
 // style
+import '@/core/plugins/dayjs';
 import '@/shared/styles/index.less';
 import 'ant-design-vue/dist/reset.css';
-
-import '@/core/plugins/dayjs';
+import 'nprogress/nprogress.css';
 
 const bootstrap = async () => {
   const app = createApp(App)

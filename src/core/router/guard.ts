@@ -1,11 +1,12 @@
 import { useUserStore } from '@/core/stores'
+import NProgress from 'nprogress'
 import type { Router } from 'vue-router'
-
 // 白名单路由 - 不需要登录就可以访问
 const whiteList = ['/sign-in']
 
-export const setupGlobalRouteGuard = (router: Router) => {
+export const registerGlobalRouteGuard = (router: Router) => {
   router.beforeEach((to, from, next) => {
+    NProgress.start()
     const userStore = useUserStore()
     const token = userStore.token
     console.log("user store token:", token);
@@ -29,5 +30,10 @@ export const setupGlobalRouteGuard = (router: Router) => {
         next({ path: '/sign-in', query: { redirect: to.fullPath } })
       }
     }
+  })
+
+
+  router.afterEach(() => {
+    NProgress.done()
   })
 }

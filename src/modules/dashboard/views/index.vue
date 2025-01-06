@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DashboardService from '@/modules/dashboard/services/dashboard.service'
 import type { DashboardDeclareVO, DashboardNoticeVO } from '@/modules/dashboard/types';
-import { QCalendar } from '@/shared/components/base/Calendar'
+import { QCalendar } from '@/shared/components/base/calendar'
 import { useRequest } from '@/shared/composables/use-request/use-request'
 import type { HomeDataVO } from '@/modules/dashboard/types';
 import type { FlexProps } from 'ant-design-vue'
