@@ -52,13 +52,13 @@ onMounted(async () => {
         </Flex>
       </div>
     </Flex>
-    <Flex wrap="wrap">
+    <div class="dashboard-todo-wrapper">
       <Flex vertical class="dashboard-todo-item" v-for="item in dashboardInfoList" :key="item.title">
         <TypographyText type="secondary" class="dashboard-todo-title">{{ item.title }}</TypographyText>
         <!-- <TypographyTitle :level="1">999</TypographyTitle> -->
         <CountTo :start-val="0" :end-val="item.total" :duration="3000" class="dashboard-todo-total" />
       </Flex>
-    </Flex>
+    </div>
   </Flex>
 </template>
 
@@ -79,11 +79,15 @@ onMounted(async () => {
   }
 
   &-todo {
-
+    &-wrapper {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(2, 80px);
+      justify-content: space-between;
+    }
 
     &-item {
       width: max-content;
-      padding: var(--font-size-middle);
     }
 
     &-title {

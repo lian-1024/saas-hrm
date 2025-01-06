@@ -10,11 +10,11 @@ defineOptions({
 <template>
   <LayoutContent class="layout-content">
     <!-- router view -->
-    <Transition name="fade" mode="out-in">
-      <RouterView v-slot="{ Component }" :key="$route.path">
-        <component :is="Component" />
-      </RouterView>
-    </Transition>
+    <RouterView v-slot="{ Component, route }">
+      <Transition name="fade" mode="out-in">
+        <component :is="Component" :key="route.path" />
+      </Transition>
+    </RouterView>
   </LayoutContent>
 </template>
 
