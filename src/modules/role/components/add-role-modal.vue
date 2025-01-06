@@ -3,15 +3,16 @@ import RoleService from '@/modules/role/services/role.service';
 import type { AddRoleParams } from '@/modules/role/types';
 import { QModal } from '@/shared/components/base/modal/index';
 import { useRequest } from '@/shared/composables/use-request/use-request';
-import { Button, Flex, Form, FormItem, Input, message, Switch, Textarea, type FormInstance, type FormProps, type SwitchProps } from 'ant-design-vue';
-import { computed, ref } from 'vue';
+import { EnableStatus } from '@/shared/constants/status';
+import { Button, Flex, Form, FormItem, Input, message, Switch, Textarea, type FormInstance, type FormProps } from 'ant-design-vue';
+import { computed, reactive, ref } from 'vue';
 
 const modalStatus = defineModel('open', { default: false })
-const emits = defineEmits(['confirm'])
+const emits = defineEmits(['success'])
 const formRef = ref<FormInstance>();
-const formData = ref<AddRoleParams>({
+const formData = reactive<AddRoleParams>({
   name: '',
-  state: 0,
+  state: EnableStatus.DISABLED,
   description: ''
 });
 const rules: FormProps['rules'] = {
@@ -25,7 +26,7 @@ const { run: addRole, loading: addRoleLoading } = useRequest(RoleService.addRole
   manual: true,
   onSuccess: () => {
     message.success("新增角色成功")
-    emits("confirm")
+    emits("success")
   },
   onError: (error) => {
     if (error.message) {
@@ -35,25 +36,27 @@ const { run: addRole, loading: addRoleLoading } = useRequest(RoleService.addRole
     }
   },
   onFinally: () => {
-    closeModal()
     formRef.value?.resetFields()
-    formData.value.state = 0
+    formData.state = EnableStatus.DISABLED
+    closeModal()
   }
 })
 
 
 function handleSubmit() {
   formRef.value?.validate().then(async () => {
-    addRole(formData.value)
+    addRole(formData)
   })
 }
 
 
-const handleSwitchChange: SwitchProps['onChange'] = (checked) => {
-  formData.value.state = checked ? 1 : 0
-}
 
-const isEnable = computed(() => formData.value.state === 1)
+
+const isEnable = computed({
+  get: () => Boolean(+formData.state),
+  set: (newValue) => formData.state = newValue ? EnableStatus.ENABLED : EnableStatus.DISABLED
+})
+
 
 const labelCol: FormProps['labelCol'] = { span: 6 }
 </script>
@@ -65,7 +68,7 @@ const labelCol: FormProps['labelCol'] = { span: 6 }
           <Input v-model:value="formData.name" placeholder="请输入角色名称" />
         </FormItem>
         <FormItem label="启用">
-          <Switch :checked="isEnable" @change="handleSwitchChange" />
+          <Switch v-model:checked="isEnable" />
         </FormItem>
         <FormItem label="角色描述" name="description">
           <Textarea v-model:value="formData.description" placeholder="请输入角色描述" />

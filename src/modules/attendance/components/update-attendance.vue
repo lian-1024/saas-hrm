@@ -2,7 +2,7 @@
 import dayjs from '@/core/plugins/dayjs'
 import AttendanceService from '@/modules/attendance/services/attendance.service'
 import type { AttendanceAdtStatu } from '@/modules/attendance/types'
-import { QModal } from '@/shared/components/base/Modal'
+import { QModal } from '@/shared/components/base/modal'
 import { useRequest } from '@/shared/composables/use-request/use-request'
 import { Button, message, Radio, Space, TypographyText, type RadioGroupProps } from 'ant-design-vue'
 import { ref, watch } from 'vue'
