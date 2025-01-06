@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import DepartmentService from '@/modules/department/services/department.service';
+import { QSpin } from '@/shared/components/base/spin';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { DepartmentTree } from '@/shared/utils/convert/department';
 import { DownOutlined } from '@ant-design/icons-vue';
@@ -43,6 +44,12 @@ const handleOpenModal = (type: "add" | "edit", departmentId?: string) => {
   selectedDepartmentId.value = departmentId
 }
 
+const { loading: getListLoading, run: getCompanyDepartmentList } = useRequest(DepartmentService.getCompanyDepartmentList, {
+  onSuccess: (data) => {
+    departmentTree.value = DepartmentTree.toTree(data.data)
+  }
+})
+
 const handleAddSubDepartment = (key: string | number) => {
   console.log("添加子部门:", key)
   handleOpenModal("add", key.toString())
@@ -60,6 +67,7 @@ const { run: deleteDepartment, loading: deleteDepartmentLoading } = useRequest(D
   manual: true,
   onSuccess: () => {
     message.success("删除部门成功")
+    getCompanyDepartmentList()
   },
   onError: (error) => {
     if (error.message) {
@@ -102,48 +110,46 @@ const operationClickMap = {
 }
 
 const handleOperationClick = (info: MenuItemType, key: string | number) => {
-  console.log("点击菜单", info)
   // 触发对应的事件
   operationClickMap[info.key as keyof typeof operationClickMap](key)
 }
 
-const { loading: getListLoading } = useRequest(DepartmentService.getCompanyDepartmentList, {
-  onSuccess: (data) => {
-    departmentTree.value = DepartmentTree.toTree(data.data)
-  }
-})
+
 
 
 </script>
 
 
 <template>
-  <div class="department-wrapper">
-    <Tree v-if="!getListLoading" class="department-tree" default-expand-all draggable block-node
-      :tree-data="departmentTree">
-      <template #title="{ title, managerName, key }">
-        <Flex class="department-tree-item" justify="space-between">
-          <TypographyText>{{ title }}</TypographyText>
-          <Flex gap="middle">
-            <TypographyText type="secondary">{{ managerName }}</TypographyText>
-            <Dropdown :overlay="h(Menu, { items: operations, onClick: (info) => handleOperationClick(info, key) })"
-              :arrow="{ pointAtCenter: true }">
-              <TypographyText type="secondary">
-                操作
-                <DownOutlined />
-              </TypographyText>
-            </Dropdown>
+  <Flex class="department-wrapper" justify="center" align="center">
+    <QSpin :spinning="getListLoading" wrapper-class-name="flex-1">
+      <Tree v-if="!getListLoading" class="department-tree" default-expand-all draggable block-node
+        :tree-data="departmentTree">
+        <template #title="{ title, managerName, key }">
+          <Flex class="department-tree-item" justify="space-between">
+            <TypographyText>{{ title }}</TypographyText>
+            <Flex gap="middle">
+              <TypographyText type="secondary">{{ managerName }}</TypographyText>
+              <Dropdown :overlay="h(Menu, { items: operations, onClick: (info) => handleOperationClick(info, key) })"
+                :arrow="{ pointAtCenter: true }">
+                <TypographyText type="secondary">
+                  操作
+                  <DownOutlined />
+                </TypographyText>
+              </Dropdown>
+            </Flex>
           </Flex>
-        </Flex>
-      </template>
-    </Tree>
+        </template>
+      </Tree>
+    </QSpin>
     <DepartmentModal v-model:open="modalOpen" :type="modalType" :department-id="selectedDepartmentId" />
-  </div>
+  </Flex>
 </template>
 
 <style lang="less" scoped>
 .department {
   &-wrapper {
+
     height: 100%;
     padding-block: calc(var(--spacing-large) * 2);
     padding-inline: calc(var(--spacing-large) + 10%);

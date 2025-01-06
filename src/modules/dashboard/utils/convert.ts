@@ -1,31 +1,33 @@
-import type { DashboardInfoItem } from '../types/index';
-import type { HomeDataVO } from '../types/index';
+import { DASHBOARD_TITLES } from '../constants/index';
+import type { DashboardInfoItem, HomeDataVO } from '../types/index';
+
 // 转换数据
 export const convertDashboardInfoList = (data: HomeDataVO): DashboardInfoItem[] => {
+  const { employeeTotal, regularEmployeeTotal, contractSignTotal, toBeEmployed, toBeConfirmed, interfaceAccessTotal } = data;
   return [
     {
-      title: "组织总人数",
-      total: data.employeeTotal
+      title: DASHBOARD_TITLES.TOTAL_EMPLOYEES,
+      total: employeeTotal
     },
     {
-      title: "正式员工",
-      total: data.regularEmployeeTotal
+      title: DASHBOARD_TITLES.REGULAR_EMPLOYEES,
+      total: regularEmployeeTotal
     },
     {
-      title: "合同待签署",
-      total: data.contractSignTotal
+      title: DASHBOARD_TITLES.PENDING_CONTRACTS,
+      total: contractSignTotal
     },
     {
-      title: "待入职",
-      total: data.toBeEmployed
+      title: DASHBOARD_TITLES.PENDING_ONBOARD,
+      total: toBeEmployed
     },
     {
-      title: "本月待转正",
-      total: data.toBeConfirmed
+      title: DASHBOARD_TITLES.PENDING_CONVERSION,
+      total: toBeConfirmed
     },
     {
-      title: "接口总访问量",
-      total: data.interfaceAccessTotal
+      title: DASHBOARD_TITLES.TOTAL_API_CALLS,
+      total: interfaceAccessTotal
     }
   ]
 }

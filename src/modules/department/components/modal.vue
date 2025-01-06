@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import DepartmentService from '@/modules/department/services/department.service';
-import { QModal } from '@/shared/components/base/Modal';
-import { useRequest } from '@/shared/composables/use-request/use-request';
 import type { DepartmentDetailVO } from '@/modules/department/types';
+import { QModal } from '@/shared/components/base/modal';
+import { QSpin } from '@/shared/components/base/spin';
+import { useRequest } from '@/shared/composables/use-request/use-request';
 import type { FormInstance, FormProps, SelectProps } from 'ant-design-vue';
 import { Button, Flex, Form, Input, Select, message } from 'ant-design-vue';
 import { computed, ref, watch } from 'vue';
@@ -42,6 +43,8 @@ const formData = ref<DepartmentDetailVO>({
 });
 
 
+const emits = defineEmits(['success'])
+
 // 计算标题
 const computedTitle = computed(() => {
   return props.type === "add" ? "添加子部门" : "编辑部门";
@@ -72,6 +75,7 @@ const { run: addDepartment, loading: addLoading } = useRequest(DepartmentService
   onSuccess: (data) => {
     console.log(data);
     message.success("新增部门成功")
+    emits('success')
   },
   onError: (error) => {
     if (error.message) {
@@ -83,7 +87,7 @@ const { run: addDepartment, loading: addLoading } = useRequest(DepartmentService
   onFinally: () => closeModal()
 })
 
-useRequest(DepartmentService.getDepartmentManagerList, {
+const { loading: getDepartmentManagerListLoading } = useRequest(DepartmentService.getDepartmentManagerList, {
   onSuccess: ({ data }) => {
     departmentManagerList.value = data.map(item => ({
       label: item.username,
@@ -92,7 +96,7 @@ useRequest(DepartmentService.getDepartmentManagerList, {
   }
 })
 
-const { run: getDepartmentDetail, } = useRequest(DepartmentService.getDepartmentDetail, {
+const { run: getDepartmentDetail, loading: getDepartmentDetailLoading } = useRequest(DepartmentService.getDepartmentDetail, {
   manual: true,
   onSuccess: ({ data }) => {
     formData.value = data
@@ -103,6 +107,7 @@ const { run: updateDepartment, loading: updateDepartmentLoading } = useRequest(D
   manual: true,
   onSuccess: (data) => {
     message.success("编辑部门成功")
+    emits('success')
   },
   onError: (error) => {
     if (error.message) {
@@ -166,36 +171,40 @@ defineExpose({
 const formLabelCol: FormProps['labelCol'] = { span: 6 }
 const formWrapperCol: FormProps['wrapperCol'] = { span: 18 }
 
-const loading = computed(() => addLoading.value)
+
+const loading = computed(() => getDepartmentDetailLoading.value || getDepartmentManagerListLoading.value || updateDepartmentLoading.value || addLoading.value)
 </script>
 
 <template>
   <QModal :width="600" :open="openStatus" @cancel="closeModal" :title="computedTitle" closable mask
     :maskClosable="false">
-    <div class="department-modal">
-      <Form ref="formRef" :model="formData" :rules="formRules" :label-col="formLabelCol" :wrapper-col="formWrapperCol">
-        <Form.Item label="部门名称" name="name">
-          <Input v-model:value="formData.name" placeholder="请输入部门名称" :maxLength="10" show-count />
-        </Form.Item>
+    <QSpin :spinning="loading">
+      <div class="department-modal">
+        <Form ref="formRef" :model="formData" :rules="formRules" :label-col="formLabelCol"
+          :wrapper-col="formWrapperCol">
+          <Form.Item label="部门名称" name="name">
+            <Input v-model:value="formData.name" placeholder="请输入部门名称" :maxLength="10" show-count />
+          </Form.Item>
 
-        <Form.Item label="部门编码" name="code">
-          <Input v-model:value="formData.code" placeholder="请输入部门编码" :maxLength="10" show-count />
-        </Form.Item>
+          <Form.Item label="部门编码" name="code">
+            <Input v-model:value="formData.code" placeholder="请输入部门编码" :maxLength="10" show-count />
+          </Form.Item>
 
-        <Form.Item label="部门负责人" name="managerId">
-          <Select placeholder="请选择部门负责人" v-model:value="formData.managerId" :options="departmentManagerList" />
-        </Form.Item>
+          <Form.Item label="部门负责人" name="managerId">
+            <Select placeholder="请选择部门负责人" v-model:value="formData.managerId" :options="departmentManagerList" />
+          </Form.Item>
 
-        <Form.Item label="部门介绍" name="introduce">
-          <Input.TextArea v-model:value="formData.introduce" placeholder="请输入部门介绍" :maxLength="100"
-            :auto-size="{ minRows: 3, maxRows: 5 }" show-count />
-        </Form.Item>
-      </Form>
-    </div>
+          <Form.Item label="部门介绍" name="introduce">
+            <Input.TextArea v-model:value="formData.introduce" placeholder="请输入部门介绍" :maxLength="100"
+              :auto-size="{ minRows: 3, maxRows: 5 }" show-count />
+          </Form.Item>
+        </Form>
+      </div>
+    </QSpin>
 
     <template #footer>
       <Flex justify="center">
-        <Button type="primary" @click="handleSubmit" :loading="loading">确定</Button>
+        <Button type="primary" @click="handleSubmit" :loading="addLoading">确定</Button>
         <Button @click="closeModal">取消</Button>
       </Flex>
     </template>
