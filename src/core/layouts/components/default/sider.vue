@@ -10,7 +10,7 @@ defineOptions({
   name: "QLayoutSider"
 })
 
-const collapsed = defineModel<boolean>("collapsed")
+const collapsed = defineModel<boolean>("collapsed", { default: false })
 // current selected keys
 const selectedKeys = ref<string[]>(['1'])
 
@@ -21,7 +21,7 @@ const handleClickMenuItem: MenuProps['onClick'] = ({ key }) => {
 </script>
 
 <template>
-  <LayoutSider class="layout-sider" v-model:collapsed="collapsed" :trigger="null" collapsible>
+  <LayoutSider width="150" class="layout-sider" v-model:collapsed="collapsed" :trigger="null" collapsible>
     <!-- layout menu -->
     <QLogo />
     <!-- layout menu -->

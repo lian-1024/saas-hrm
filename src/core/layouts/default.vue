@@ -10,11 +10,13 @@ defineOptions({
 })
 
 // collapsed status
-const collapsed = ref<boolean>(false);
+const collapsed = ref<boolean>(true);
 
 
 // change collapsed status
 const handleChangeCollapsed = (status?: boolean) => {
+  console.log("status", status);
+
   if (status !== undefined) {
     collapsed.value = status
   } else {

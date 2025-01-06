@@ -22,6 +22,7 @@ defineOptions({
   display: flex;
   justify-content: center;
   padding-block: var(--spacing-small);
+  padding-top: var(--spacing-middle);
 
   .logo {
     width: 100%;

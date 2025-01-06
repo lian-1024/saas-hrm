@@ -9,7 +9,7 @@ defineOptions({
 const emits = defineEmits<{
   changeCollapsed: [collapsed?: boolean];
 }>();
-const collapsed = defineModel("collapsed");
+const collapsed = defineModel("collapsed", { default: false });
 
 
 const LayoutHeaderFlex: FlexProps = {
