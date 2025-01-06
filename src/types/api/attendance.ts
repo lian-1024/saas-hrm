@@ -555,3 +555,159 @@ export interface UpdateDeductionSettingParams {
   timesUpperLimit: string;
 }
 
+/**
+ * 报文数据
+ */
+export interface OverTimeSetting {
+  /**
+   * 调休假
+   */
+  dayOffConfigs: DayOffConfigs;
+  /**
+   * 其他加班打卡
+   */
+  extraDutyConfig: ExtraDutyConfig;
+  /**
+   * 加班规则list
+   */
+  extraDutyRuleList: ExtraDutyRuleList[];
+  [property: string]: any;
+}
+
+/**
+ * 调休假
+ */
+export interface DayOffConfigs {
+  /**
+   * 部门id
+   */
+  departmentId: number;
+  /**
+   * id
+   */
+  id: number;
+  /**
+   * 最晚有效期
+   */
+  latestEffectDate: string;
+  /**
+   * 请假最小单位（天最小0.5）
+   */
+  unit: string;
+  [property: string]: any;
+}
+
+/**
+ * 其他加班打卡
+ */
+export interface ExtraDutyConfig {
+  /**
+   * 部门id
+   */
+  departmentId: number;
+  /**
+   * id
+   */
+  id: number;
+  /**
+   * 是否打卡验证
+   */
+  isClock: number;
+  /**
+   * 是否开启补偿0不开启1开启
+   */
+  isCompensationint: number;
+  /**
+   * 每日标准工作时长，单位小时, 默认8个小时
+   */
+  workHoursDay: number;
+}
+
+export interface ExtraDutyRuleList {
+  /**
+   * 部门id
+   */
+  departmentId: number;
+  /**
+   * id
+   */
+  id: number;
+  /**
+   * 是否可用0不可用1可用
+   */
+  isEnable: number;
+  /**
+   * 是否调休假0不 1开启调休假
+   */
+  isTimeOff: number;
+  /**
+   * 规则
+   */
+  rule: string;
+  /**
+   * 结束时间
+   */
+  ruleEndTime: string;
+  /**
+   * 开始时间
+   */
+  ruleStartTime: string;
+}
+
+
+export interface UpdateOverTimeSettingParams {
+  /**
+   * 部门id
+   */
+  departmentId: number;
+  /**
+   * 是否打卡验证0不开启1开启
+   */
+  isClock: number;
+  /**
+   * 是否开启补偿0不开启1开启
+   */
+  isCompensationint: number;
+  /**
+   * 调休假最晚有效期
+   */
+  latestEffectDate: string;
+  /**
+   * 加班规则集合
+   */
+  rules: OverTimeRule[];
+  /**
+   * 请假最小单位 1天
+   */
+  unit: string;
+}
+
+/**
+ * 加班规则
+ */
+export interface OverTimeRule {
+  /**
+   * 部门id
+   */
+  departmentId: number;
+  /**
+   * 是否允许申请加班0开启1开启
+   */
+  isEnable: number;
+  /**
+   * 是否换调休假0不开启1开启
+   */
+  isTimeOff: number;
+  /**
+   * 规则
+   */
+  rule: string;
+  /**
+   * 结束时间
+   */
+  ruleEndTime: string;
+  /**
+   * 开始时间
+   */
+  ruleStartTime: string;
+}

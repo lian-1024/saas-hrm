@@ -1,4 +1,4 @@
-import type { AttendanceSetting, DeductionSetting, LeaveSetting, UpdateAttendanceParams, UpdateDeductionSettingParams, UpdateLeaveSettingParams } from '@/types/api'
+import type { AttendanceSetting, DeductionSetting, LeaveSetting, OverTimeSetting, UpdateAttendanceParams, UpdateDeductionSettingParams, UpdateLeaveSettingParams, UpdateOverTimeSettingParams } from '@/types/api'
 import { request } from '@/utils/request/instance'
 
 class AttendanceSettingService {
@@ -24,6 +24,14 @@ class AttendanceSettingService {
 
   static updateDeductionSetting(data: UpdateDeductionSettingParams) {
     return request.post("/cfg/deduction", { data })
+  }
+
+  static getOverTimeSettingByDepartmentId(departmentId: number) {
+    return request.get<OverTimeSetting>("/cfg/extDuty/item", { params: { departmentId } })
+  }
+
+  static updateOverTimeSetting(data: UpdateOverTimeSettingParams) {
+    return request.put("/cfg/extDuty", { data })
   }
 }
 

@@ -112,7 +112,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <QModal closable mask v-model:open="modalStatus" title="设置" :destroyOnClose="true">
+  <QModal :width="800" closable mask v-model:open="modalStatus" title="设置" :destroyOnClose="true">
     <Tabs v-model:activeKey="activeKey">
       <TabPane v-for="pane in tabOptions" :key="pane.key" :tab="pane.title">
         <component :departmentOptions="departmentOptions" :is="pane.pane" :ref="(el) => setComponentRef(el, pane.key)">
