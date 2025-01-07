@@ -7,7 +7,7 @@ import { PermissionTree } from '@/shared/utils/convert/permission';
 import type { PermissionTableTreeNode } from '@/shared/utils/convert/types';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Button, Flex, message, Modal, Table, type TableProps } from 'ant-design-vue';
-import { h, ref } from 'vue';
+import { h, onMounted, ref } from 'vue';
 // 权限管理
 defineOptions({
   name: "PermissionPage"
@@ -45,6 +45,7 @@ const currentSelectedPermissionId = ref()
 
 
 const { run: getPermissionList, loading: getPermissionListLoading } = useRequest(PermissionService.getPermissionList, {
+  manual: true,
   onSuccess: ({ data }) => {
     permissionTree.value = PermissionTree.convertPermissionToTableTree(data)
   }
@@ -91,13 +92,17 @@ const handleShowConfirmDelete = (permissionId: number) => {
       }
     },
   })
-} 
+}
+
+onMounted(async () => {
+  await getPermissionList()
+})
 </script>
 
 <template>
   <Flex class="permission-wrapper h-full" vertical gap="middle">
     <div>
-      <Button type="primary">添加权限</Button>
+      <Button type="primary" @click="handleAddPermission(0)">添加权限</Button>
     </div>
     <QSpin :spinning="getPermissionListLoading">
       <Table :pagination="false" class="permission-table" :data-source="permissionTree" :columns="columns"

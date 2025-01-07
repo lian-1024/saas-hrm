@@ -10,7 +10,7 @@ import { EnableStatusMap } from '@/shared/constants/status';
 import type { PagingQueryParams, PagingResponse } from '@/shared/types';
 import { Button, Flex, Input, message, Popconfirm, Switch, Table, Tag, Textarea, TypographyLink, TypographyText, type PaginationProps, type TablePaginationConfig, type TableProps } from 'ant-design-vue';
 import { cloneDeep } from 'lodash-es';
-import { computed, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 // 角色管理
 defineOptions({
   name: "RolePage"
@@ -68,6 +68,7 @@ const addRoleModalStatus = ref(false)
 const editableData = reactive<Record<string, RoleItemVO>>({})
 
 const { run: getRoleList, loading: getRoleListLoading } = useRequest(() => RoleService.getRoleList(pagingQueryParams), {
+  manual: true,
   onSuccess: ({ data }) => {
     roleTableDataSource.value = data
     console.log("roleTableDataSource:", roleTableDataSource.value);
@@ -182,6 +183,10 @@ const handleConfirmAddRole = () => {
 }
 
 const roleIsEnable = computed(() => (id: number | string) => editableData[id]?.state === 1)
+
+onMounted(async () => {
+  await getRoleList()
+})
 </script>
 
 <template>
@@ -255,7 +260,7 @@ const roleIsEnable = computed(() => (id: number | string) => editableData[id]?.s
 <style scoped lang="less">
 .role {
   &-wrapper {
-
+    height: 100%;
     padding: var(--spacing-middle);
     background-color: var(--color-background);
   }

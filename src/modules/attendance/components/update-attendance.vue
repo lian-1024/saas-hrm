@@ -3,8 +3,9 @@ import dayjs from '@/core/plugins/dayjs'
 import AttendanceService from '@/modules/attendance/services/attendance.service'
 import type { AttendanceAdtStatu } from '@/modules/attendance/types'
 import { QModal } from '@/shared/components/base/modal'
+import { QSkeleton } from '@/shared/components/base/skeleton'
 import { useRequest } from '@/shared/composables/use-request/use-request'
-import { Button, message, Radio, Space, TypographyText, type RadioGroupProps } from 'ant-design-vue'
+import { Button, message, Radio, Space, TypographyText } from 'ant-design-vue'
 import { ref, watch } from 'vue'
 
 const props = defineProps<{
@@ -22,7 +23,7 @@ const selectedStatus = ref(0)
 watch(() => props.adtStatu, (newValue) => {
   selectedStatus.value = newValue
 })
-const statusRadioList = ref<RadioGroupProps['options']>([])
+const statusRadioList = ref<{ label: string, value: number }[]>([])
 
 // 将考勤状态列表扁平化
 const flatAttendanceAdtStatusList = (data: AttendanceAdtStatu[]) => {
@@ -36,7 +37,7 @@ const flatAttendanceAdtStatusList = (data: AttendanceAdtStatu[]) => {
 }
 
 // 获取考勤状态列表
-const { run: getAttendancesAdtStatuList } = useRequest(AttendanceService.getAttendancesAdtStatuList, {
+const { run: getAttendancesAdtStatuList, loading: getAttendancesAdtStatuListLoading } = useRequest(AttendanceService.getAttendancesAdtStatuList, {
   manual: true,
   onSuccess: ({ data }) => {
     statusRadioList.value = flatAttendanceAdtStatusList(data)
@@ -45,7 +46,7 @@ const { run: getAttendancesAdtStatuList } = useRequest(AttendanceService.getAtte
 })
 
 
-const { run: updateAttendance } = useRequest(AttendanceService.updateAttendance, {
+const { run: updateAttendance, loading: updateAttendanceLoading } = useRequest(AttendanceService.updateAttendance, {
   manual: true,
   onSuccess: () => {
     message.success('更新考勤状态成功')
@@ -77,6 +78,8 @@ const handleConfirm = () => {
 const handleCancel = () => {
   openStatus.value = false
 }
+
+
 </script>
 
 <template>
@@ -88,14 +91,23 @@ const handleCancel = () => {
     <div class="attendance-status">
       <p class="status-note">注: 统计考勤时，异常状态优先正常状态</p>
 
-      <Radio.Group v-model:value="selectedStatus" :options="statusRadioList" />
-
+      <QSkeleton :loading="getAttendancesAdtStatuListLoading" active :title="false" :paragraph="{
+        rows: 8
+      }">
+        <Radio.Group v-model:value="selectedStatus">
+          <div class="attendance-status-radio-list">
+            <Radio v-for="item in statusRadioList" :key="item.value" :value="item.value">
+              {{ item.label }}
+            </Radio>
+          </div>
+        </Radio.Group>
+      </QSkeleton>
     </div>
 
     <template #footer>
       <Space>
         <Button @click="handleCancel">取消</Button>
-        <Button type="primary" @click="handleConfirm">确定</Button>
+        <Button type="primary" :loading="updateAttendanceLoading" @click="handleConfirm">确定</Button>
       </Space>
     </template>
   </QModal>
@@ -108,6 +120,13 @@ const handleCancel = () => {
   .status-note {
     color: #ff4d4f;
     margin-bottom: 16px;
+  }
+
+  .attendance-status-radio-list {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-middle);
   }
 }
 </style>

@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import AttendanceService from '@/modules/attendance/services/attendance.service'
 import type { CompanyVO } from '@/modules/attendance/types'
+import { QSkeleton } from '@/shared/components/base/skeleton'
 import { useRequest } from '@/shared/composables/use-request/use-request'
 import { convertDistance } from '@/shared/utils/convert/distance'
 import { generateMenuItem } from '@/shared/utils/generate-menu-item'
 import { CloseOutlined } from '@ant-design/icons-vue'
 import type { MenuProps, SliderProps } from 'ant-design-vue'
 import { Button, Drawer, Flex, Menu, Slider, TypographyText, message } from 'ant-design-vue'
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import ScopedMap from './map.vue'
 
 const drawerStatus = defineModel<boolean>('open', { required: false })
 
-const closeDrawer = () => drawerStatus.value = false
+const closeDrawer = () => {
+  drawerStatus.value = false
+
+}
 
 
 
@@ -44,7 +48,9 @@ const selectedCompany = reactive<CompanyVO>({
   radius: 0
 })
 
-useRequest(AttendanceService.getCompanyList, {
+
+const { run: getCompanyList, loading: getCompanyListLoading } = useRequest(AttendanceService.getCompanyList, {
+  manual: true,
   onSuccess: ({ data }) => {
     companyList.value = data
     // 转换为 menu items
@@ -97,12 +103,17 @@ const { run: updateCompanyList } = useRequest(AttendanceService.updateCompanyLis
 const handleBatchSaveCompanyPoint = () => {
   updateCompanyList({ list: companyList.value })
 }
+
+onMounted(async () => {
+  await getCompanyList()
+})
+
 </script>
 
 <template>
   <Drawer height="100vh" @close="closeDrawer" title="打卡范围设置" :open="drawerStatus" placement="top" :closable="false">
     <template #extra>
-      <CloseOutlined />
+      <CloseOutlined @click="closeDrawer" />
     </template>
     <template #default>
       <Flex class="h-full" gap="middle">
@@ -110,9 +121,14 @@ const handleBatchSaveCompanyPoint = () => {
           <ScopedMap :scoped-radius="selectedCompany.radius" :scoped-center="convertScopedCenter" />
         </div>
         <Flex class="attendance-scope-right" vertical gap="middle">
-          <div class="attendance-scope-company-list flex-1">
-            <Menu v-model:selectedKeys="selectedCompanyIds" :items="companyMenuItems" @click="handleSelectedCompany" />
-          </div>
+          <QSkeleton :loading="getCompanyListLoading" active :title="false" :paragraph="{
+            rows: 8
+          }">
+            <div class="attendance-scope-company-list flex-1">
+              <Menu v-model:selectedKeys="selectedCompanyIds" :items="companyMenuItems"
+                @click="handleSelectedCompany" />
+            </div>
+          </QSkeleton>
           <div>
             <TypographyText type="secondary">半径</TypographyText>
             <Slider @afterChange="handleSliderAfterChange" :max="1000" v-model:value="selectedCompany.radius"

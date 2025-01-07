@@ -1,5 +1,5 @@
 import { request } from '@/shared/utils/http/request/instance'
-import type { AttendanceSetting, DeductionSetting, LeaveSetting, OverTimeSetting, UpdateAttendanceParams, UpdateDeductionSettingParams, UpdateLeaveSettingParams, UpdateOverTimeSettingParams } from '@/types/api'
+import type { AttendanceSetting, DeductionSetting, LeaveSetting, OverTimeSetting, UpdateAttendanceParams, UpdateDeductionSettingParams, UpdateLeaveSettingParams, UpdateOverTimeSettingParams } from '@/modules/attendance/types'
 
 class AttendanceSettingService {
   static getAttendanceSettingById(departmentId: number) {

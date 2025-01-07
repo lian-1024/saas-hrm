@@ -7,6 +7,7 @@ import { FormOfEmploymentMap, type FormOfEmploymentType } from '@/modules/employ
 import EmployeeService from '@/modules/employee/services/employee.service';
 import type { EmployeeVO, PagingEmployeeListParams } from '@/modules/employee/types';
 import { QAvatar } from '@/shared/components/base/avatar';
+import { QSkeleton } from '@/shared/components/base/skeleton';
 import { QSpin } from '@/shared/components/base/spin';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import type { PagingResponse } from '@/shared/types';
@@ -14,7 +15,7 @@ import { DepartmentTree } from '@/shared/utils/convert/department';
 import { Button, Flex, InputSearch, message, Popconfirm, Table, Tree, TypographyText, type ButtonProps, type TableProps, type TreeProps } from 'ant-design-vue';
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
 import FileSaver from 'file-saver';
-import { reactive, ref, watch } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 // 员工管理
 defineOptions({
   name: "EmployeePage"
@@ -109,7 +110,8 @@ const tableRowSelection = ref<TableProps['rowSelection']>({
   }
 })
 
-const { loading: getDepartmentLoading } = useRequest(DepartmentService.getCompanyDepartmentList, {
+const { loading: getDepartmentLoading, run: getCompanyDepartmentList } = useRequest(DepartmentService.getCompanyDepartmentList, {
+  manual: true,
   onSuccess: ({ data }) => {
 
     departmentTree.value = DepartmentTree.toTree(data)
@@ -118,6 +120,7 @@ const { loading: getDepartmentLoading } = useRequest(DepartmentService.getCompan
 
 // 分页获取员工列表
 const { loading: getEmployeeListLoading, run: getEmployeeList } = useRequest(() => EmployeeService.getEmployeeList(pagingEmployeeParams), {
+  manual: true,
   onSuccess: ({ data }) => {
 
     employeeTableDataSource.rows = data.rows.map(item => ({ ...item, key: item.id }))
@@ -165,8 +168,6 @@ const handleSelectDepartment: TreeProps['onSelect'] = (selectedKeys) => {
 
 // 当分页发生变化时，重新获取员工列表
 const handleChangeTablePagination = (page: number, pageSize: number) => {
-  console.log("page:", page);
-  console.log("pageSize:", pageSize);
   pagingEmployeeParams.page = page
   pagingEmployeeParams.pagesize = pageSize
   getEmployeeList(pagingEmployeeParams)
@@ -176,6 +177,11 @@ const handleChangeTablePagination = (page: number, pageSize: number) => {
 watch(() => pagingEmployeeParams.departmentId, (newVal) => {
   getEmployeeList(pagingEmployeeParams)
 })
+
+
+onMounted(async () => {
+  await Promise.all([getCompanyDepartmentList(), getEmployeeList()])
+})
 </script>
 
 <template>
@@ -183,13 +189,14 @@ watch(() => pagingEmployeeParams.departmentId, (newVal) => {
     <Flex vertical class="employee-left" gap="middle">
       <InputSearch @search="getEmployeeList(pagingEmployeeParams)" placeholder="请输入员工姓名全员搜索"
         v-model:value="pagingEmployeeParams.keyword" />
-      <QSpin :spinning="getDepartmentLoading" wrapper-class="h-full">
+      <QSkeleton :loading="getDepartmentLoading" active :title="false" :paragraph="{
+        rows: 16
+      }">
         <Tree v-if="!getDepartmentLoading" class="draggable-tree h-full" draggable block-node
           :tree-data="departmentTree" default-expand-all @select="handleSelectDepartment" />
-      </QSpin>
-
+      </QSkeleton>
     </Flex>
-    <Flex vertical gap="small" class="flex-1 employee-right">
+    <Flex vertical gap="small" class="flex-1 employee-right h-full">
       <Flex justify="space-between" class="employee-right-actions">
         <Button :size="actionsSize">
           群发通知
@@ -207,7 +214,7 @@ watch(() => pagingEmployeeParams.departmentId, (newVal) => {
         </Flex>
       </Flex>
       <!-- table -->
-      <QSpin :spinning="getEmployeeListLoading">
+      <QSpin :spinning="getEmployeeListLoading" wrapper-class-name="flex-1 h-full">
         <Table :pagination="{
           position: tablePaginationPosition,
           pageSizeOptions: tablePaginationPageSizeOptions,
@@ -253,6 +260,10 @@ watch(() => pagingEmployeeParams.departmentId, (newVal) => {
   </Flex>
 </template>
 <style scoped lang="less">
+:deep(.ant-spin-container) {
+  height: 100%;
+}
+
 .employee {
   &-left {
     max-width: 280px;

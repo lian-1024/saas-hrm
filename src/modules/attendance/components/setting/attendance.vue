@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import AttendanceSettingService from '@/modules/attendance/services/attendance-setting.service';
 import type { UpdateAttendanceSettingParams } from '@/modules/attendance/types';
+import { QSkeleton } from '@/shared/components/base/skeleton';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { DatePicker, Flex, Form, FormItem, message, Select, type FormInstance, type FormProps, type SelectProps } from 'ant-design-vue';
-import { computed, onMounted, reactive, ref } from 'vue';
-
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 defineOptions({
   name: "TabAttendance"
 })
@@ -22,26 +22,29 @@ const formRules: FormProps['rules'] = {
 };
 
 const formRef = ref<FormInstance>()
+const selectedDepartmentId = ref<number>(1)
 
 const formState = reactive<UpdateAttendanceSettingParams>({
   morningStartTime: "",
   morningEndTime: "",
   afternoonStartTime: "",
   afternoonEndTime: "",
-  departmentId: 1,
+  departmentId: selectedDepartmentId.value,
   id: 1,
   companyId: 1
 })
+
 
 const formLabelCol: FormProps['labelCol'] = { span: 4 }
 const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
 
 
 
-const { run: getAttendanceSettingById } = useRequest(AttendanceSettingService.getAttendanceSettingById, {
+const { run: getAttendanceSettingById, loading: getAttendanceSettingLoading } = useRequest(AttendanceSettingService.getAttendanceSettingById, {
   manual: true,
   onSuccess: ({ data }) => {
     Object.assign(formState, data)
+
   },
   onError: (message) => {
     console.log("message", message)
@@ -60,22 +63,6 @@ const { run: updateAttendanceSetting } = useRequest(AttendanceSettingService.upd
   }
 })
 
-
-
-
-
-
-onMounted(async () => {
-  try {
-    if (!props.departmentOptions) return
-    const departmentId = props.departmentOptions[0].value || 0
-    formState.departmentId = +departmentId
-    getAttendanceSettingById(departmentId)
-  } catch {
-    message.error("似乎有些小问题")
-  }
-})
-
 const validateDate = computed(() => {
   // 检查所有时间是否都已输入
   return Boolean(
@@ -84,6 +71,18 @@ const validateDate = computed(() => {
     formState.afternoonStartTime &&
     formState.afternoonEndTime
   )
+})
+
+watch(() => selectedDepartmentId.value, (newVal) => {
+  formState.departmentId = newVal
+  getAttendanceSettingById(newVal)
+})
+
+onMounted(() => {
+  if (!props.departmentOptions) return
+  const departmentId = props.departmentOptions[0].value || 0
+  selectedDepartmentId.value = +departmentId
+  getAttendanceSettingById(selectedDepartmentId.value)
 })
 
 const handleSubmit = () => {
@@ -97,27 +96,32 @@ defineExpose({
   handleSubmit
 })
 
+
 </script>
 
 <template>
   <Form ref="formRef" :label-col="formLabelCol" :model="formState" :wrapper-col="formWrapperCol" :rules="formRules">
     <FormItem label="部门" :model="formState" name="departmentId">
-      <Select :options="departmentOptions" v-model:value="formState.departmentId" />
+      <Select :options="departmentOptions" v-model:value="selectedDepartmentId" />
     </FormItem>
-    <FormItem label="出勤时间" :validate-status="validateDate ? 'success' : 'error'" :help="validateDate ? '' : '请选择日期'">
-      <Flex gap="middle" vertical>
-        <Flex gap="small" align="center">
-          <DatePicker picker="time" valueFormat="HH:mm:ss" v-model:value="formState.morningStartTime" />
-          -
-          <DatePicker picker="time" valueFormat="HH:mm:ss" v-model:value="formState.morningEndTime" />
+    <QSkeleton :title="false" active :loading="getAttendanceSettingLoading" :paragraph="{
+      rows: 8
+    }">
+      <FormItem label="出勤时间" :validate-status="validateDate ? 'success' : 'error'" :help="validateDate ? '' : '请选择日期'">
+        <Flex gap="middle" vertical>
+          <Flex gap="small" align="center">
+            <DatePicker picker="time" value-format="HH:mm:ss" v-model:value="formState.morningStartTime" />
+            -
+            <DatePicker picker="time" value-format="HH:mm:ss" v-model:value="formState.morningEndTime" />
+          </Flex>
+          <Flex gap="small" align="center">
+            <DatePicker picker="time" value-format="HH:mm:ss" v-model:value="formState.afternoonStartTime" />
+            -
+            <DatePicker picker="time" value-format="HH:mm:ss" v-model:value="formState.afternoonEndTime" />
+          </Flex>
         </Flex>
-        <Flex gap="small" align="center">
-          <DatePicker picker="time" valueFormat="HH:mm:ss" v-model:value="formState.afternoonStartTime" />
-          -
-          <DatePicker picker="time" valueFormat="HH:mm:ss" v-model:value="formState.afternoonEndTime" />
-        </Flex>
-      </Flex>
-    </FormItem>
+      </FormItem>
+    </QSkeleton>
   </Form>
 </template>
 

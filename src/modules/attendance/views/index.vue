@@ -7,6 +7,7 @@ import { ATTENDANCE_STATUS, type AttendanceStatusKey } from '@/modules/attendanc
 import AttendanceService from '@/modules/attendance/services/attendance.service'
 import type { AttendancePagingParams, AttendanceRecord, AttendanceRow, EmployeeAttendanceVO } from '@/modules/attendance/types'
 import DepartmentService from '@/modules/department/services/department.service'
+import { QSkeleton } from '@/shared/components/base/skeleton'
 import { QSpin } from '@/shared/components/base/spin'
 import { useRequest } from '@/shared/composables/use-request/use-request'
 import {
@@ -21,6 +22,7 @@ import {
   type TableProps
 } from 'ant-design-vue'
 import { h, reactive, ref, watch } from 'vue'
+import { CountTo } from 'vue3-count-to'
 
 interface EmployeeAttendance extends EmployeeAttendanceVO {
   key: string | number | null
@@ -256,7 +258,10 @@ watch(() => selectedDepartmentIds.value, () => {
     <Flex justify="space-between" align="center" class="attendance-top">
       <Flex vertical align="center" gap="small">
         <TypographyText class="attendance-top-title">未处理</TypographyText>
-        <TypographyText class="attendance-top-total">{{ attendanceInfo.tobeTaskCount }}</TypographyText>
+        <QSkeleton :paragraph="false" active :loading="getAttendanceListLoading">
+          <CountTo :start-val="0" :end-val="attendanceInfo.tobeTaskCount" :duration="3000"
+            class="attendance-top-total" />
+        </QSkeleton>
       </Flex>
       <Flex gap="middle">
         <Button @click="drawerStatus = true">打卡范围</Button>
@@ -265,7 +270,9 @@ watch(() => selectedDepartmentIds.value, () => {
     </Flex>
     <Flex class="attendance-middle" gap="small" align="flex-start">
       <TypographyTitle class="attendance-middle-label" :level="5">部门:</TypographyTitle>
-      <QSpin wrapper-class-name="flex-1" :spinning="getDepartmentListLoading">
+      <QSkeleton active :title="false" :loading="getDepartmentListLoading" :paragraph="{
+        rows: 2
+      }">
         <CheckboxGroup v-model:value="selectedDepartmentIds" class="w-full">
           <div class="attendance-middle-checkbox-group">
             <Checkbox v-for="option in departmentOptions" :key="option.value.toString()" :value="option.value">
@@ -273,7 +280,7 @@ watch(() => selectedDepartmentIds.value, () => {
             </Checkbox>
           </div>
         </CheckboxGroup>
-      </QSpin>
+      </QSkeleton>
     </Flex>
     <div class="attendance-table">
       <QSpin :spinning="getAttendanceListLoading">
@@ -332,6 +339,7 @@ watch(() => selectedDepartmentIds.value, () => {
   }
 
   &-table {
+    height: 100%;
     padding: var(--spacing-large);
     background-color: var(--color-background);
     overflow: auto;

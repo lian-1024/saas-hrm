@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import AttendanceSettingService from '@/modules/attendance/services/attendance-setting.service';
 import type { LeaveSetting, UpdateLeaveSettingParams } from '@/modules/attendance/types';
+import { QSkeleton } from '@/shared/components/base/skeleton';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { EnableStatus } from '@/shared/constants/status';
-import { Form, FormItem, message, Select, Switch, Table, type SelectProps, type TableProps } from 'ant-design-vue';
-import { computed, onMounted, ref } from 'vue';
+import { Form, FormItem, message, Select, Switch, Table, type SelectProps, type TableProps, type FormProps } from 'ant-design-vue';
+import { onMounted, ref, watch } from 'vue';
 const props = defineProps<{
   departmentOptions: SelectProps['options']
 }>()
@@ -57,7 +58,7 @@ const convertToLeaveSettingList = (data: LeaveSetting[]): UpdateLeaveSettingPara
     name: leaveTypeMap[rest.leaveType]
   }))
 
-const { run: getLeaveSettingByDepartmentId } = useRequest(AttendanceSettingService.getLeaveSettingByDepartmentId, {
+const { run: getLeaveSettingByDepartmentId, loading: getLeaveSettingByDepartmentIdLoading } = useRequest(AttendanceSettingService.getLeaveSettingByDepartmentId, {
   manual: true,
   onSuccess: ({ data }) => {
     console.log(data)
@@ -88,10 +89,9 @@ const handleSubmit = () => {
   updateLeaveSetting(leaveSettingList.value)
 }
 
-
-const isEnable = computed(() => (isEnable: number) => isEnable === EnableStatus.ENABLED)
-
-
+watch(selectedDepartmentId, (newValue) => {
+  getLeaveSettingByDepartmentId(newValue)
+})
 
 defineExpose({
   handleSubmit
@@ -103,23 +103,30 @@ onMounted(() => {
   getLeaveSettingByDepartmentId(selectedDepartmentId.value)
 })
 
+const formLabelCol: FormProps['labelCol'] = { span: 4 }
+const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
+
 </script>
 
 <template>
   <div>
-    <Form>
+    <Form :label-col="formLabelCol" :wrapper-col="formWrapperCol">
       <FormItem label="部门" name="departmentId">
         <Select v-model:value="selectedDepartmentId" :options="departmentOptions" />
       </FormItem>
     </Form>
-    <Table :pagination="false" :columns="leaveTypeColumns" :data-source="leaveSettingList">
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.dataIndex === 'isEnable'">
-          <Switch :checked="isEnable(record.isEnable)"
-            @change="(checked) => handleSwitchChange(Boolean(checked), record)" />
+    <QSkeleton :title="false" active :loading="getLeaveSettingByDepartmentIdLoading" :paragraph="{
+      rows: 8
+    }">
+      <Table :pagination="false" :columns="leaveTypeColumns" :data-source="leaveSettingList">
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.dataIndex === 'isEnable'">
+            <Switch :checked="Boolean(record.isEnable)"
+              @change="(checked) => handleSwitchChange(Boolean(checked), record)" />
+          </template>
         </template>
-      </template>
-    </Table>
+      </Table>
+    </QSkeleton>
   </div>
 </template>
 

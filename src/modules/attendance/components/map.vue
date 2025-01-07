@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { convertDistance } from '@/shared/utils/convert/distance';
-import { BaseMap, MultiCircle, MultiLabel } from 'tlbs-map-vue';
+import { BaseMap, MultiCircle, MultiLabel, MultiMarker } from 'tlbs-map-vue';
 import { computed, ref } from 'vue';
 
 defineOptions({
@@ -16,8 +16,6 @@ const scopedRadius = defineModel("scopedRadius", { default: 500 })
 const scopedCenter = defineModel("scopedCenter", { default: { lat: 39.91799, lng: 116.397027 } })
 const scopedRadiusText = computed(() => convertDistance(scopedRadius.value))
 
-
-const mapRef = ref<InstanceType<typeof BaseMap> | null>(null);
 const mapZoom = ref(15);
 const handleClickMap = (e: Event) => {
   console.log(e);
@@ -71,11 +69,32 @@ const labelGeometriesComputed = computed(() => [{
     'title': 'label'
   }
 }])
+
+
+const computedMarker = computed(() => ({
+  geometries: [
+    { styleId: 'marker', position: scopedCenter.value },
+  ],
+  styles: {
+    marker: {
+      width: 20,
+      height: 30,
+      anchor: { x: 10, y: 30 },
+    },
+  },
+  options: {
+    minZoom: 5,
+    maxZoom: 15,
+  },
+}))
+
 </script>
 <template>
-  <BaseMap class="h-full w-full" ref="mapRef" api-key="OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77" :center="scopedCenter"
-    :zoom="mapZoom" :control="mapControl" @click="handleClickMap">
+  <BaseMap class="h-full w-full" api-key="OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77" :center="scopedCenter" :zoom="mapZoom"
+    :control="mapControl" @click="handleClickMap">
     <MultiCircle :geometries="circleGeometriesComputed" :styles="circleStyles" :options="circleOptions" />
     <MultiLabel :styles="labelStyles" :geometries="labelGeometriesComputed" />
+    <MultiMarker :geometries="computedMarker.geometries" :styles="computedMarker.styles"
+      :options="computedMarker.options" />
   </BaseMap>
 </template>

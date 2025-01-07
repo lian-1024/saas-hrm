@@ -164,9 +164,9 @@ const handleSave = () => {
 }
 
 
-onMounted(() => {
+onMounted(async () => {
   if (route.params.id) {
-    getEmployeeDetailById(route.params.id as string)
+    await getEmployeeDetailById(route.params.id as string)
   }
 })
 </script>

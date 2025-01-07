@@ -21,7 +21,7 @@ export const EnableStatusMap = {
   [EnableStatus.ENABLED]: '已启用'
 } as const
 
-export type EnableStateType = typeof EnableStatus[keyof typeof EnableStatus]
+export type EnableStatusType = typeof EnableStatus[keyof typeof EnableStatus]
 
 /**
  * 开启状态枚举

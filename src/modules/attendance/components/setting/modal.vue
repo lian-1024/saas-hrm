@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import DepartmentService from '@/modules/department/services/department.service';
-import { QModal } from '@/shared/components/base/Modal';
+import { QModal } from '@/shared/components/base/modal';
+import { QSkeleton } from '@/shared/components/base/skeleton';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { Button, Flex, TabPane, Tabs } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
@@ -49,7 +50,7 @@ const tabOptions = [
 const departmentOptions = ref()
 
 
-const { run: getCompanyDepartmentList } = useRequest(DepartmentService.getCompanyDepartmentList, {
+const { run: getCompanyDepartmentList, loading: getCompanyDepartmentListLoading } = useRequest(DepartmentService.getCompanyDepartmentList, {
   manual: true,
   onSuccess: ({ data }) => {
     departmentOptions.value = data.map((item) => ({ label: item.name, value: item.id }))
@@ -75,6 +76,8 @@ const setComponentRef = (el: any, pane: string) => {
   }
 }
 
+const confirmLoading = ref(false)
+
 // 修改类型定义
 type TabRefs = {
   attendance: typeof tabAttendanceRef
@@ -94,10 +97,11 @@ const handleConfirm = async () => {
   }
 
   const currentRef = refs[currentTab as keyof TabRefs]
-
+  confirmLoading.value = true
   if (currentRef?.value?.handleSubmit) {
     await currentRef.value.handleSubmit()
     modalStatus.value = false
+    confirmLoading.value = false
   }
 }
 
@@ -115,13 +119,18 @@ onMounted(() => {
   <QModal :width="800" closable mask v-model:open="modalStatus" title="设置" :destroyOnClose="true">
     <Tabs v-model:activeKey="activeKey">
       <TabPane v-for="pane in tabOptions" :key="pane.key" :tab="pane.title">
-        <component :departmentOptions="departmentOptions" :is="pane.pane" :ref="(el) => setComponentRef(el, pane.key)">
-        </component>
+        <QSkeleton :loading="getCompanyDepartmentListLoading" active :paragraph="{
+          rows: 8
+        }">
+          <component :departmentOptions="departmentOptions" :is="pane.pane"
+            :ref="(el) => setComponentRef(el, pane.key)">
+          </component>
+        </QSkeleton>
       </TabPane>
     </Tabs>
     <template #footer>
       <Flex justify="center">
-        <Button @click="handleConfirm" type="primary">保存更新</Button>
+        <Button @click="handleConfirm" type="primary" :loading="confirmLoading">保存更新</Button>
         <Button @click="handleCancel">取消</Button>
       </Flex>
     </template>

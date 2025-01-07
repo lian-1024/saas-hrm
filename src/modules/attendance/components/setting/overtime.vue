@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AttendanceSettingService from '@/modules/attendance/services/attendance-setting.service';
 import type { ExtraDutyRuleList, OverTimeRule, OverTimeSetting, UpdateOverTimeSettingParams } from '@/modules/attendance/types';
+import { QSkeleton } from '@/shared/components/base/skeleton';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { Checkbox, DatePicker, Flex, Form, FormItem, InputNumber, message, Select, Switch, TimePicker, Tooltip, TypographyText, type FormProps, type SelectProps } from 'ant-design-vue';
 import { computed, onMounted, ref } from 'vue';
@@ -93,7 +94,7 @@ const isCompensationChecked = computed({
 })
 
 // 获取加班设置
-const { run: getOverTimeSetting } = useRequest(AttendanceSettingService.getOverTimeSettingByDepartmentId, {
+const { run: getOverTimeSetting, loading: getOverTimeSettingLoading } = useRequest(AttendanceSettingService.getOverTimeSettingByDepartmentId, {
   manual: true,
   onSuccess: ({ data }) => {
     formData.value = convertToUpdateParams(data)
@@ -129,14 +130,19 @@ onMounted(() => {
 const labelCol: FormProps['labelCol'] = {
   span: 4
 }
+const wrapperCol: FormProps['wrapperCol'] = {
+  span: 16
+}
 </script>
 
 <template>
-  <div class="overtime-wrapper">
-    <Form :label-col="labelCol" :model="formData">
-      <FormItem label="部门" name="departmentId">
-        <Select v-model:value="selectedDepartmentId" :options="departmentOptions" />
-      </FormItem>
+  <Form :label-col="labelCol" :wrapper-col="wrapperCol" :model="formData" class="w-full">
+    <FormItem label="部门" name="departmentId">
+      <Select v-model:value="selectedDepartmentId" :options="departmentOptions" />
+    </FormItem>
+    <QSkeleton active :title="false" :loading="getOverTimeSettingLoading" :paragraph="{
+      rows: 8
+    }">
       <FormItem label="加班规则">
         <Flex vertical gap="middle">
           <Flex v-for="(rule, index) in overtimeRules" :key="index" justify="space-between" gap="large" align="center">
@@ -148,11 +154,11 @@ const labelCol: FormProps['labelCol'] = {
             <Flex gap="small" align="center">
               <Checkbox :checked="Boolean(rule.isTimeOff)"
                 @change="(e) => updateRule(index, 'isTimeOff', e.target.checked ? 1 : 0)" />
-              <TypographyText class="nowrap">调休假</TypographyText>
-              <TimePicker valueFormat="mm:ss" class="overtime-input" :value="rule.ruleStartTime"
-                @change="(time) => updateRule(index, 'ruleStartTime', time)" />
-              <TimePicker valueFormat="mm:ss" class="overtime-input" :value="rule.ruleEndTime"
-                @change="(time) => updateRule(index, 'ruleEndTime', time)" />
+              <TypographyText :disabled="Boolean(!rule.isTimeOff)" class="nowrap">调休假</TypographyText>
+              <TimePicker valueFormat="mm:ss" :disabled="Boolean(!rule.isTimeOff)" class="overtime-input"
+                :value="rule.ruleStartTime" @change="(time) => updateRule(index, 'ruleStartTime', time)" />
+              <TimePicker valueFormat="mm:ss" :disabled="Boolean(!rule.isTimeOff)" class="overtime-input"
+                :value="rule.ruleEndTime" @change="(time) => updateRule(index, 'ruleEndTime', time)" />
             </Flex>
           </Flex>
         </Flex>
@@ -184,15 +190,15 @@ const labelCol: FormProps['labelCol'] = {
           </Flex>
         </Flex>
       </FormItem>
-    </Form>
-  </div>
+    </QSkeleton>
+  </Form>
 </template>
 
 <style scoped lang="scss">
 .overtime {
   &-wrapper {
     display: flex;
-    justify-content: center;
+    width: 100%;
   }
 
   &-input {
