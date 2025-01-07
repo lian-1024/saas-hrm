@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import DepartmentService from '@/modules/department/services/department.service';
-import { QSpin } from '@/shared/components/base/spin';
+import { QSkeleton } from '@/shared/components/base/skeleton';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { DepartmentTree } from '@/shared/utils/convert/department';
 import { DownOutlined } from '@ant-design/icons-vue';
@@ -47,6 +47,9 @@ const handleOpenModal = (type: "add" | "edit", departmentId?: string) => {
 const { loading: getListLoading, run: getCompanyDepartmentList } = useRequest(DepartmentService.getCompanyDepartmentList, {
   onSuccess: (data) => {
     departmentTree.value = DepartmentTree.toTree(data.data)
+  },
+  onError: (error) => {
+    message.error(error.message || "获取部门列表数据失败")
   }
 })
 
@@ -116,17 +119,18 @@ const handleOperationClick = (info: MenuItemType, key: string | number) => {
 
 
 
-onMounted(() => {
+onMounted(async () => {
   await getCompanyDepartmentList()
 })
 </script>
 
 
 <template>
-  <Flex class="department-wrapper" justify="center" align="center">
-    <QSpin :spinning="getListLoading" wrapper-class-name="flex-1">
-      <Tree v-if="!getListLoading" class="department-tree" default-expand-all draggable block-node
-        :tree-data="departmentTree">
+  <Flex class="department-wrapper" justify="center" align="start">
+    <QSkeleton :loading="getListLoading" active :title="false" :paragraph="{
+      rows: 16
+    }">
+      <Tree class="department-tree flex-1" default-expand-all draggable block-node :tree-data="departmentTree">
         <template #title="{ title, managerName, key }">
           <Flex class="department-tree-item" justify="space-between">
             <TypographyText>{{ title }}</TypographyText>
@@ -143,7 +147,7 @@ onMounted(() => {
           </Flex>
         </template>
       </Tree>
-    </QSpin>
+    </QSkeleton>
     <DepartmentModal v-model:open="modalOpen" :type="modalType" :department-id="selectedDepartmentId" />
   </Flex>
 </template>
