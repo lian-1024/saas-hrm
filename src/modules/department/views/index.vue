@@ -47,9 +47,6 @@ const handleOpenModal = (type: "add" | "edit", departmentId?: string) => {
 const { loading: getListLoading, run: getCompanyDepartmentList } = useRequest(DepartmentService.getCompanyDepartmentList, {
   onSuccess: (data) => {
     departmentTree.value = DepartmentTree.toTree(data.data)
-  },
-  onError: (error) => {
-    message.error(error.message || "获取部门列表数据失败")
   }
 })
 

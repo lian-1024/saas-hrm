@@ -66,19 +66,14 @@ const { run: getDashboardData, loading: getDashboardDataLoading } = useRequest<H
     dashboardInfoList.value = convertDashboardInfoList(data)
     providentFund.value = data.providentFund
     socialSecurity.value = data.socialInsurance
-  },
-  onError: (error) => {
-    message.error("获取首页数据失败")
   }
+
 })
 
 const { run: getNotice, loading: getNoticeLoading } = useRequest(DashboardService.getDashboardNotice, {
   manual: true,
   onSuccess: (res) => {
     noticeList.value = res.data
-  },
-  onError: (error) => {
-    message.error("获取通知公告失败")
   }
 })
 

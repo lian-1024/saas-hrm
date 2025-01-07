@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useUserStore } from '@/core/stores';
 import type { LoginParams } from '@/modules/user/types';
-import { Button, Checkbox, Form, Input, type FormProps } from 'ant-design-vue';
+import { Button, Checkbox, Form, Input, TypographyLink, type FormProps } from 'ant-design-vue';
 import { reactive, ref } from 'vue';
 
 interface FormState extends LoginParams {
@@ -76,11 +76,11 @@ const formLayout: FormProps = {
     <Form.Item name="isAgree">
       <Checkbox v-model:checked="formState.isAgree">
         我已阅读并同意
-        <a href="#" @click.prevent>《用户平台使用协议》</a>
+        <TypographyLink>《用户平台使用协议》</TypographyLink>
       </Checkbox>
     </Form.Item>
     <Form.Item>
-      <Button type="primary" html-type="submit" block size="large">
+      <Button :loading="userStore.loading" type="primary" html-type="submit" block size="large">
         登录
       </Button>
     </Form.Item>

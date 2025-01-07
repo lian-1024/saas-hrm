@@ -1,4 +1,7 @@
 import { useUserStore } from '@/core/stores'
+import { DEFAULT_ERROR_MESSAGE, HTTP_ERROR_MESSAGES, NETWORK_ERROR_MESSAGE } from '@/shared/constants/http-message'
+import { HttpStatus } from '@/shared/constants/http-status'
+import { message } from 'ant-design-vue'
 import axios from 'axios'
 import { Request } from './index'
 
@@ -24,7 +27,6 @@ axiosInstance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`
     }
 
-
     return config
   },
   (error) => {
@@ -36,15 +38,32 @@ axiosInstance.interceptors.response.use(
   (response) => {
     // 检查响应头或其他逻辑来决定如何处理响应
     if (response.headers['content-type'].includes('application/json')) {
-      return response.data; // 处理为JSON
+      return response.data // 处理为JSON
     } else {
-      return response; // 直接返回Blob数据
+      return response // 直接返回Blob数据
     }
   },
   (error) => {
-    return Promise.reject(error);
+    const userStore = useUserStore()
+
+    if (error.response) {
+      const { status } = error.response
+      const errorMessage = HTTP_ERROR_MESSAGES[status] || DEFAULT_ERROR_MESSAGE
+
+      message.error(errorMessage)
+      console.log(status)
+      // 如果是未授权，则登出
+      if (status === HttpStatus.UNAUTHORIZED) {
+        userStore.logout()
+      }
+    } else if (error.request) {
+      message.error(NETWORK_ERROR_MESSAGE)
+    } else {
+      message.error(DEFAULT_ERROR_MESSAGE)
+    }
+
+    return Promise.reject(error)
   }
-);
+)
 
 export const request = new Request(axiosInstance)
-

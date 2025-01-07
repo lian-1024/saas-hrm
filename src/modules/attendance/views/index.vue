@@ -30,7 +30,7 @@ interface EmployeeAttendance extends EmployeeAttendanceVO {
 }
 
 defineOptions({
-  name: 'At,endancePage',
+  name: 'AttendancePage',
 })
 
 const departmentOptions = ref<CheckboxOptionType[]>([])

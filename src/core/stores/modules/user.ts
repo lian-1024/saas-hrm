@@ -57,6 +57,7 @@ export const createUserStore = defineStore('user', () => {
   const logout = () => {
     token.value = ''
     userInfo.value = null
+    router.push('/sign-in')
   }
 
   return {

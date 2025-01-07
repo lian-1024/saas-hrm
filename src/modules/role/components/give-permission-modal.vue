@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PermissionService from '@/modules/permission/services/permission.service';
 import RoleService from '@/modules/role/services/role.service';
+import { QSkeleton } from '@/shared/components/base/skeleton';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { PermissionTree } from '@/shared/utils/convert/permission';
 import { message, Modal, Tree } from 'ant-design-vue';
@@ -20,21 +21,14 @@ const permissionsTreeData = ref()
 const checkedPermissionKeys = ref<number[]>([])
 
 
-const { loading } = useRequest(PermissionService.getPermissionList, {
+const { loading: getPermissionListLoading } = useRequest(PermissionService.getPermissionList, {
   onSuccess: ({ data }) => {
     permissionsTreeData.value = PermissionTree.convertPermissionToTree(data)
-  },
-  onError: (error) => {
-    if (error.message) {
-      message.error(error.message)
-    } else {
-      message.error("获取权限列表失败")
-    }
   }
 })
 
 
-const { data, run: getRoleDetail } = useRequest(RoleService.getRoleDetail, {
+const { run: getRoleDetail } = useRequest(RoleService.getRoleDetail, {
   manual: true,
   onSuccess: ({ data }) => {
     checkedPermissionKeys.value = data.permIds
@@ -76,7 +70,11 @@ watch(() => props.roleId, (newVal) => {
     <Modal title="分配权限" :open="modalStatus" :confirm-loading="givePermissionLoading" @ok="handleConfirm"
       @cancel="handleCancel" :width="400">
       <div class="permission-modal-wrapper">
-        <Tree v-model:checkedKeys="checkedPermissionKeys" checkable :tree-data="permissionsTreeData" />
+        <QSkeleton :loading="getPermissionListLoading" :title="false" :paragraph="{
+          rows: 8
+        }">
+          <Tree v-model:checkedKeys="checkedPermissionKeys" checkable :tree-data="permissionsTreeData" />
+        </QSkeleton>
       </div>
     </Modal>
   </div>
