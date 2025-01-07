@@ -13,7 +13,6 @@ const QSpin = defineComponent({
       const mergedProps = {
         ...defaultProps,
         ...props,
-        class: attrs.class // 显式传递外部的class
       }
       return <Spin {...mergedProps}>
         {slots.default?.()}

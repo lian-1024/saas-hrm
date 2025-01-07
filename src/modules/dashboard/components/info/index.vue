@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useUserStore } from '@/core/stores/modules/user';
 import { QAvatar } from '@/shared/components/base/Avatar';
+import { QSkeleton } from '@/shared/components/base/skeleton';
 import { Divider, Flex, type FlexProps, Tag, TypographyText } from 'ant-design-vue';
 import { onMounted } from 'vue';
 import { CountTo } from 'vue3-count-to';
 import type { DashboardInfoItem } from '../../types';
-
 defineOptions({
   name: "DashboardInfo"
 })
@@ -53,11 +53,21 @@ onMounted(async () => {
       </div>
     </Flex>
     <div class="dashboard-todo-wrapper">
-      <Flex vertical class="dashboard-todo-item" v-for="item in dashboardInfoList" :key="item.title">
-        <TypographyText type="secondary" class="dashboard-todo-title">{{ item.title }}</TypographyText>
-        <!-- <TypographyTitle :level="1">999</TypographyTitle> -->
-        <CountTo :start-val="0" :end-val="item.total" :duration="3000" class="dashboard-todo-total" />
-      </Flex>
+      <template v-if="Boolean(dashboardInfoList.length)">
+        <Flex vertical class="dashboard-todo-item" v-for="item in dashboardInfoList" :key="item.title">
+          <TypographyText type="secondary" class="dashboard-todo-title">{{ item.title }}</TypographyText>
+          <!-- <TypographyTitle :level="1">999</TypographyTitle> -->
+          <CountTo :start-val="0" :end-val="item.total" :duration="3000" class="dashboard-todo-total" />
+        </Flex>
+      </template>
+      <template v-else>
+        <Flex vertical v-for="item in 7" :key="item" gap="small">
+          <QSkeleton active :paragraph="{
+            rows: 1,
+            width: '50%'
+          }" />
+        </Flex>
+      </template>
     </div>
   </Flex>
 </template>
@@ -84,6 +94,7 @@ onMounted(async () => {
       grid-template-columns: repeat(5, 1fr);
       grid-template-rows: repeat(2, 80px);
       justify-content: space-between;
+      gap: var(--spacing-small);
     }
 
     &-item {

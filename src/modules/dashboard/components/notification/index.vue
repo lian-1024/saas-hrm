@@ -1,26 +1,39 @@
 <script setup lang="ts" generic="">
 import type { DashboardNoticeVO } from '@/modules/dashboard/types';
 import { QAvatar } from '@/shared/components/base/Avatar';
+import { QSkeleton } from '@/shared/components/base/skeleton';
 import { Flex, List, ListItem, ListItemMeta, TypographyLink, TypographyText } from 'ant-design-vue';
 import { computed } from 'vue';
 import QPanel from '../panel.vue';
-
 
 defineOptions({
   name: "DashboardNotification"
 })
 
+interface Props {
+  noticeList?: DashboardNoticeVO[]
+  loading?: boolean
+}
 
-const props = defineProps<{
-  noticeList: DashboardNoticeVO[]
-}>()
+const generateList = (length: number = 3) => {
+  return Array.from({ length }, () => ({
+    icon: "",
+    notice: "",
+    createTime: ""
+  })) as DashboardNoticeVO[]
+}
+
+const skeletonList: DashboardNoticeVO[] = generateList()
+
+
+
+
+const { noticeList = [], loading } = defineProps<Props>()
 
 const computedNoticeList = computed(() => {
-  return props.noticeList.map(notice => {
+  return noticeList.map(notice => {
     const { notice: noticeContent, createTime } = notice
     const [name, _, content] = noticeContent.split(' ')
-    console.log("noticeContent:", noticeContent.split(' '));
-    console.log("name:", name, "content:", content);
     return {
       name,
       content,
@@ -33,27 +46,54 @@ const computedNoticeList = computed(() => {
 
 <template>
   <QPanel title="通知公告">
-    <List :data-source="computedNoticeList">
-      <template #renderItem="{ item }">
-        <ListItem class="notification-item">
-          <ListItemMeta :description="item.createTime">
-            <template #title>
-              <RouterLink to="/">
-                <Flex gap="small">
-                  <TypographyLink>{{ item.name }}</TypographyLink>
-                  <TypographyText type="secondary">发布了</TypographyText>
-                  <TypographyText>{{ item.content }}</TypographyText>
-                </Flex>
-              </RouterLink>
-            </template>
-            <template #avatar>
-              <QAvatar size="large" :src="item.icon" />
-            </template>
+    <template v-if="!loading">
+      <List :data-source="computedNoticeList">
+        <template #renderItem="{ item }">
+          <ListItem class="notification-item">
+            <ListItemMeta :description="item.createTime">
+              <template #title>
+                <RouterLink to="/">
+                  <Flex gap="small">
+                    <TypographyLink>{{ item.name }}</TypographyLink>
+                    <TypographyText type="secondary">发布了</TypographyText>
+                    <TypographyText>{{ item.content }}</TypographyText>
+                  </Flex>
+                </RouterLink>
+              </template>
+              <template #avatar>
+                <QAvatar size="large" :src="item.icon" />
+              </template>
+            </ListItemMeta>
 
-          </ListItemMeta>
-        </ListItem>
-      </template>
-    </List>
+          </ListItem>
+
+        </template>
+      </List>
+    </template>
+    <template v-else>
+      <List :data-source="skeletonList">
+        <template #renderItem="{ item }">
+          <QSkeleton active avatar :title="false" class="notification-item">
+            <ListItem>
+              <ListItemMeta :description="item.createTime">
+                <template #title>
+                  <RouterLink to="/">
+                    <Flex gap="small">
+                      <TypographyLink>{{ item.name }}</TypographyLink>
+                      <TypographyText type="secondary">发布了</TypographyText>
+                      <TypographyText>{{ item.content }}</TypographyText>
+                    </Flex>
+                  </RouterLink>
+                </template>
+                <template #avatar>
+                  <QAvatar size="large" :src="item.icon" />
+                </template>
+              </ListItemMeta>
+            </ListItem>
+          </QSkeleton>
+        </template>
+      </List>
+    </template>
   </QPanel>
 </template>
 

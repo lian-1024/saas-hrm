@@ -7,15 +7,17 @@ import { ATTENDANCE_STATUS, type AttendanceStatusKey } from '@/modules/attendanc
 import AttendanceService from '@/modules/attendance/services/attendance.service'
 import type { AttendancePagingParams, AttendanceRecord, AttendanceRow, EmployeeAttendanceVO } from '@/modules/attendance/types'
 import DepartmentService from '@/modules/department/services/department.service'
+import { QSpin } from '@/shared/components/base/spin'
 import { useRequest } from '@/shared/composables/use-request/use-request'
 import {
   Button,
+  Checkbox,
   CheckboxGroup,
   Flex,
   Table,
   TypographyText,
   TypographyTitle,
-  type CheckboxGroupProps,
+  type CheckboxOptionType,
   type TableProps
 } from 'ant-design-vue'
 import { h, reactive, ref, watch } from 'vue'
@@ -29,7 +31,7 @@ defineOptions({
   name: 'At,endancePage',
 })
 
-const departmentOptions = ref<CheckboxGroupProps['options']>([])
+const departmentOptions = ref<CheckboxOptionType[]>([])
 
 const baseColumns: TableProps<EmployeeAttendance>['columns'] = [
   {
@@ -127,7 +129,7 @@ const attendancePagingParams = reactive<AttendancePagingParams>({
   deptID: selectedDepartmentIds.value.join(",")
 })
 
-const { run: getAttendanceList } = useRequest(AttendanceService.getAttendanceList, {
+const { run: getAttendanceList, loading: getAttendanceListLoading } = useRequest(AttendanceService.getAttendanceList, {
   onSuccess: ({ data }) => {
     const { yearOfReport, monthOfReport, tobeTaskCount, data: { rows } } = data
 
@@ -224,7 +226,7 @@ watch(() => attendanceInfo.dayOfMonth, (newDays) => {
 })
 
 
-useRequest(DepartmentService.getCompanyDepartmentList, {
+const { loading: getDepartmentListLoading } = useRequest(DepartmentService.getCompanyDepartmentList, {
   onSuccess: ({ data }) => {
     departmentOptions.value = data.map((item) => ({
       label: item.name,
@@ -240,7 +242,8 @@ useRequest(DepartmentService.getCompanyDepartmentList, {
 
 watch(() => selectedDepartmentIds.value, () => {
   const deptID = selectedDepartmentIds.value.join(",")
-  getAttendanceList(deptID)
+  attendancePagingParams.deptID = deptID
+  getAttendanceList(attendancePagingParams)
 })
 
 
@@ -262,17 +265,28 @@ watch(() => selectedDepartmentIds.value, () => {
     </Flex>
     <Flex class="attendance-middle" gap="small" align="flex-start">
       <TypographyTitle class="attendance-middle-label" :level="5">部门:</TypographyTitle>
-      <CheckboxGroup :options="departmentOptions" v-model:value="selectedDepartmentIds" />
+      <QSpin wrapper-class-name="flex-1" :spinning="getDepartmentListLoading">
+        <CheckboxGroup v-model:value="selectedDepartmentIds" class="w-full">
+          <div class="attendance-middle-checkbox-group">
+            <Checkbox v-for="option in departmentOptions" :key="option.value.toString()" :value="option.value">
+              {{ option.label }}
+            </Checkbox>
+          </div>
+        </CheckboxGroup>
+      </QSpin>
     </Flex>
     <div class="attendance-table">
-      <Table :pagination="{
-        position: ['bottomCenter'],
-        pageSize: attendancePagingParams.pagesize,
-        total: employeeDataSource.total,
-        current: attendancePagingParams.page,
-        onChange: handleChangeTablePagination,
-        showTotal: total => `共 ${total} 条数据`
-      }" :columns="attendanceColumns" :data-source="employeeDataSource.rows" :scroll="{ x: 'max-content' }" bordered />
+      <QSpin :spinning="getAttendanceListLoading">
+        <Table :pagination="{
+          position: ['bottomCenter'],
+          pageSize: attendancePagingParams.pagesize,
+          total: employeeDataSource.total,
+          current: attendancePagingParams.page,
+          onChange: handleChangeTablePagination,
+          showTotal: total => `共 ${total} 条数据`
+        }" :columns="attendanceColumns" :data-source="employeeDataSource.rows" :scroll="{ x: 'max-content' }"
+          bordered />
+      </QSpin>
     </div>
     <CompanyDrawerCompanyDrawer v-model:open="drawerStatus" />
     <SettingModal v-model:open="settingModalStatus" />
@@ -305,6 +319,15 @@ watch(() => selectedDepartmentIds.value, () => {
 
     &-label {
       min-width: max-content;
+    }
+
+    &-checkbox-group {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 120px);
+      grid-template-rows: repeat(auto-fill, 1fr);
+      height: 60px;
+      gap: var(--spacing-middle);
     }
   }
 

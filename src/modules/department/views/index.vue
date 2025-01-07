@@ -6,7 +6,7 @@ import { DepartmentTree } from '@/shared/utils/convert/department';
 import { DownOutlined } from '@ant-design/icons-vue';
 import { type MenuProps, type TreeProps, Dropdown, Flex, Menu, Modal, Tree, TypographyText, message } from 'ant-design-vue';
 import type { MenuItemType } from 'ant-design-vue/es/menu/src/interface';
-import { h, ref } from 'vue';
+import { h, onMounted, ref } from 'vue';
 import DepartmentModal from '../components/modal.vue';
 
 defineOptions({
@@ -116,7 +116,9 @@ const handleOperationClick = (info: MenuItemType, key: string | number) => {
 
 
 
-
+onMounted(() => {
+  await getCompanyDepartmentList()
+})
 </script>
 
 

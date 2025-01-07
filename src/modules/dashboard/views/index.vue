@@ -2,11 +2,10 @@
 import DashboardService from '@/modules/dashboard/services/dashboard.service';
 import type { DashboardDeclareVO, DashboardNoticeVO, HomeDataVO } from '@/modules/dashboard/types';
 import { QCalendar } from '@/shared/components/base/calendar';
-import { QSpin } from '@/shared/components/base/spin';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import type { FlexProps } from 'ant-design-vue';
-import { Flex, message, Spin } from 'ant-design-vue';
-import { ref } from 'vue';
+import { Flex, message } from 'ant-design-vue';
+import { onMounted, ref } from 'vue';
 import DashboardDeclarePanel from '../components/declare-panel/index.vue';
 import DashboardHelpLink from '../components/help-link/index.vue';
 import DashboardInfo from '../components/info/index.vue';
@@ -60,7 +59,8 @@ const socialSecurity = ref<DashboardDeclareVO>(defaultSocialSecurity)
 
 const noticeList = ref<DashboardNoticeVO[]>([])
 
-const { loading: getDashboardDataLoading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
+const { run: getDashboardData, loading: getDashboardDataLoading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
+  manual: true,
   onSuccess: ({ data }) => {
     console.log("dashboardData", data)
     dashboardInfoList.value = convertDashboardInfoList(data)
@@ -72,7 +72,8 @@ const { loading: getDashboardDataLoading } = useRequest<HomeDataVO>(DashboardSer
   }
 })
 
-const { loading: getNoticeLoading } = useRequest(DashboardService.getDashboardNotice, {
+const { run: getNotice, loading: getNoticeLoading } = useRequest(DashboardService.getDashboardNotice, {
+  manual: true,
   onSuccess: (res) => {
     noticeList.value = res.data
   },
@@ -83,20 +84,20 @@ const { loading: getNoticeLoading } = useRequest(DashboardService.getDashboardNo
 
 
 
-
+onMounted(async () => {
+  await Promise.all([getDashboardData(), getNotice()])
+})
 
 </script>
 
 <template>
   <Flex v-bind="WrapperAttrs">
-    <QSpin :spinning="getDashboardDataLoading" wrapper-class-name="flex-1">
-      <Flex v-bind="LeftPanelAttrs" class="dashboard-left">
-        <DashboardInfo :dashboard-info-list="dashboardInfoList" />
-        <DashboardQuick />
-        <DashboardDeclarePanel :info="providentFund" />
-        <DashboardDeclarePanel :info="socialSecurity" />
-      </Flex>
-    </QSpin>
+    <Flex v-bind="LeftPanelAttrs" class="dashboard-left">
+      <DashboardInfo :dashboard-info-list="dashboardInfoList" />
+      <DashboardQuick />
+      <DashboardDeclarePanel :info="providentFund" />
+      <DashboardDeclarePanel :info="socialSecurity" />
+    </Flex>
     <Flex vertical gap="middle" class="dashboard-right">
       <Flex gap="middle">
         <DashboardHelpLink class="dashboard-help-link" />
@@ -104,9 +105,7 @@ const { loading: getNoticeLoading } = useRequest(DashboardService.getDashboardNo
           <QCalendar class="dashboard-calendar-inner" />
         </div>
       </Flex>
-      <Spin :spinning="getNoticeLoading">
-        <DashboardNotification :notice-list="noticeList" />
-      </Spin>
+      <DashboardNotification :loading="getNoticeLoading" :notice-list="noticeList" />
     </Flex>
   </Flex>
 </template>
