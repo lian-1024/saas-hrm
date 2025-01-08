@@ -1,39 +1,56 @@
 <script setup lang="ts">
-import { QAvatar } from '@/shared/components/base/avatar';
-import { generateMenuItem } from '@/shared/utils/generate-menu-item';
-import { DashboardOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons-vue';
-import { Dropdown, Flex, Menu, Space, TypographyText, type FlexProps, type MenuProps } from 'ant-design-vue';
-import { h } from 'vue';
-import { handleClickMenuItemActions } from './actions';
+import router from '@/core/router'
+import { useUserStore } from '@/core/stores'
+import { QAvatar } from '@/shared/components/base/avatar'
+import { generateMenuItem } from '@/shared/utils/generate-menu-item'
+import { DashboardOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons-vue'
+import { Dropdown, Flex, Menu, Space, TypographyText, type FlexProps, type MenuProps } from 'ant-design-vue'
+import { h, ref } from 'vue'
+import { OpenModalType, type ModalType } from '../../constants'
+import UpdateModal from '../update-modal/index.vue'
+
 defineOptions({
-  name: "QLayoutHeaderUser",
+  name: "UserDropdown",
 })
 
+const { logout } = useUserStore()
 
 const WrapperStyle: FlexProps = {
   gap: 'small',
   align: "center"
 }
 
-const AvatarDropdownItems: MenuProps['items'] = [
+const avatarDropdownItems: MenuProps['items'] = [
   generateMenuItem("/dashboard", "首页", h(DashboardOutlined)),
-  generateMenuItem("/update-password", "修改密码", h(SettingOutlined)),
-  generateMenuItem("/update-avatar", "修改头像", h(SettingOutlined)),
-  generateMenuItem("/logout", "退出登录", h(LogoutOutlined)),
+  generateMenuItem("update-password", "修改密码", h(SettingOutlined)),
+  generateMenuItem("update-avatar", "修改头像", h(SettingOutlined)),
+  generateMenuItem("logout", "退出登录", h(LogoutOutlined)),
 ]
 
+const updateModalStatus = ref<boolean>(false)
+const updateModalType = ref<ModalType>(OpenModalType.PASSWORD)
 
-// const avatarDropdownAttrs: DropdownProps = {
-//   trigger: ['click', 'hover'],
-//   overlay: h(Menu, {
-//     items: AvatarDropdownItems,
-//     onClick: handleClickMenuItemActions,
-//   })
-// }
+const showModal = (type: ModalType) => {
+  updateModalType.value = type
+  updateModalStatus.value = true
+}
 
-
-
-
+const handleClickMenuItemActions: MenuProps['onClick'] = (info) => {
+  switch (info.key) {
+    case "logout":
+      logout()
+      break
+    case "update-password":
+      showModal(OpenModalType.PASSWORD)
+      break
+    case "update-avatar":
+      showModal(OpenModalType.AVATAR)
+      break
+    default:
+      router.push(info.key as string)
+      break
+  }
+}
 </script>
 
 <template>
@@ -46,9 +63,10 @@ const AvatarDropdownItems: MenuProps['items'] = [
         </TypographyText>
       </Space>
       <template #overlay>
-        <Menu :items="AvatarDropdownItems" @click="handleClickMenuItemActions" />
+        <Menu :items="avatarDropdownItems" @click="handleClickMenuItemActions" />
       </template>
     </Dropdown>
+    <UpdateModal v-model:type="updateModalType" v-model:open="updateModalStatus" />
   </Flex>
 </template>
 

@@ -2,7 +2,7 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons-vue';
 import { Flex, LayoutHeader, type FlexProps } from "ant-design-vue";
 
-import QLayoutHeaderUser from "./components/user-dropdown.vue";
+import UserDropdown from "@/modules/user/components/user-dropdown/user-dropdown.vue";
 defineOptions({
   name: "QLayoutHeader",
 });
@@ -26,7 +26,7 @@ const LayoutHeaderFlex: FlexProps = {
           @click="emits('changeCollapsed')" />
         <MenuFoldOutlined v-else class="trigger layout-header-collapsed-icon" @click="emits('changeCollapsed')" />
       </div>
-      <QLayoutHeaderUser />
+      <UserDropdown />
     </Flex>
   </LayoutHeader>
 </template>

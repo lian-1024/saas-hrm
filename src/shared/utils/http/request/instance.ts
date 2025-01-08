@@ -5,6 +5,8 @@ import { throttledErrorMessage } from '@/shared/utils/http/utils/throttled-error
 import axios from 'axios'
 import { Request } from './index'
 
+const throttled = throttledErrorMessage()
+
 // 创建axios实例
 const axiosInstance = axios.create({
   baseURL: '/api',
@@ -50,15 +52,15 @@ axiosInstance.interceptors.response.use(
       const { status } = error.response
       const errorMessage = HTTP_ERROR_MESSAGES[status] || DEFAULT_ERROR_MESSAGE
 
-      throttledErrorMessage(errorMessage)
+      throttled(errorMessage)
       // 如果是未授权，则登出
       if (status === HttpStatus.UNAUTHORIZED) {
         userStore.logout()
       }
     } else if (error.request) {
-      throttledErrorMessage(NETWORK_ERROR_MESSAGE)
+      throttled(NETWORK_ERROR_MESSAGE)
     } else {
-      throttledErrorMessage(DEFAULT_ERROR_MESSAGE)
+      throttled(DEFAULT_ERROR_MESSAGE)
     }
 
     return Promise.reject(error)
