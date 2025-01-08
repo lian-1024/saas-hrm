@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { Modal, type ModalProps } from 'ant-design-vue';
 import type { VNode } from 'vue';
-
 defineOptions({
   name: "QModal"
 })
@@ -11,6 +11,7 @@ const slots = defineSlots<{
   default: () => VNode,
   footer: () => VNode
 }>()
+const { token } = useAntdToken()
 </script>
 
 <template>
@@ -20,5 +21,3 @@ const slots = defineSlots<{
     </template>
   </Modal>
 </template>
-
-<style scoped lang="scss"></style>

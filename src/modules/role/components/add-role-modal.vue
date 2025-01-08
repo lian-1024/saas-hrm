@@ -2,11 +2,12 @@
 import RoleService from '@/modules/role/services/role.service';
 import type { AddRoleParams } from '@/modules/role/types';
 import { QModal } from '@/shared/components/base/modal/index';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { EnableStatus } from '@/shared/constants/status';
 import { Button, Flex, Form, FormItem, Input, message, Switch, Textarea, type FormInstance, type FormProps } from 'ant-design-vue';
 import { computed, reactive, ref } from 'vue';
-
+const { token } = useAntdToken()
 const modalStatus = defineModel('open', { default: false })
 const emits = defineEmits(['success'])
 const formRef = ref<FormInstance>();
@@ -86,6 +87,9 @@ const labelCol: FormProps['labelCol'] = { span: 6 }
 
 <style scoped lang="less">
 .add-role-modal-wrapper {
-  padding: var(--spacing-large);
+  margin-block: v-bind("`${token.marginLG}px`");
+  padding: v-bind("`${token.paddingLG}px`");
+  border-radius: v-bind("`${token.borderRadiusLG}px`");
+  background-color: v-bind("token.colorBgContainer");
 }
 </style>

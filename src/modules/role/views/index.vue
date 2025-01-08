@@ -4,13 +4,15 @@ import GivePermissionModal from '@/modules/role/components/give-permission-modal
 import RoleService from '@/modules/role/services/role.service';
 import type { RoleItemVO } from '@/modules/role/types';
 import { QSpin } from '@/shared/components/base/spin';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { useRequest } from '@/shared/composables/use-request/use-request';
-import type { EnableStateType } from '@/shared/constants/status';
+import type { EnableStatusType } from '@/shared/constants/status';
 import { EnableStatusMap } from '@/shared/constants/status';
 import type { PagingQueryParams, PagingResponse } from '@/shared/types';
 import { Button, Flex, Input, message, Popconfirm, Switch, Table, Tag, Textarea, TypographyLink, TypographyText, type PaginationProps, type TablePaginationConfig, type TableProps } from 'ant-design-vue';
 import { cloneDeep } from 'lodash-es';
 import { computed, onMounted, reactive, ref } from 'vue';
+const { token } = useAntdToken()
 // 角色管理
 defineOptions({
   name: "RolePage"
@@ -220,7 +222,7 @@ onMounted(async () => {
               <!-- 如果当前列是状态，则显示标签 -->
               <template v-if="column.key === 'state'">
                 <Tag :color="Boolean(record.state) ? 'blue' : 'default'">
-                  {{ Boolean(record.state) ? EnableStatusMap[record.state as EnableStateType] : "未启用" }}
+                  {{ Boolean(record.state) ? EnableStatusMap[record.state as EnableStatusType] : "未启用" }}
                 </Tag>
               </template>
               <!-- 如果当前列是其他，则显示文本 -->
@@ -261,8 +263,8 @@ onMounted(async () => {
 .role {
   &-wrapper {
     height: 100%;
-    padding: var(--spacing-middle);
-    background-color: var(--color-background);
+    padding: v-bind("`${token.paddingLG}px`");
+    background-color: v-bind("token.colorBgContainer");
   }
 }
 </style>

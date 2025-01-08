@@ -5,6 +5,7 @@ import { FormOfEmployment } from '@/modules/employee/constants';
 import EmployeeService from '@/modules/employee/services/employee.service';
 import type { UpdateWithAddEmployeeParams } from '@/modules/employee/types';
 import { QSpin } from '@/shared/components/base/spin';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { DepartmentTree } from '@/shared/utils/convert/department';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons-vue';
@@ -12,6 +13,7 @@ import type { CascaderProps, FormInstance } from 'ant-design-vue';
 import { Button, Cascader, Col, DatePicker, Flex, Form, FormItem, Input, message, Row, Select, Upload, type FormProps, type UploadProps } from 'ant-design-vue';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
+const { token } = useAntdToken()
 defineOptions({
   name: "EmployeeDetailPage"
 })
@@ -229,8 +231,8 @@ onMounted(async () => {
 <style scoped lang="less">
 .detail {
   &-wrapper {
-    padding: var(--spacing-large);
-    background-color: var(--color-background);
+    padding: v-bind("`${token.paddingLG}px`");
+    background-color: v-bind("token.colorBgContainer");
   }
 
   &-form {

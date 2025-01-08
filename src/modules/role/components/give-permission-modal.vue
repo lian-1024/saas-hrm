@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import PermissionService from '@/modules/permission/services/permission.service';
 import RoleService from '@/modules/role/services/role.service';
+import { QModal } from '@/shared/components/base/modal';
 import { QSkeleton } from '@/shared/components/base/skeleton';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { PermissionTree } from '@/shared/utils/convert/permission';
-import { message, Modal, Tree } from 'ant-design-vue';
+import { message, Tree } from 'ant-design-vue';
 import { ref, watch } from 'vue';
+const { token } = useAntdToken()
 defineOptions({
   name: 'GivePermissionModal'
 })
@@ -66,22 +69,23 @@ watch(() => props.roleId, (newVal) => {
 </script>
 
 <template>
-  <div>
-    <Modal title="分配权限" :open="modalStatus" :confirm-loading="givePermissionLoading" @ok="handleConfirm"
-      @cancel="handleCancel" :width="400">
-      <div class="permission-modal-wrapper">
-        <QSkeleton :loading="getPermissionListLoading" :title="false" :paragraph="{
-          rows: 8
-        }">
-          <Tree v-model:checkedKeys="checkedPermissionKeys" checkable :tree-data="permissionsTreeData" />
-        </QSkeleton>
-      </div>
-    </Modal>
-  </div>
+  <QModal title="分配权限" :open="modalStatus" :confirm-loading="givePermissionLoading" @ok="handleConfirm"
+    @cancel="handleCancel" :width="400">
+    <div class="permission-modal-wrapper">
+      <QSkeleton :loading="getPermissionListLoading" :title="false" :paragraph="{
+        rows: 8
+      }">
+        <Tree v-model:checkedKeys="checkedPermissionKeys" checkable :tree-data="permissionsTreeData" />
+      </QSkeleton>
+    </div>
+  </QModal>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .permission-modal-wrapper {
-  padding: var(--spacing-large);
+  margin-block: v-bind("`${token.marginLG}px`");
+  padding: v-bind("`${token.paddingLG}px`");
+  border-radius: v-bind("`${token.borderRadiusLG}px`");
+  background-color: v-bind("token.colorBgContainer");
 }
 </style>

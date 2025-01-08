@@ -16,6 +16,8 @@ import { Button, Flex, InputSearch, message, Popconfirm, Table, Tree, Typography
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
 import FileSaver from 'file-saver';
 import { onMounted, reactive, ref, watch } from 'vue';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
+const { token } = useAntdToken()
 // 员工管理
 defineOptions({
   name: "EmployeePage"
@@ -267,21 +269,21 @@ onMounted(async () => {
 .employee {
   &-left {
     max-width: 280px;
-    padding: var(--spacing-large);
-    background-color: var(--color-background);
+    padding: v-bind("`${token.paddingLG}px`");
+    background-color: v-bind("token.colorBgContainer");
   }
 
   &-right {
     flex: 1;
 
     &-actions {
-      padding: var(--spacing-middle);
-      background-color: var(--color-background);
+      padding: v-bind("`${token.paddingLG}px`");
+      background-color: v-bind("token.colorBgContainer");
     }
 
     &-table {
-      padding: var(--spacing-middle);
-      background-color: var(--color-background);
+      padding: v-bind("`${token.paddingLG}px`");
+      background-color: v-bind("token.colorBgContainer");
 
       .table-header-title {
         white-space: nowrap;
