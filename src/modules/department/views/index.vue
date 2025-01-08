@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import DepartmentService from '@/modules/department/services/department.service';
 import { QSkeleton } from '@/shared/components/base/skeleton';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { useRequest } from '@/shared/composables/use-request/use-request';
+import { useTheme } from '@/shared/composables/use-theme';
 import { DepartmentTree } from '@/shared/utils/convert/department';
 import { DownOutlined } from '@ant-design/icons-vue';
 import { type MenuProps, type TreeProps, Dropdown, Flex, Menu, Modal, Tree, TypographyText, message } from 'ant-design-vue';
 import type { MenuItemType } from 'ant-design-vue/es/menu/src/interface';
 import { h, onMounted, ref } from 'vue';
 import DepartmentModal from '../components/modal.vue';
-
+const { token } = useAntdToken()
 defineOptions({
   name: "DepartmentPage"
 })
@@ -115,7 +117,7 @@ const handleOperationClick = (info: MenuItemType, key: string | number) => {
 }
 
 
-
+const { isDark } = useTheme()
 onMounted(async () => {
   await getCompanyDepartmentList()
 })
@@ -156,7 +158,7 @@ onMounted(async () => {
     height: 100%;
     padding-block: calc(var(--spacing-large) * 2);
     padding-inline: calc(var(--spacing-large) + 10%);
-    background-color: var(--color-background);
+    background-color: v-bind("token.colorBgContainer");
   }
 
   &-tree {
@@ -166,6 +168,16 @@ onMounted(async () => {
 }
 
 :deep(.ant-tree-treenode) {
-  padding-block: var(--spacing-small);
+  padding-block: v-bind("`${token.paddingXXS}px`");
+}
+
+:deep(.ant-tree-node-content-wrapper) {
+  border: 1px solid transparent;
+  transition: border-color 0.3s;
+  background-color: v-bind("isDark && `transparent`") !important;
+
+  &:hover {
+    border-color: v-bind("isDark ? token.colorPrimary : token.colorPrimaryHover");
+  }
 }
 </style>
