@@ -40,3 +40,8 @@ export interface UpdatePasswordParams {
   oldPassword: string
   newPassword: string
 }
+
+export interface UpdateAvatarParams {
+  staffPhoto: string
+}
+

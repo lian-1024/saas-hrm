@@ -1,57 +1,74 @@
 <script setup lang="ts">
-import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
-import { Flex, Upload, message } from 'ant-design-vue';
-import { ref } from 'vue';
+import { RotateLeftOutlined, RotateRightOutlined, UploadOutlined } from '@ant-design/icons-vue';
+import { useFileDialog } from '@vueuse/core';
+import { Button, Flex, Image } from 'ant-design-vue';
+import { h, reactive, ref } from 'vue';
+import { VueCropper } from 'vue-cropper';
+import 'vue-cropper/dist/index.css';
+import { AvatarCropperOperation, type AvatarCropperOperationType } from '../../constants';
 
-const emit = defineEmits<{
-  success: []
-}>()
+const emit = defineEmits(['success'])
+
+const { } = useFileDialog()
 
 const loading = ref(false)
-const imageUrl = ref<string>()
+const cropperRef = ref<InstanceType<typeof VueCropper>>()
 
-const beforeUpload = (file: File) => {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
-  if (!isJpgOrPng) {
-    message.error('只能上传 JPG/PNG 格式的图片!')
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2
-  if (!isLt2M) {
-    message.error('图片大小不能超过 2MB!')
-  }
-  return isJpgOrPng && isLt2M
+const cropperOptions = reactive({
+  img: new URL("@/assets/common/img.jpeg", import.meta.url).href,
+  autoCrop: true, // 是否默认生成截图框
+  canMove: true, // 是否可以移动截图框
+  canMoveBox: true, // 是否可以移动截图框
+  fixed: true, // 是否固定截图框
+  fixedNumber: [1, 1], // 截图框的固定比例
+  centerBox: true, // 是否将截图框居中
+  infoTrue: true, // 是否显示截图框信息
+  fillColor: '#fff' // 导出时背景颜色
+})
+
+const previewOptions = reactive({
+  url: '',
+  width: 200,
+  height: 200,
+})
+
+const handleRealTime = async () => {
+  // 获取裁剪后的图片数据
+  previewOptions.url = await getCropDataBase64()
 }
 
-const handleChange = (info: UploadChangeParam) => {
-  if (info.file.status === 'uploading') {
-    loading.value = true
-    return
-  }
-  if (info.file.status === 'done') {
-    loading.value = false
-    // 获取上传后的图片URL
-    imageUrl.value = info.file.response.url
-    message.success('头像上传成功')
-    emit('success')
-  }
+const getCropDataBase64 = (): Promise<string> => {
+  return new Promise((resolve) => cropperRef.value?.getCropData((data: string) => {
+    resolve(data)
+  }))
 }
 
-const uploadProps: UploadProps = {
-  name: 'avatar',
-  listType: 'picture-card',
-  showUploadList: false,
-  action: '/api/user/upload-avatar', // 替换为实际的上传接口
-  beforeUpload,
-  onChange: handleChange,
-  headers: {
-    // 如果需要认证
-    Authorization: `Bearer ${localStorage.getItem('token')}`
-  }
+const handleUploadAvatar = async () => {
+
+
 }
+
+
+const clickCropOperationMap = {
+  [AvatarCropperOperation.ROTATE_LEFT]: () => cropperRef.value.rotateLeft(),
+  [AvatarCropperOperation.ROTATE_RIGHT]: () => cropperRef.value.rotateRight(),
+  [AvatarCropperOperation.GET_CROP_DATA]: () => handleUploadAvatar(),
+}
+
+const handleClickCropOperation = (type: AvatarCropperOperationType) => {
+  if (!cropperRef.value) return
+  clickCropOperationMap[type]()
+}
+
 
 const handleSubmit = () => {
-  console.log("handleSubmit");
+  cropperRef.value?.getCropBlob((blob: Blob) => {
+    console.log('blob:', blob)
+  })
 }
+
+
+
 
 defineExpose({
   loading,
@@ -60,27 +77,70 @@ defineExpose({
 </script>
 
 <template>
-  <Flex justify="center" align="center">
-    <Upload v-bind="uploadProps">
-      <div v-if="loading">上传中...</div>
-      <img v-else-if="imageUrl" :src="imageUrl" alt="avatar" style="width: 100%" />
-      <div v-else>
-        <div class="ant-upload-text">点击上传</div>
+  <Flex class="avatar-upload-wrapper" gap="large">
+    <div class="avatar-upload-cropper">
+      <VueCropper ref="cropperRef" v-bind="cropperOptions" @realTime="handleRealTime" />
+      <Flex gap="middle">
+        <Button shape="circle" type="primary" :icon="h(UploadOutlined)"
+          @click="clickCropOperationMap[AvatarCropperOperation.GET_CROP_DATA]" />
+        <Button shape="circle" type="primary" :icon="h(RotateRightOutlined)"
+          @click="clickCropOperationMap[AvatarCropperOperation.ROTATE_RIGHT]" />
+        <Button shape="circle" type="primary" :icon="h(RotateLeftOutlined)"
+          @click="clickCropOperationMap[AvatarCropperOperation.ROTATE_LEFT]" />
+      </Flex>
+    </div>
+    <div class="avatar-upload-preview">
+      <div class="avatar-upload-preview-img">
+        <Image v-if="previewOptions.url" :src="previewOptions.url" :width="previewOptions.width"
+          :height="previewOptions.height" />
       </div>
-    </Upload>
+    </div>
   </Flex>
 </template>
 
-<style scoped>
-:deep(.ant-upload-select) {
-  width: 200px !important;
-  height: 200px !important;
-  margin: 0 auto;
-  display: block;
+<style scoped lang="less">
+.avatar {
+  &-upload {
+    &-wrapper {
+      height: 360px;
+    }
+
+    &-cropper {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-large);
+
+    }
+
+    &-preview {
+      padding-inline-end: var(--spacing-large);
+
+      &-img {
+        height: 200px;
+        width: 200px;
+        border: 1px solid #e8e8e8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #fff;
+        overflow: hidden;
+      }
+    }
+  }
 }
 
-.ant-upload-text {
-  margin-top: 8px;
-  color: #666;
+:deep(.cropper-view-box) {
+  outline: 1px solid #1890ff;
+}
+
+:deep(.cropper-point) {
+  background-color: #1890ff;
+}
+
+:deep(.ant-image) {
+  transition: transform 0.3s ease;
+  transform-origin: center center;
 }
 </style>
