@@ -2,18 +2,18 @@
 import router from '@/core/router'
 import { useUserStore } from '@/core/stores'
 import { QAvatar } from '@/shared/components/base/avatar'
+import { QSkeleton } from '@/shared/components/base/skeleton'
 import { generateMenuItem } from '@/shared/utils/generate-menu-item'
 import { DashboardOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import { Dropdown, Flex, Menu, Space, TypographyText, type FlexProps, type MenuProps } from 'ant-design-vue'
-import { h, ref } from 'vue'
+import { h, onMounted, ref } from 'vue'
 import { OpenModalType, type ModalType } from '../../constants'
 import UpdateModal from '../update-modal/index.vue'
-
 defineOptions({
   name: "UserDropdown",
 })
 
-const { logout } = useUserStore()
+const userStore = useUserStore()
 
 const WrapperStyle: FlexProps = {
   gap: 'small',
@@ -24,7 +24,7 @@ const avatarDropdownItems: MenuProps['items'] = [
   generateMenuItem("/dashboard", "首页", h(DashboardOutlined)),
   generateMenuItem("update-password", "修改密码", h(SettingOutlined)),
   generateMenuItem("update-avatar", "修改头像", h(SettingOutlined)),
-  generateMenuItem("logout", "退出登录", h(LogoutOutlined)),
+  generateMenuItem("logou,", "退出登录", h(LogoutOutlined)),
 ]
 
 const updateModalStatus = ref<boolean>(false)
@@ -38,7 +38,7 @@ const showModal = (type: ModalType) => {
 const handleClickMenuItemActions: MenuProps['onClick'] = (info) => {
   switch (info.key) {
     case "logout":
-      logout()
+      userStore.logout()
       break
     case "update-password":
       showModal(OpenModalType.PASSWORD)
@@ -51,23 +51,29 @@ const handleClickMenuItemActions: MenuProps['onClick'] = (info) => {
       break
   }
 }
+
+onMounted(() => {
+  console.log('userStore.userInfo:', userStore.userInfo)
+})
 </script>
 
 <template>
-  <Flex v-bind="WrapperStyle">
-    <Dropdown>
-      <Space gap="middle">
-        <QAvatar size="large" />
-        <TypographyText class="user-username">
-          Lianqq
-        </TypographyText>
-      </Space>
-      <template #overlay>
-        <Menu :items="avatarDropdownItems" @click="handleClickMenuItemActions" />
-      </template>
-    </Dropdown>
-    <UpdateModal v-model:type="updateModalType" v-model:open="updateModalStatus" />
-  </Flex>
+  <QSkeleton :loading="!userStore.userInfo?.staffPhoto" avatar :paragraph="false">
+    <Flex v-bind="WrapperStyle">
+      <Dropdown>
+        <Space gap="middle">
+          <QAvatar size="large" :src="userStore.userInfo?.staffPhoto" />
+          <TypographyText class="user-username">
+            {{ userStore.userInfo?.username }}
+          </TypographyText>
+        </Space>
+        <template #overlay>
+          <Menu :items="avatarDropdownItems" @click="handleClickMenuItemActions" />
+        </template>
+      </Dropdown>
+      <UpdateModal v-model:type="updateModalType" v-model:open="updateModalStatus" />
+    </Flex>
+  </QSkeleton>
 </template>
 
 <style scoped lang="less">

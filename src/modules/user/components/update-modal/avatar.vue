@@ -4,7 +4,6 @@ import { QSpin } from '@/shared/components/base/spin';
 import { useRequest } from '@/shared/composables/use-request';
 import { preloadImage } from '@/shared/utils/file/preload-image';
 import { readFileAsBase64 } from '@/shared/utils/file/read-file-as-base64';
-import { getUrlPath } from '@/shared/utils/file/url';
 import { RotateLeftOutlined, RotateRightOutlined, UploadOutlined } from '@ant-design/icons-vue';
 import { useFileDialog } from '@vueuse/core';
 import { Button, Flex, Image, message } from 'ant-design-vue';
@@ -105,7 +104,7 @@ const loadingImage = ref(false)
 const loadImage = async () => {
   try {
     loadingImage.value = true
-    cropperOptions.img = await preloadImage(`images/${getUrlPath(userStore.userInfo?.staffPhoto || '')}`)
+    cropperOptions.img = await preloadImage(userStore.userInfo?.staffPhoto || '')
   } finally {
     loadingImage.value = false
 

@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { useUserStore } from '@/core/stores'
 import { Modal } from 'ant-design-vue'
 import { computed, ref } from 'vue'
 import { OpenModalType, type ModalType } from '../../constants'
 import AvatarForm from './avatar.vue'
-
 import PasswordForm from './password.vue'
 
 const type = defineModel<ModalType>("type", { default: OpenModalType.PASSWORD })
 const open = defineModel<boolean>("open")
-
+const userStore = useUserStore()
 const componentsRef = ref()
 
 const title = computed(() => {
@@ -32,6 +32,9 @@ const handleOk = async () => {
   try {
     // 调用子组件的 handleSubmit 方法
     await componentsRef.value.handleSubmit?.()
+    setTimeout(() => {
+      userStore.getUserInfo()
+    }, 1000)
   } catch (error) {
     console.error('提交失败:', error)
   }
