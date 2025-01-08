@@ -1,4 +1,4 @@
-import type { LoginParams, UserInfoVO } from '@/modules/user/types';
+import type { LoginParams, UpdatePasswordParams, UserInfoVO } from '@/modules/user/types';
 import { request } from '@/shared/utils/http/request/instance';
 
 class UserService {
@@ -7,6 +7,12 @@ class UserService {
   }
   static login = (data: LoginParams) => {
     return request.post<string>('/sys/login', {
+      data
+    })
+  }
+
+  static updatePassword = (data: UpdatePasswordParams) => {
+    return request.put('/sys/user/updatePass', {
       data
     })
   }

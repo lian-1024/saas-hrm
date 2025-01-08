@@ -35,3 +35,8 @@ export interface Roles {
    */
   points: string[];
 }
+
+export interface UpdatePasswordParams {
+  oldPassword: string
+  newPassword: string
+}

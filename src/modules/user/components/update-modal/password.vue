@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import UserService from '@/modules/user/services/user.service'
+import { useRequest } from '@/shared/composables/use-request'
 import { Form, Input, message, type FormProps } from 'ant-design-vue'
 import { ref } from 'vue'
 
@@ -13,7 +15,6 @@ const emit = defineEmits<{
 }>()
 
 const formRef = ref()
-const loading = ref(false)
 const model = ref<FormState>({
   oldPassword: '',
   newPassword: '',
@@ -39,18 +40,27 @@ const rules = {
   ]
 }
 
+const { loading, run: updatePassword } = useRequest(UserService.updatePassword, {
+  manual: true,
+  onSuccess: () => {
+    message.success('修改密码成功')
+    emit('success')
+  },
+  onError: (error) => {
+    message.error(error.message || '修改密码失败')
+  }
+})
+
 const handleSubmit = () => {
   formRef.value?.validate().then(async () => {
-    try {
-      loading.value = true
-      // TODO: 调用修改密码API
-      message.success('修改密码成功')
-      emit('success')
-    } catch (error: any) {
-      message.error(error.message || '修改密码失败')
-    } finally {
-      loading.value = false
-    }
+    const { oldPassword, newPassword } = model.value
+
+    updatePassword({
+      oldPassword,
+      newPassword
+    })
+
+
   })
 }
 
