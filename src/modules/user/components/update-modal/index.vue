@@ -50,8 +50,8 @@ const componentMap = {
 </script>
 
 <template>
-  <Modal :width="800" :title="title" :open="open" :confirm-loading="componentsRef?.loading" @ok="handleOk"
-    @cancel="handleCancel">
+  <Modal :width="800" :title="title" :open="open" :ok-text="title" :confirm-loading="componentsRef?.loading"
+    @ok="handleOk" @cancel="handleCancel">
     <component :is="componentMap[type]" ref="componentsRef" @success="handleClose" />
 
   </Modal>

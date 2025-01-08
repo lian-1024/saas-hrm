@@ -1,21 +1,26 @@
 <script setup lang="ts">
+import { useUserStore } from '@/core/stores';
+import { QSpin } from '@/shared/components/base/spin';
+import { useRequest } from '@/shared/composables/use-request';
+import { preloadImage } from '@/shared/utils/file/preload-image';
+import { readFileAsBase64 } from '@/shared/utils/file/read-file-as-base64';
+import { getUrlPath } from '@/shared/utils/file/url';
 import { RotateLeftOutlined, RotateRightOutlined, UploadOutlined } from '@ant-design/icons-vue';
 import { useFileDialog } from '@vueuse/core';
-import { Button, Flex, Image } from 'ant-design-vue';
-import { h, reactive, ref } from 'vue';
+import { Button, Flex, Image, message } from 'ant-design-vue';
+import { h, onMounted, reactive, ref } from 'vue';
 import { VueCropper } from 'vue-cropper';
 import 'vue-cropper/dist/index.css';
-import { AvatarCropperOperation, type AvatarCropperOperationType } from '../../constants';
-
+import { AvatarCropperOperation } from '../../constants';
+import UserService from '../../services/user.service';
 const emit = defineEmits(['success'])
 
-const { } = useFileDialog()
+const userStore = useUserStore()
 
-const loading = ref(false)
 const cropperRef = ref<InstanceType<typeof VueCropper>>()
 
 const cropperOptions = reactive({
-  img: new URL("@/assets/common/img.jpeg", import.meta.url).href,
+  img: '',
   autoCrop: true, // 是否默认生成截图框
   canMove: true, // 是否可以移动截图框
   canMoveBox: true, // 是否可以移动截图框
@@ -43,59 +48,96 @@ const getCropDataBase64 = (): Promise<string> => {
   }))
 }
 
-const handleUploadAvatar = async () => {
 
 
-}
+
+
 
 
 const clickCropOperationMap = {
   [AvatarCropperOperation.ROTATE_LEFT]: () => cropperRef.value.rotateLeft(),
   [AvatarCropperOperation.ROTATE_RIGHT]: () => cropperRef.value.rotateRight(),
-  [AvatarCropperOperation.GET_CROP_DATA]: () => handleUploadAvatar(),
 }
 
-const handleClickCropOperation = (type: AvatarCropperOperationType) => {
-  if (!cropperRef.value) return
-  clickCropOperationMap[type]()
-}
+
+const { run: updateAvatar, loading } = useRequest(UserService.updateAvatar, {
+  manual: true,
+  onSuccess: () => {
+    message.success("上传头像成功")
+    emit('success')
+  },
+  onError: (error) => {
+    message.error(error.message || "上传头像失败")
+  }
+})
 
 
 const handleSubmit = () => {
-  cropperRef.value?.getCropBlob((blob: Blob) => {
-    console.log('blob:', blob)
+  if (!previewOptions.url) return message.warn("请先选择头像")
+  updateAvatar({
+    staffPhoto: previewOptions.url
   })
 }
 
 
+
+const { open: openFileDialog, onChange: handleFileChange } = useFileDialog({
+  accept: 'image/*',
+  multiple: false,
+  directory: false
+})
+
+handleFileChange(async (files) => {
+  console.log('files:', files)
+  if (!files) return
+  const base64 = await readFileAsBase64(files[0])
+  cropperOptions.img = base64
+})
 
 
 defineExpose({
   loading,
   handleSubmit
 })
+
+
+const loadingImage = ref(false)
+const loadImage = async () => {
+  try {
+    loadingImage.value = true
+    cropperOptions.img = await preloadImage(`images/${getUrlPath(userStore.userInfo?.staffPhoto || '')}`)
+  } finally {
+    loadingImage.value = false
+
+  }
+}
+
+onMounted(async () => {
+  await loadImage()
+})
 </script>
 
 <template>
-  <Flex class="avatar-upload-wrapper" gap="large">
-    <div class="avatar-upload-cropper">
-      <VueCropper ref="cropperRef" v-bind="cropperOptions" @realTime="handleRealTime" />
-      <Flex gap="middle">
-        <Button shape="circle" type="primary" :icon="h(UploadOutlined)"
-          @click="clickCropOperationMap[AvatarCropperOperation.GET_CROP_DATA]" />
-        <Button shape="circle" type="primary" :icon="h(RotateRightOutlined)"
-          @click="clickCropOperationMap[AvatarCropperOperation.ROTATE_RIGHT]" />
-        <Button shape="circle" type="primary" :icon="h(RotateLeftOutlined)"
-          @click="clickCropOperationMap[AvatarCropperOperation.ROTATE_LEFT]" />
-      </Flex>
-    </div>
-    <div class="avatar-upload-preview">
-      <div class="avatar-upload-preview-img">
-        <Image v-if="previewOptions.url" :src="previewOptions.url" :width="previewOptions.width"
-          :height="previewOptions.height" />
+  <QSpin :spinning="loadingImage" wrapper-class-name="flex-1 h-full">
+    <Flex class="avatar-upload-wrapper" gap="large">
+      <div class="avatar-upload-cropper">
+        <VueCropper ref="cropperRef" v-bind="cropperOptions" @realTime="handleRealTime" />
+        <Flex gap="middle">
+          <Button shape="circle" type="primary" :icon="h(UploadOutlined)" @click="() => openFileDialog()" />
+          <Button shape="circle" type="primary" :icon="h(RotateRightOutlined)"
+            @click="clickCropOperationMap[AvatarCropperOperation.ROTATE_RIGHT]" />
+          <Button shape="circle" type="primary" :icon="h(RotateLeftOutlined)"
+            @click="clickCropOperationMap[AvatarCropperOperation.ROTATE_LEFT]" />
+        </Flex>
       </div>
-    </div>
-  </Flex>
+      <div class="avatar-upload-preview">
+        <div class="avatar-upload-preview-img">
+          <Image v-if="previewOptions.url" :src="previewOptions.url" :width="previewOptions.width"
+            :height="previewOptions.height" />
+        </div>
+      </div>
+    </Flex>
+  </QSpin>
 </template>
 
 <style scoped lang="less">
@@ -112,6 +154,10 @@ defineExpose({
       flex-direction: column;
       gap: var(--spacing-large);
 
+
+      :deep(.ant-spin-container) {
+        height: 100%;
+      }
     }
 
     &-preview {

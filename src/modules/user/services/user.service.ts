@@ -18,7 +18,7 @@ class UserService {
   }
 
   static updateAvatar = (data: UpdateAvatarParams) => {
-    return request.put('/sys/user/updateAvatar', {
+    return request.put('/sys/updateStaffPhoto', {
       data
     })
   }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getUrlPath } from '@/shared/utils/url';
+import { getUrlPath } from '@/shared/utils/file/url';
 import { UserOutlined } from '@ant-design/icons-vue';
 import { Avatar } from 'ant-design-vue';
 import { computed, h } from 'vue';
