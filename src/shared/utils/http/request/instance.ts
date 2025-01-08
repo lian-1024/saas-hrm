@@ -1,7 +1,7 @@
 import { useUserStore } from '@/core/stores'
 import { DEFAULT_ERROR_MESSAGE, HTTP_ERROR_MESSAGES, NETWORK_ERROR_MESSAGE } from '@/shared/constants/http-message'
 import { HttpStatus } from '@/shared/constants/http-status'
-import { message } from 'ant-design-vue'
+import { throttledErrorMessage } from '@/shared/utils/http/utils/throttled-error-message'
 import axios from 'axios'
 import { Request } from './index'
 
@@ -50,16 +50,15 @@ axiosInstance.interceptors.response.use(
       const { status } = error.response
       const errorMessage = HTTP_ERROR_MESSAGES[status] || DEFAULT_ERROR_MESSAGE
 
-      message.error(errorMessage)
-      console.log(status)
+      throttledErrorMessage(errorMessage)
       // 如果是未授权，则登出
       if (status === HttpStatus.UNAUTHORIZED) {
         userStore.logout()
       }
     } else if (error.request) {
-      message.error(NETWORK_ERROR_MESSAGE)
+      throttledErrorMessage(NETWORK_ERROR_MESSAGE)
     } else {
-      message.error(DEFAULT_ERROR_MESSAGE)
+      throttledErrorMessage(DEFAULT_ERROR_MESSAGE)
     }
 
     return Promise.reject(error)
