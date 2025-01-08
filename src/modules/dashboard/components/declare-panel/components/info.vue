@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import type { DashboardDeclareVO } from '@/modules/dashboard/types';
 import { QSkeleton } from '@/shared/components/base/skeleton';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { Flex, TypographyText } from 'ant-design-vue';
 import { computed } from 'vue';
 import { CountTo } from 'vue3-count-to';
 defineOptions({
   name: 'DeclareInfo'
 })
+
+const { token } = useAntdToken()
 
 const props = defineProps<{
   info: Omit<DashboardDeclareVO, 'xAxis' | 'yAxis'>
@@ -57,24 +60,26 @@ const declareTotalList = computed(() => {
 
   &-total {
     margin: 0;
-    font-size: var(--font-size-xlarge);
-    padding-bottom: var(--spacing-middle);
-    color: var(--color-primary);
+    font-size: v-bind("`${token.fontSizeHeading2}px`");
+    padding-bottom: v-bind("`${token.padding}px`");
+    color: v-bind("token.colorPrimary");
 
 
   }
 
 
   &-info {
-    padding: var(--spacing-middle);
-    background-color: var(--color-background-secondary);
+    background-color: v-bind("token.colorBgContainer");
     width: 200px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: v-bind("`${token.padding}px`");
 
     &-item {
       min-width: 36%;
 
       &-total {
-        font-size: var(--font-size-xlarge);
+        font-size: v-bind("`${token.fontSizeHeading2}px`");
       }
     }
   }

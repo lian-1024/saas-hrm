@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { LayoutContent } from 'ant-design-vue';
 defineOptions({
   name: "QLayoutContent"
 })
 
-
+const { token } = useAntdToken()
 </script>
 
 <template>
@@ -23,6 +24,7 @@ defineOptions({
   position: relative;
   padding: 24px 16px;
   min-height: auto;
+  background-color: v-bind('token.colorBgElevated');
 }
 
 .fade-enter-active,

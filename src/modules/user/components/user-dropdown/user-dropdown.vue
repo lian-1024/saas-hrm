@@ -3,6 +3,7 @@ import router from '@/core/router'
 import { useUserStore } from '@/core/stores'
 import { QAvatar } from '@/shared/components/base/avatar'
 import { QSkeleton } from '@/shared/components/base/skeleton'
+import { useAntdToken } from '@/shared/composables/use-antd-token'
 import { generateMenuItem } from '@/shared/utils/generate-menu-item'
 import { DashboardOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import { Dropdown, Flex, Menu, Space, TypographyText, type FlexProps, type MenuProps } from 'ant-design-vue'
@@ -55,6 +56,8 @@ const handleClickMenuItemActions: MenuProps['onClick'] = (info) => {
 onMounted(() => {
   console.log('userStore.userInfo:', userStore.userInfo)
 })
+
+const { token } = useAntdToken()
 </script>
 
 <template>
@@ -79,7 +82,7 @@ onMounted(() => {
 <style scoped lang="less">
 .user {
   &-username {
-    color: var(--color-background);
+    color: v-bind("token.colorText");
   }
 }
 </style>

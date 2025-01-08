@@ -1,11 +1,11 @@
 <script setup lang="ts" generic="">
 import type { DashboardNoticeVO } from '@/modules/dashboard/types';
-import { QAvatar } from '@/shared/components/base/Avatar';
+import { QAvatar } from '@/shared/components/base/avatar';
 import { QSkeleton } from '@/shared/components/base/skeleton';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { Flex, List, ListItem, ListItemMeta, TypographyLink, TypographyText } from 'ant-design-vue';
 import { computed } from 'vue';
 import QPanel from '../panel.vue';
-
 defineOptions({
   name: "DashboardNotification"
 })
@@ -41,6 +41,8 @@ const computedNoticeList = computed(() => {
     }
   })
 })
+
+const { token } = useAntdToken()
 
 </script>
 
@@ -99,6 +101,6 @@ const computedNoticeList = computed(() => {
 
 <style scoped lang="less">
 .notification-item {
-  padding-block: var(--spacing-middle);
+  padding-block: v-bind("`${token.padding}px`");
 }
 </style>

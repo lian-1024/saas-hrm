@@ -23,6 +23,8 @@ import {
 } from 'ant-design-vue'
 import { h, reactive, ref, watch } from 'vue'
 import { CountTo } from 'vue3-count-to'
+import { useAntdToken } from '@/shared/composables/use-antd-token';
+const { token } = useAntdToken()
 
 interface EmployeeAttendance extends EmployeeAttendanceVO {
   key: string | number | null
@@ -341,7 +343,7 @@ watch(() => selectedDepartmentIds.value, () => {
   &-table {
     height: 100%;
     padding: var(--spacing-large);
-    background-color: var(--color-background);
+    background-color: v-bind('token.colorBgContainer');
     overflow: auto;
   }
 

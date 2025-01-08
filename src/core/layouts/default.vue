@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Layout } from 'ant-design-vue';
 
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { ref } from 'vue';
 import QLayoutContent from './components/default/content.vue';
 import QLayoutHeader from './components/default/header/header.vue';
@@ -23,6 +24,7 @@ const handleChangeCollapsed = (status?: boolean) => {
     collapsed.value = !collapsed.value
   }
 }
+const { token } = useAntdToken()
 
 </script>
 
@@ -43,6 +45,7 @@ const handleChangeCollapsed = (status?: boolean) => {
 .layout {
   &-default {
     height: 100%;
+    background-color: v-bind('token.colorBgContainer');
   }
 
   &-main {

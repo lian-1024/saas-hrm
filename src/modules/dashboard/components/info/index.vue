@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useUserStore } from '@/core/stores/modules/user';
-import { QAvatar } from '@/shared/components/base/Avatar';
+import { QAvatar } from '@/shared/components/base/avatar';
 import { QSkeleton } from '@/shared/components/base/skeleton';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { Divider, Flex, type FlexProps, Tag, TypographyText } from 'ant-design-vue';
 import { onMounted } from 'vue';
 import { CountTo } from 'vue3-count-to';
 import type { DashboardInfoItem } from '../../types';
+const { token } = useAntdToken()
 defineOptions({
   name: "DashboardInfo"
 })
@@ -75,15 +77,22 @@ onMounted(async () => {
 <style scoped lang="less">
 .dashboard {
   &-info {
-    padding: var(--spacing-large);
-    background-color: var(--color-background);
+    padding: v-bind("`${token.paddingLG}px`");
+    background-color: v-bind("token.colorBgContainer");
+    border-radius: v-bind("`${token.borderRadiusLG}px`");
+    border: 1px solid v-bind("token.colorBorderSecondary");
+    transition: border-color 0.3s;
+
+    &:hover {
+      border-color: v-bind("token.colorPrimary");
+    }
 
     &-name {
-      font-size: var(--font-size-middle);
+      font-size: v-bind("`${token.fontSizeLG}px`");
     }
 
     &-secondary {
-      font-size: var(--font-size);
+      font-size: v-bind("`${token.fontSize}px`");
       white-space: nowrap;
     }
   }
@@ -94,7 +103,7 @@ onMounted(async () => {
       grid-template-columns: repeat(5, 1fr);
       grid-template-rows: repeat(2, 80px);
       justify-content: space-between;
-      gap: var(--spacing-small);
+      gap: v-bind("`${token.marginXXS}px`");
     }
 
     &-item {
@@ -102,14 +111,13 @@ onMounted(async () => {
     }
 
     &-title {
-      font-size: var(--font-size);
+      font-size: v-bind("`${token.fontSize}px`");
     }
 
     &-total {
       width: min-content;
-      padding-top: var(--spacing-middle);
-      font-size: var(--font-size-xlarge);
-      padding-top: var(--spacing-small);
+      padding-top: v-bind("`${token.paddingXXS}px`");
+      font-size: v-bind("`${token.fontSizeHeading3}px`");
     }
 
   }

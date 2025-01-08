@@ -2,9 +2,10 @@
 import DashboardService from '@/modules/dashboard/services/dashboard.service';
 import type { DashboardDeclareVO, DashboardNoticeVO, HomeDataVO } from '@/modules/dashboard/types';
 import { QCalendar } from '@/shared/components/base/calendar';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import type { FlexProps } from 'ant-design-vue';
-import { Flex, message } from 'ant-design-vue';
+import { Flex } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
 import DashboardDeclarePanel from '../components/declare-panel/index.vue';
 import DashboardHelpLink from '../components/help-link/index.vue';
@@ -83,6 +84,8 @@ onMounted(async () => {
   await Promise.all([getDashboardData(), getNotice()])
 })
 
+const { token } = useAntdToken()
+
 </script>
 
 <template>
@@ -122,7 +125,13 @@ onMounted(async () => {
 
   &-calendar {
     min-width: 280px;
-    background-color: var(--color-background);
+    border-radius: v-bind("`${token.borderRadiusLG}px`");
+    border: 1px solid v-bind("token.colorBorderSecondary");
+    transition: border-color 0.3s;
+
+    &:hover {
+      border-color: v-bind("token.colorPrimary");
+    }
 
     &-inner {
       height: 100%;

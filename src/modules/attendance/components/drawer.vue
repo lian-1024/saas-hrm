@@ -10,6 +10,7 @@ import type { MenuProps, SliderProps } from 'ant-design-vue'
 import { Button, Drawer, Flex, Menu, Slider, TypographyText, message } from 'ant-design-vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import ScopedMap from './map.vue'
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 
 const drawerStatus = defineModel<boolean>('open', { required: false })
 
@@ -108,6 +109,7 @@ onMounted(async () => {
   await getCompanyList()
 })
 
+const { token } = useAntdToken()
 </script>
 
 <template>
@@ -158,7 +160,7 @@ onMounted(async () => {
     min-width: 300px;
 
     :deep(.table-striped) td {
-      background-color: var(--color-background-secondary);
+      background-color: v-bind('token.colorBgContainer');
     }
   }
 }

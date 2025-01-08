@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { BookTwoTone, FlagTwoTone, PhoneTwoTone, PlusCircleTwoTone } from '@ant-design/icons-vue';
 import { Flex, TypographyText } from 'ant-design-vue';
 import { h } from 'vue';
 import QPanel from '../panel.vue';
-
 defineOptions({
   name: "DashboardHelpLink"
 })
 
-
+const { token } = useAntdToken()
 const LinkList = [
   {
     label: "入门指南",
@@ -48,8 +48,8 @@ const LinkList = [
   display: flex;
   align-items: center;
   gap: 10px;
-  padding-block: var(--spacing-middle);
-  padding-inline: var(--spacing-middle);
-  background-color: var(--color-background-secondary);
+  padding-block: v-bind("`${token.padding}px`");
+  padding-inline: v-bind("`${token.padding}px`");
+  background-color: v-bind("token.colorBgContainer");
 }
 </style>

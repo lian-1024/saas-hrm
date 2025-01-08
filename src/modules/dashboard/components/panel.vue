@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { Flex, TypographyText, type FlexProps } from 'ant-design-vue';
 defineOptions({
   name: "QPanel"
@@ -16,6 +17,8 @@ withDefaults(
     gap: "middle"
   }
 )
+
+const { token } = useAntdToken()
 </script>
 
 <template>
@@ -27,12 +30,18 @@ withDefaults(
 
 <style lang="less" scoped>
 .panel {
-  padding: var(--spacing-large);
-  background: var(--color-background);
+  padding: v-bind("`${token.paddingLG}px`");
+  background: v-bind("token.colorBgContainer");
+  border-radius: v-bind("`${token.borderRadiusLG}px`");
+  border: 1px solid v-bind("token.colorBorderSecondary");
+  transition: border-color 0.3s;
+
+  &:hover {
+    border-color: v-bind("token.colorPrimary");
+  }
 
   &-title {
-    font-size: var(--font-size-middle);
-    font-weight: var(--font-weight-light);
+    font-size: v-bind("`${token.fontSizeLG}px`");
   }
 }
 </style>
