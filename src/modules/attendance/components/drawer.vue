@@ -10,6 +10,7 @@ import { CloseOutlined } from '@ant-design/icons-vue'
 import type { MenuProps, SliderProps } from 'ant-design-vue'
 import { Button, Drawer, Flex, Menu, Slider, TypographyText, message } from 'ant-design-vue'
 import { computed, onMounted, reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import ScopedMap from './map.vue'
 
 const drawerStatus = defineModel<boolean>('open', { required: false })
@@ -31,7 +32,7 @@ const closeDrawer = () => {
 
 
 const formatSliderTip: SliderProps['tipFormatter'] = (value = 0) =>
-  `${convertDistance(value)}内可打卡`
+  t('attendance.drawer.radiusTip', { distance: convertDistance(value) })
 
 
 const companyMenuItems = ref<MenuProps['items']>()
@@ -110,10 +111,13 @@ onMounted(async () => {
 })
 
 const { token } = useAntdToken()
+
+const { t } = useI18n()
 </script>
 
 <template>
-  <Drawer height="100vh" @close="closeDrawer" title="打卡范围设置" :open="drawerStatus" placement="top" :closable="false">
+  <Drawer height="100vh" @close="closeDrawer" :title="t('attendance.drawer.title')" :open="drawerStatus" placement="top"
+    :closable="false">
     <template #extra>
       <CloseOutlined @click="closeDrawer" :style="{ color: token.colorText }" />
     </template>
@@ -132,7 +136,7 @@ const { token } = useAntdToken()
             </div>
           </QSkeleton>
           <div>
-            <TypographyText type="secondary">半径</TypographyText>
+            <TypographyText type="secondary">{{ t('attendance.drawer.radius') }}</TypographyText>
             <Slider @afterChange="handleSliderAfterChange" :max="1000" v-model:value="selectedCompany.radius"
               :tip-formatter="formatSliderTip" />
           </div>
@@ -141,8 +145,9 @@ const { token } = useAntdToken()
     </template>
     <template #footer>
       <Flex justify="end" gap="middle">
-        <Button @click="closeDrawer">取消</Button>
-        <Button type="primary" @click="handleBatchSaveCompanyPoint">批量保存</Button>
+        <Button @click="closeDrawer">{{ t('attendance.drawer.buttons.cancel') }}</Button>
+        <Button type="primary" @click="handleBatchSaveCompanyPoint">{{ t('attendance.drawer.buttons.batchSave')
+          }}</Button>
       </Flex>
     </template>
   </Drawer>

@@ -5,6 +5,10 @@ import { QSkeleton } from '@/shared/components/base/skeleton';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { DatePicker, Flex, Form, FormItem, message, Select, type FormInstance, type FormProps, type SelectProps } from 'ant-design-vue';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n()
+
 defineOptions({
   name: "TabAttendance"
 })
@@ -17,7 +21,7 @@ const props = defineProps<{
 
 const formRules: FormProps['rules'] = {
   departmentId: [
-    { required: true, message: '请选择部门' }
+    { required: true, message: t('attendance.settings.attendance.rules.selectDepartment') }
   ]
 };
 
@@ -54,12 +58,11 @@ const { run: getAttendanceSettingById, loading: getAttendanceSettingLoading } = 
 const { run: updateAttendanceSetting } = useRequest(AttendanceSettingService.updateAttendanceSetting, {
   manual: true,
   onSuccess: () => {
-    message.success("更新考勤设置成功");
+    message.success(t('attendance.settings.attendance.messages.updateSuccess'));
     formRef.value?.resetFields()
-
   },
   onError: (error) => {
-    message.error("更新考勤设置失败")
+    message.error(t('attendance.settings.attendance.messages.updateError'))
   }
 })
 
@@ -101,13 +104,15 @@ defineExpose({
 
 <template>
   <Form ref="formRef" :label-col="formLabelCol" :model="formState" :wrapper-col="formWrapperCol" :rules="formRules">
-    <FormItem label="部门" :model="formState" name="departmentId">
+    <FormItem :label="t('attendance.settings.attendance.department')" :model="formState" name="departmentId">
       <Select :options="departmentOptions" v-model:value="selectedDepartmentId" />
     </FormItem>
     <QSkeleton :title="false" active :loading="getAttendanceSettingLoading" :paragraph="{
       rows: 8
     }">
-      <FormItem label="出勤时间" :validate-status="validateDate ? 'success' : 'error'" :help="validateDate ? '' : '请选择日期'">
+      <FormItem :label="t('attendance.settings.attendance.attendanceTime')"
+        :validate-status="validateDate ? 'success' : 'error'"
+        :help="validateDate ? '' : t('attendance.settings.attendance.rules.selectDate')">
         <Flex gap="middle" vertical>
           <Flex gap="small" align="center">
             <DatePicker picker="time" value-format="HH:mm:ss" v-model:value="formState.morningStartTime" />

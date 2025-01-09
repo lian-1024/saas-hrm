@@ -7,6 +7,7 @@ import { QSkeleton } from '@/shared/components/base/skeleton'
 import { useRequest } from '@/shared/composables/use-request/use-request'
 import { Button, message, Radio, Space, TypographyText } from 'ant-design-vue'
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   day: string,
@@ -45,16 +46,17 @@ const { run: getAttendancesAdtStatuList, loading: getAttendancesAdtStatuListLoad
   }
 })
 
+const { t } = useI18n()
 
 const { run: updateAttendance, loading: updateAttendanceLoading } = useRequest(AttendanceService.updateAttendance, {
   manual: true,
   onSuccess: () => {
-    message.success('更新考勤状态成功')
+    message.success(t('attendance.updateModal.messages.updateSuccess'))
     openStatus.value = false
     emits('update')
   },
   onError: () => {
-    message.error('更新考勤状态失败')
+    message.error(t('attendance.updateModal.messages.updateError'))
   }
 })
 
@@ -85,11 +87,11 @@ const handleCancel = () => {
 <template>
   <QModal v-model:open="openStatus" mask>
     <template #title>
-      <TypographyText>{{ day }} (实际考勤方案)</TypographyText>
+      <TypographyText>{{ t('attendance.updateModal.title', { date: day }) }}</TypographyText>
     </template>
 
     <div class="attendance-status">
-      <p class="status-note">注: 统计考勤时，异常状态优先正常状态</p>
+      <p class="status-note">{{ t('attendance.updateModal.note') }}</p>
 
       <QSkeleton :loading="getAttendancesAdtStatuListLoading" active :title="false" :paragraph="{
         rows: 8
@@ -106,8 +108,9 @@ const handleCancel = () => {
 
     <template #footer>
       <Space>
-        <Button @click="handleCancel">取消</Button>
-        <Button type="primary" :loading="updateAttendanceLoading" @click="handleConfirm">确定</Button>
+        <Button @click="handleCancel">{{ t('attendance.updateModal.buttons.cancel') }}</Button>
+        <Button type="primary" :loading="updateAttendanceLoading" @click="handleConfirm">{{
+          t('attendance.updateModal.buttons.confirm') }}</Button>
       </Space>
     </template>
   </QModal>

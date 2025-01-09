@@ -7,6 +7,10 @@ import type { EnableStatusType } from '@/shared/constants/status';
 import { EnableStatus } from '@/shared/constants/status';
 import { Col, Flex, Form, FormItem, Input, message, Row, Select, Switch, TypographyText, type FormProps, type SelectProps } from 'ant-design-vue';
 import { onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n()
+
 defineOptions({
   name: "TabDeduction"
 })
@@ -18,9 +22,9 @@ enum DeductionName {
 }
 
 const DeductionNameMap = {
-  [DeductionName.BE_LATE]: "迟到",
-  [DeductionName.LEAVE_EARLY]: "早退",
-  [DeductionName.ABSENTEEISM]: "旷工"
+  [DeductionName.BE_LATE]: t('attendance.settings.deduction.deductionType.beLate'),
+  [DeductionName.LEAVE_EARLY]: t('attendance.settings.deduction.deductionType.leaveEarly'),
+  [DeductionName.ABSENTEEISM]: t('attendance.settings.deduction.deductionType.absenteeism')
 }
 
 const props = defineProps<{
@@ -63,10 +67,10 @@ const deductionText = (deductionName: string) => DeductionNameMap[deductionName 
 const { run: updateDeductionSetting } = useRequest(AttendanceSettingService.updateDeductionSetting, {
   manual: true,
   onSuccess: () => {
-    message.success('更新考勤规则成功')
+    message.success(t('attendance.settings.deduction.messages.updateSuccess'))
   },
   onError: () => {
-    message.error('更新考勤规则失败')
+    message.error(t('attendance.settings.deduction.messages.updateError'))
   }
 })
 
@@ -87,7 +91,7 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
 
 <template>
   <Form :label-col="formLabelCol" :wrapper-col="formWrapperCol">
-    <FormItem label="部门" name="departmentId">
+    <FormItem :label="t('attendance.settings.deduction.department')" name="departmentId">
       <Select :options="departmentOptions" v-model:value="selectedDepartmentId" />
     </FormItem>
     <QSkeleton :title="false" active :loading="getDeductionSettingByDepartmentLoading" :paragraph="{
@@ -100,7 +104,8 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
               <Row>
                 <Col span="4">
                 <Flex align="center" gap="small">
-                  <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}扣款</TypographyText>
+                  <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}{{
+                    t('attendance.settings.deduction.deduction') }}</TypographyText>
                   <Switch :checked="Boolean(item.isEnable)"
                     @change="(checked) => handleSwitchChange(Boolean(checked), item)" />
                 </Flex>
@@ -111,7 +116,8 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
                 <Flex align="center" gap="small">
                   <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}≤</TypographyText>
                   <Input class="deduction-input" v-model:value="item.periodLowerLimit" type="number" />
-                  <TypographyText class="deduction-text">分钟</TypographyText>
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.minutes') }}
+                  </TypographyText>
                 </Flex>
                 </Col>
               </Row>
@@ -120,9 +126,10 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
                 <Flex align="center" gap="small">
                   <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}≤</TypographyText>
                   <Input class="deduction-input" v-model:value="item.timesLowerLimit" type="number" />
-                  <TypographyText class="deduction-text">次,每次扣款</TypographyText>
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.times') }},{{
+                    t('attendance.settings.deduction.perTime') }}</TypographyText>
                   <Input class="deduction-input" v-model:value="item.dedAmonutLowerLimit" type="number" />
-                  <TypographyText class="deduction-text">元</TypographyText>
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.yuan') }}</TypographyText>
                 </Flex>
                 </Col>
               </Row>
@@ -131,9 +138,10 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
                 <Flex align="center" gap="small">
                   <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}></TypographyText>
                   <Input disabled class="deduction-input" v-model:value="item.timesUpperLimit" type="number" />
-                  <TypographyText class="deduction-text">次,每次扣款</TypographyText>
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.times') }},{{
+                    t('attendance.settings.deduction.perTime') }}</TypographyText>
                   <Input class="deduction-input" v-model:value="item.dedAmonutUpperLimit" type="number" />
-                  <TypographyText class="deduction-text">元</TypographyText>
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.yuan') }}</TypographyText>
                 </Flex>
                 </Col>
               </Row>
@@ -142,7 +150,8 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
                 <Flex align="center" gap="small">
                   <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}></TypographyText>
                   <Input disabled class="deduction-input" v-model:value="item.periodUpperLimit" type="number" />
-                  <TypographyText class="deduction-text">分钟</TypographyText>
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.minutes') }}
+                  </TypographyText>
                 </Flex>
                 </Col>
               </Row>
@@ -151,9 +160,10 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
                 <Flex align="center" gap="small">
                   <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}≤</TypographyText>
                   <Input disabled class="deduction-input" v-model:value="item.absenceTimesUpperLimt" type="number" />
-                  <TypographyText class="deduction-text">次,每次旷工</TypographyText>
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.times') }},{{
+                    t('attendance.settings.deduction.perTime') }}</TypographyText>
                   <Input class="deduction-input" v-model:value="item.absenceDays" type="number" />
-                  <TypographyText class="deduction-text">天</TypographyText>
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.days') }}</TypographyText>
                 </Flex>
                 </Col>
               </Row>

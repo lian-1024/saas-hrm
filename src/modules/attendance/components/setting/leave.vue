@@ -4,11 +4,15 @@ import type { LeaveSetting, UpdateLeaveSettingParams } from '@/modules/attendanc
 import { QSkeleton } from '@/shared/components/base/skeleton';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { EnableStatus } from '@/shared/constants/status';
-import { Form, FormItem, message, Select, Switch, Table, type SelectProps, type TableProps, type FormProps } from 'ant-design-vue';
+import { Form, FormItem, message, Select, Switch, Table, type FormProps, type SelectProps, type TableProps } from 'ant-design-vue';
 import { onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 const props = defineProps<{
   departmentOptions: SelectProps['options']
 }>()
+
+const { t } = useI18n()
 
 const leaveTypeMap: Record<string, string> = {
   '60000': '年假',
@@ -32,12 +36,12 @@ const leaveTypeColumns: TableProps['columns'] = [
     key: 'leaveType',
   },
   {
-    title: '请假名称',
+    title: t('attendance.settings.leave.name'),
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: '是否可用',
+    title: t('attendance.settings.leave.isEnabled'),
     dataIndex: 'isEnable',
     key: 'isEnable'
   }
@@ -76,10 +80,10 @@ const handleSwitchChange = (checked: boolean, record: Record<string, any>) => {
 const { run: updateLeaveSetting } = useRequest(AttendanceSettingService.updateLeaveSetting, {
   manual: true,
   onSuccess: () => {
-    message.success('更新请假设置成功')
+    message.success(t('attendance.settings.leave.messages.updateSuccess'))
   },
   onError: () => {
-    message.error('更新请假设置失败')
+    message.error(t('attendance.settings.leave.messages.updateError'))
   }
 })
 
@@ -111,7 +115,7 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
 <template>
   <div>
     <Form :label-col="formLabelCol" :wrapper-col="formWrapperCol">
-      <FormItem label="部门" name="departmentId">
+      <FormItem :label="t('attendance.settings.leave.department')" name="departmentId">
         <Select v-model:value="selectedDepartmentId" :options="departmentOptions" />
       </FormItem>
     </Form>

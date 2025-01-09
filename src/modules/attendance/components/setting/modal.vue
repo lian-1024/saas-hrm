@@ -5,10 +5,12 @@ import { QSkeleton } from '@/shared/components/base/skeleton';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { Button, Flex, TabPane, Tabs } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import TabAttendance from './attendance.vue';
 import TabDeduction from './deduction.vue';
 import TabLeave from './leave.vue';
 import TabOvertime from './overtime.vue';
+
 defineOptions({
   name: "AttendanceSettingModal"
 })
@@ -23,25 +25,27 @@ const tabOvertimeRef = ref<InstanceType<typeof TabOvertime> | null>(null)
 // 当前选中的tab
 const activeKey = ref('attendance')
 
+const { t } = useI18n()
+
 const tabOptions = [
   {
     key: "attendance",
-    title: '出勤设置',
+    title: t('attendance.setting.tabs.attendance'),
     pane: TabAttendance
   },
   {
     key: "leave",
-    title: '请假设置',
+    title: t('attendance.setting.tabs.leave'),
     pane: TabLeave
   },
   {
     key: "deduction",
-    title: '扣款设置',
+    title: t('attendance.setting.tabs.deduction'),
     pane: TabDeduction
   },
   {
     key: "overtime",
-    title: '加班设置',
+    title: t('attendance.setting.tabs.overtime'),
     pane: TabOvertime
   }
 
@@ -116,7 +120,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <QModal :width="800" closable mask v-model:open="modalStatus" title="设置" :destroyOnClose="true">
+  <QModal :width="800" closable mask v-model:open="modalStatus" :title="t('attendance.setting.title')"
+    :destroyOnClose="true">
     <Tabs v-model:activeKey="activeKey">
       <TabPane v-for="pane in tabOptions" :key="pane.key" :tab="pane.title">
         <QSkeleton :loading="getCompanyDepartmentListLoading" active :paragraph="{
@@ -130,8 +135,9 @@ onMounted(() => {
     </Tabs>
     <template #footer>
       <Flex justify="center">
-        <Button @click="handleConfirm" type="primary" :loading="confirmLoading">保存更新</Button>
-        <Button @click="handleCancel">取消</Button>
+        <Button @click="handleConfirm" type="primary" :loading="confirmLoading">{{
+          t('attendance.setting.buttons.saveUpdate') }}</Button>
+        <Button @click="handleCancel">{{ t('attendance.setting.buttons.cancel') }}</Button>
       </Flex>
     </template>
   </QModal>

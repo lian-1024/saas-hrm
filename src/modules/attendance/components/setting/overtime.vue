@@ -5,6 +5,10 @@ import { QSkeleton } from '@/shared/components/base/skeleton';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { Checkbox, DatePicker, Flex, Form, FormItem, InputNumber, message, Select, Switch, TimePicker, Tooltip, TypographyText, type FormProps, type SelectProps } from 'ant-design-vue';
 import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n()
+
 defineOptions({
   name: "TabOvertime"
 })
@@ -66,7 +70,13 @@ const formData = ref<UpdateOverTimeSettingParams>({
 })
 
 // 计算属性：加班规则列表
-const overtimeRules = computed(() => formData.value?.rules ?? [])
+const overtimeRules = computed(() => {
+  const ruleMap = [t('attendance.settings.overtime.workday'), t('attendance.settings.overtime.restDay'), t('attendance.settings.overtime.holiday')]
+  return formData.value?.rules.map((rule: OverTimeRule, index) => ({
+    ...rule,
+    rule: ruleMap[index]
+  }))
+})
 
 // 更新规则的方法
 const updateRule = (index: number, field: keyof OverTimeRule, value: any) => {
@@ -104,10 +114,10 @@ const { run: getOverTimeSetting, loading: getOverTimeSettingLoading } = useReque
 const { run: updateOverTimeSetting } = useRequest(AttendanceSettingService.updateOverTimeSetting, {
   manual: true,
   onSuccess: () => {
-    message.success('更新加班设置成功')
+    message.success(t('attendance.settings.overtime.messages.updateSuccess'))
   },
   onError: () => {
-    message.error('更新加班设置失败')
+    message.error(t('attendance.settings.overtime.messages.updateError'))
   }
 })
 
@@ -133,28 +143,32 @@ const labelCol: FormProps['labelCol'] = {
 const wrapperCol: FormProps['wrapperCol'] = {
   span: 16
 }
+
+
 </script>
 
 <template>
   <Form :label-col="labelCol" :wrapper-col="wrapperCol" :model="formData" class="w-full">
-    <FormItem label="部门" name="departmentId">
+    <FormItem :label="t('attendance.settings.overtime.department')" name="departmentId">
       <Select v-model:value="selectedDepartmentId" :options="departmentOptions" />
     </FormItem>
     <QSkeleton active :title="false" :loading="getOverTimeSettingLoading" :paragraph="{
       rows: 8
     }">
-      <FormItem label="加班规则">
+      <FormItem :label="t('attendance.settings.overtime.overtimeRules')">
         <Flex vertical gap="middle">
-          <Flex v-for="(rule, index) in overtimeRules" :key="index" justify="space-between" gap="large" align="center">
+          <Flex v-for="(rule, index) in overtimeRules" wrap="wrap" :key="index" justify="space-between" gap="large"
+            align="center">
             <Flex span="12" gap="small">
               <Switch :checked="Boolean(rule.isEnable)"
                 @change="(checked) => updateRule(index, 'isEnable', checked ? 1 : 0)" />
-              <TypographyText class="nowrap">{{ rule.rule === 'Workday' ? '工作日' : '休息日' }}可申请加班</TypographyText>
+              <TypographyText class="nowrap">{{ rule.rule }}</TypographyText>
             </Flex>
             <Flex gap="small" align="center">
               <Checkbox :checked="Boolean(rule.isTimeOff)"
                 @change="(e) => updateRule(index, 'isTimeOff', e.target.checked ? 1 : 0)" />
-              <TypographyText :disabled="Boolean(!rule.isTimeOff)" class="nowrap">调休假</TypographyText>
+              <TypographyText :disabled="Boolean(!rule.isTimeOff)" class="nowrap">{{
+                t('attendance.settings.overtime.timeOff') }}</TypographyText>
               <TimePicker valueFormat="mm:ss" :disabled="Boolean(!rule.isTimeOff)" class="overtime-input"
                 :value="rule.ruleStartTime" @change="(time) => updateRule(index, 'ruleStartTime', time)" />
               <TimePicker valueFormat="mm:ss" :disabled="Boolean(!rule.isTimeOff)" class="overtime-input"
@@ -163,30 +177,30 @@ const wrapperCol: FormProps['wrapperCol'] = {
           </Flex>
         </Flex>
       </FormItem>
-      <FormItem label="打卡验证">
+      <FormItem :label="t('attendance.settings.overtime.clockValidation')">
         <Flex gap="small" align="center">
           <Switch v-model:checked="isClockChecked" />
-          <TypographyText class="nowrap">加班需要有打卡记录</TypographyText>
+          <TypographyText class="nowrap">{{ t('attendance.settings.overtime.clockRequired') }}</TypographyText>
         </Flex>
       </FormItem>
-      <FormItem label="开启补偿">
+      <FormItem :label="t('attendance.settings.overtime.enableCompensation')">
         <Switch v-model:checked="isCompensationChecked" />
       </FormItem>
-      <FormItem label="调休假设置">
+      <FormItem :label="t('attendance.settings.overtime.timeOffSettings')">
         <Flex gap="large" vertical justify="flex-start">
           <Flex gap="small" align="center">
-            <TypographyText class="nowrap">最晚有效期:次年</TypographyText>
+            <TypographyText class="nowrap">{{ t('attendance.settings.overtime.latestEffectiveDate') }}</TypographyText>
             <DatePicker valueFormat="MM-DD" class="overtime-input" v-model:value="formData.latestEffectDate" />
           </Flex>
           <Flex gap="small" align="center">
-            <TypographyText class="nowrap">请假最小单位:</TypographyText>
+            <TypographyText class="nowrap">{{ t('attendance.settings.overtime.minimumUnit') }}:</TypographyText>
             <Tooltip :trigger="['hover']" placement="topLeft" overlay-class-name="numeric-input">
               <template #title>
                 <span class="numeric-input-title">{{ formData.unit }}</span>
               </template>
               <InputNumber class="overtime-input" v-model:value="formData.unit" />
             </Tooltip>
-            <TypographyText class="nowrap flex-1">天</TypographyText>
+            <TypographyText class="nowrap flex-1">{{ t('attendance.settings.overtime.day') }}</TypographyText>
           </Flex>
         </Flex>
       </FormItem>

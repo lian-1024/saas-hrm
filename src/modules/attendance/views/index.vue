@@ -23,6 +23,7 @@ import {
   type TableProps
 } from 'ant-design-vue'
 import { h, reactive, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { CountTo } from 'vue3-count-to'
 const { token } = useAntdToken()
 
@@ -37,37 +38,39 @@ defineOptions({
 
 const departmentOptions = ref<CheckboxOptionType[]>([])
 
+const { t } = useI18n()
+
 const baseColumns: TableProps<EmployeeAttendance>['columns'] = [
   {
-    title: '序号',
+    title: t('attendance.table.columns.key'),
     dataIndex: 'key',
     key: 'key',
     width: 80,
     fixed: 'left',
   },
   {
-    title: '姓名',
+    title: t('attendance.table.columns.username'),
     dataIndex: 'username',
     key: 'username',
     width: 150,
     fixed: 'left',
   },
   {
-    title: '工号',
+    title: t('attendance.table.columns.workNumber'),
     dataIndex: 'workNumber',
     key: 'workNumber',
     width: 150,
     fixed: 'left',
   },
   {
-    title: '部门',
+    title: t('attendance.table.columns.departmentName'),
     dataIndex: 'departmentName',
     key: 'departmentName',
     width: 150,
     fixed: 'left',
   },
   {
-    title: '手机',
+    title: t('attendance.table.columns.mobile'),
     dataIndex: 'mobile',
     key: 'mobile',
     width: 150,
@@ -259,19 +262,20 @@ watch(() => selectedDepartmentIds.value, () => {
   <Flex class="attendance-wrapper" vertical gap="middle">
     <Flex justify="space-between" align="center" class="attendance-top">
       <Flex vertical align="center" gap="small">
-        <TypographyText class="attendance-top-title">未处理</TypographyText>
+        <TypographyText class="attendance-top-title">{{ t('attendance.top.unprocessed') }}</TypographyText>
         <QSkeleton :paragraph="false" active :loading="getAttendanceListLoading">
           <CountTo :start-val="0" :end-val="attendanceInfo.tobeTaskCount" :duration="3000"
             class="attendance-top-total" />
         </QSkeleton>
       </Flex>
       <Flex gap="middle">
-        <Button @click="drawerStatus = true">打卡范围</Button>
-        <Button type="primary" @click="settingModalStatus = true">设置</Button>
+        <Button @click="drawerStatus = true">{{ t('attendance.actions.clockInRange') }}</Button>
+        <Button type="primary" @click="settingModalStatus = true">{{ t('attendance.actions.settings') }}</Button>
       </Flex>
     </Flex>
     <Flex class="attendance-middle" gap="small" align="flex-start">
-      <TypographyTitle class="attendance-middle-label" :level="5">部门:</TypographyTitle>
+      <TypographyTitle class="attendance-middle-label" :level="5">{{ t('attendance.filter.department') }}:
+      </TypographyTitle>
       <QSkeleton active :title="false" :loading="getDepartmentListLoading" :paragraph="{
         rows: 2
       }">
@@ -292,7 +296,7 @@ watch(() => selectedDepartmentIds.value, () => {
           total: employeeDataSource.total,
           current: attendancePagingParams.page,
           onChange: handleChangeTablePagination,
-          showTotal: total => `共 ${total} 条数据`
+          showTotal: total => t('attendance.table.pagination.total', { total })
         }" :columns="attendanceColumns" :data-source="employeeDataSource.rows" :scroll="{ x: 'max-content' }"
           bordered />
       </QSpin>
@@ -339,8 +343,7 @@ watch(() => selectedDepartmentIds.value, () => {
       flex: 1;
       display: grid;
       grid-template-columns: repeat(auto-fill, 120px);
-      grid-template-rows: repeat(auto-fill, 1fr);
-      height: 60px;
+      grid-template-rows: repeat(auto-fill, 30px; );
       gap: v-bind("`${token.padding}px`");
     }
   }

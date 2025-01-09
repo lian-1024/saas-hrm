@@ -343,6 +343,159 @@ const en: LocalMessageType = {
       addSuccess: "Add permission successfully",
       addError: "Failed to add permission"
     }
+  },
+  attendance: {
+    table: {
+      columns: {
+        key: "No.",
+        username: "Name",
+        workNumber: "Work ID",
+        departmentName: "Department",
+        mobile: "Mobile"
+      },
+      pagination: {
+        total: "Total {total} items"
+      }
+    },
+    drawer: {
+      title: "Clock-in Range Settings",
+      radius: "Radius",
+      radiusTip: "Can clock in within {distance}",
+      buttons: {
+        cancel: "Cancel",
+        batchSave: "Batch Save"
+      },
+      messages: {
+        updateSuccess: "Update successful",
+        updateError: "Update failed"
+      }
+    },
+    setting: {
+      title: "Settings",
+      tabs: {
+        attendance: "Attendance Settings",
+        leave: "Leave Settings",
+        deduction: "Deduction Settings",
+        overtime: "Overtime Settings"
+      },
+      buttons: {
+        saveUpdate: "Save Update",
+        cancel: "Cancel"
+      }
+    },
+    updateModal: {
+      title: "{date} (Actual Attendance Plan)",
+      note: "Note: Abnormal status takes precedence over normal status",
+      buttons: {
+        confirm: "Confirm",
+        cancel: "Cancel"
+      },
+      messages: {
+        updateSuccess: "Update attendance status successful",
+        updateError: "Update attendance status failed"
+      }
+    },
+    popover: {
+      checkInTime: "Check-in Time",
+      checkOutTime: "Check-out Time",
+      checkInPlace: "Check-in Place",
+      checkOutPlace: "Check-out Place"
+    },
+    top: {
+      unprocessed: "Unprocessed"
+    },
+    actions: {
+      clockInRange: "Clock-in Range",
+      settings: "Settings"
+    },
+    filter: {
+      department: "Department"
+    },
+    status: {
+      1: "Normal",
+      2: "Absent",
+      3: "Late", 
+      4: "Early Leave",
+      5: "Out",
+      6: "Business Trip",
+      7: "Annual Leave",
+      8: "Personal Leave", 
+      9: "Sick Leave",
+      10: "Marriage Leave",
+      11: "Bereavement Leave",
+      12: "Maternity Leave",
+      13: "Reward Maternity Leave",
+      14: "Paternity Leave",
+      15: "Home Leave",
+      16: "Work Injury Leave",
+      17: "Time Off",
+      18: "Prenatal Leave",
+      19: "Miscarriage Leave",
+      20: "Long-term Sick Leave",
+      21: "Supplementary Sign",
+      22: "Rest",
+      99: "-"
+    },
+    settings: {
+      attendance: {
+        department: "Department",
+        attendanceTime: "Attendance Time",
+        rules: {
+          selectDepartment: "Please select department",
+          selectDate: "Please select date"
+        },
+        messages: {
+          updateSuccess: "Update attendance settings successful",
+          updateError: "Update attendance settings failed"
+        }
+      },
+      leave: {
+        department: "Department",
+        leaveType: "Leave Type",
+        name: "Name",
+        isEnabled: "Enabled",
+        messages: {
+          updateSuccess: "Update leave settings successful",
+          updateError: "Update leave settings failed"
+        }
+      },
+      deduction: {
+        department: "Department",
+        deductionType: {
+          beLate: "Late",
+          leaveEarly: "Early Leave",
+          absenteeism: "Absent"
+        },
+        deduction: "Deduction",
+        minutes: "Minutes",
+        times: "Times",
+        perTime: "Per Time",
+        yuan: "Yuan",
+        days: "Days",
+        messages: {
+          updateSuccess: "Update deduction rules successful",
+          updateError: "Update deduction rules failed"
+        }
+      },
+      overtime: {
+        department: "Department",
+        overtimeRules: "Overtime Rules",
+        workday: "Can apply for overtime on workdays",
+        restDay: "Can apply for overtime on rest days", 
+        holiday: "Can apply for overtime on statutory holidays",
+        clockValidation: "Clock Validation",
+        clockRequired: "Clock-in required for overtime",
+        enableCompensation: "Enable Compensation",
+        timeOffSettings: "Time Off Settings",
+        latestEffectiveDate: "Latest Effective Date: Next Year",
+        minimumUnit: "Minimum Unit",
+        day: "Day",
+        messages: {
+          updateSuccess: "Update overtime settings successful",
+          updateError: "Update overtime settings failed"
+        }
+      }
+    }
   }
 }
 

@@ -2,6 +2,7 @@
 import { ATTENDANCE_STATUS, type AttendanceStatusKey } from '@/modules/attendance/constants/attendance'
 import { Card, Flex, Popover, Tag, TypographyText } from 'ant-design-vue'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 interface TablePopoverProps {
   username: string,
@@ -22,10 +23,17 @@ const props = withDefaults(defineProps<TablePopoverProps>(), {
   adtOutPlace: '-'
 })
 
+const { t } = useI18n()
 
 const title = computed(() => `${props.username}-${props.yearOfReport}/${props.monthOfReport}/${props.dayOfReport}-考情记录`)
 
-const status = computed(() => ATTENDANCE_STATUS[props.adtStatu as AttendanceStatusKey])
+const status = computed(() => {
+  const status = ATTENDANCE_STATUS[props.adtStatu as AttendanceStatusKey]
+  return {
+    text: t('attendance.status.' + props.adtStatu),
+    color: status.color
+  }
+})
 
 </script>
 
@@ -38,10 +46,10 @@ const status = computed(() => ATTENDANCE_STATUS[props.adtStatu as AttendanceStat
           <Tag :color="status.color">{{ status.text }}</Tag>
         </template>
         <Flex vertical gap="large">
-          <TypographyText>上班时间：{{ adtInTime }}</TypographyText>
-          <TypographyText>下班时间：{{ adtOutTime }}</TypographyText>
-          <TypographyText>上班地点：{{ adtInPlace }}</TypographyText>
-          <TypographyText>下班地点：{{ adtOutPlace }}</TypographyText>
+          <TypographyText>{{ t('attendance.popover.checkInTime') }}：{{ adtInTime }}</TypographyText>
+          <TypographyText>{{ t('attendance.popover.checkOutTime') }}：{{ adtOutTime }}</TypographyText>
+          <TypographyText>{{ t('attendance.popover.checkInPlace') }}：{{ adtInPlace }}</TypographyText>
+          <TypographyText>{{ t('attendance.popover.checkOutPlace') }}：{{ adtOutPlace }}</TypographyText>
         </Flex>
       </Card>
 

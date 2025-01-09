@@ -345,6 +345,159 @@ const zhCN = {
       addSuccess: "新增权限点成功",
       addError: "新增权限点失败"
     }
+  },
+  attendance: {
+    table: {
+      columns: {
+        key: "序号",
+        username: "姓名",
+        workNumber: "工号",
+        departmentName: "部门",
+        mobile: "手机"
+      },
+      pagination: {
+        total: "共 {total} 条数据"
+      }
+    },
+    drawer: {
+      title: "打卡范围设置",
+      radius: "半径",
+      radiusTip: "{distance}内可打卡",
+      buttons: {
+        cancel: "取消",
+        batchSave: "批量保存"
+      },
+      messages: {
+        updateSuccess: "更新成功",
+        updateError: "更新失败"
+      }
+    },
+    setting: {
+      title: "设置",
+      tabs: {
+        attendance: "出勤设置",
+        leave: "请假设置",
+        deduction: "扣款设置",
+        overtime: "加班设置"
+      },
+      buttons: {
+        saveUpdate: "保存更新",
+        cancel: "取消"
+      }
+    },
+    updateModal: {
+      title: "{date} (实际考勤方案)",
+      note: "注: 统计考勤时，异常状态优先正常状态",
+      buttons: {
+        confirm: "确定",
+        cancel: "取消"
+      },
+      messages: {
+        updateSuccess: "更新考勤状态成功",
+        updateError: "更新考勤状态失败"
+      }
+    },
+    popover: {
+      checkInTime: "上班时间",
+      checkOutTime: "下班时间",
+      checkInPlace: "上班地点",
+      checkOutPlace: "下班地点"
+    },
+    top: {
+      unprocessed: "未处理"
+    },
+    actions: {
+      clockInRange: "打卡范围",
+      settings: "设置"
+    },
+    filter: {
+      department: "部门"
+    },
+    status: {
+      1: "正常",
+      2: "旷工",
+      3: "迟到", 
+      4: "早退",
+      5: "外出",
+      6: "出差",
+      7: "年假",
+      8: "事假",
+      9: "病假",
+      10: "婚假",
+      11: "丧假",
+      12: "产假",
+      13: "奖励产假",
+      14: "陪产假",
+      15: "探亲假",
+      16: "工伤假",
+      17: "调休",
+      18: "产检假",
+      19: "流产假",
+      20: "长期病假",
+      21: "补签",
+      22: "休息",
+      99: "-"
+    },
+    settings: {
+      attendance: {
+        department: "部门",
+        attendanceTime: "出勤时间",
+        rules: {
+          selectDepartment: "请选择部门",
+          selectDate: "请选择日期"
+        },
+        messages: {
+          updateSuccess: "更新考勤设置成功",
+          updateError: "更新考勤设置失败"
+        }
+      },
+      leave: {
+        department: "部门",
+        leaveType: "请假类型",
+        name: "名称",
+        isEnabled: "是否可用",
+        messages: {
+          updateSuccess: "更新请假设置成功",
+          updateError: "更新请假设置失败"
+        }
+      },
+      deduction: {
+        department: "部门",
+        deductionType: {
+          beLate: "迟到",
+          leaveEarly: "早退",
+          absenteeism: "旷工"
+        },
+        deduction: "扣款",
+        minutes: "分钟",
+        times: "次",
+        perTime: "每次",
+        yuan: "元",
+        days: "天",
+        messages: {
+          updateSuccess: "更新考勤规则成功",
+          updateError: "更新考勤规则失败"
+        }
+      },
+      overtime: {
+        department: "部门",
+        overtimeRules: "加班规则",
+        workday: "工作日可申请加班",
+        restDay: "休息日可申请加班",
+        holiday: "法定节假日可申请加班",
+        clockValidation: "打卡验证",
+        clockRequired: "加班需要有打卡记录",
+        enableCompensation: "开启补偿",
+        timeOffSettings: "调休假设置",
+        latestEffectiveDate: "最晚有效期:次年",
+        minimumUnit: "请假最小单位",
+        day: "天",
+        messages: {
+          updateSuccess: "更新加班设置成功",
+          updateError: "更新加班设置失败"
+        }
+      }
+    }
   }
 }
 export type LocalMessageType = typeof zhCN;
