@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import UserDropdown from "@/modules/user/components/user-dropdown/user-dropdown.vue";
+import { LocalSelect } from "@/shared/components/base/local-select";
 import ThemeSwitch from "@/shared/components/base/theme-switch/src/theme-switch.vue";
 import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons-vue';
@@ -23,13 +24,16 @@ const { token } = useAntdToken()
 <template>
   <LayoutHeader class="layout-header">
     <Flex v-bind="LayoutHeaderFlex">
-      <div>
+      <div class="flex-1">
         <MenuUnfoldOutlined v-if="collapsed" class="trigger layout-header-collapsed-icon"
           @click="emits('changeCollapsed')" />
         <MenuFoldOutlined v-else class="trigger layout-header-collapsed-icon" @click="emits('changeCollapsed')" />
       </div>
-      <ThemeSwitch />
-      <UserDropdown />
+      <Flex gap="large" align="center">
+        <ThemeSwitch />
+        <UserDropdown />
+        <LocalSelect />
+      </Flex>
     </Flex>
   </LayoutHeader>
 </template>

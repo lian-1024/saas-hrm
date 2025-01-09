@@ -80,7 +80,7 @@ const formLayout: FormProps = {
       </Checkbox>
     </Form.Item>
     <Form.Item>
-      <Button :loading="userStore.loading" type="primary" html-type="submit" block size="large">
+      <Button :loading="userStore.loginLoading" type="primary" html-type="submit" block size="large">
         登录
       </Button>
     </Form.Item>

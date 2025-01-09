@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { SiderMenuItem } from '@/core/layouts/config/menu.config';
 import router from '@/core/router';
 import { useTheme } from '@/shared/composables/use-theme';
+import { generateMenuItem } from '@/shared/utils/generate-menu-item';
+import { ApartmentOutlined, CalendarOutlined, DashboardOutlined, LockOutlined, UserOutlined } from '@ant-design/icons-vue';
 import { LayoutSider, Menu, type MenuProps } from 'ant-design-vue';
-import { ref } from 'vue';
+import { computed, h, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useAntdToken } from '../../../../shared/composables/use-antd-token/index';
 import QLogo from './logo.vue';
+const { t } = useI18n();
+
 defineOptions({
   name: "QLayoutSider"
 })
@@ -22,6 +26,26 @@ const handleClickMenuItem: MenuProps['onClick'] = ({ key }) => {
 const { themeStatus } = useTheme()
 
 const { token } = useAntdToken()
+
+const siderMenuItem = computed<MenuProps['items']>(() => (
+  [
+    // 首页
+    generateMenuItem("/dashboard", t('nav.dashboard'), h(DashboardOutlined)),
+    // 组织
+    generateMenuItem("/department", t('nav.department'), h(ApartmentOutlined)),
+    // 角色
+    generateMenuItem("/role", t('nav.role'), h(UserOutlined)),
+    // 员工
+    generateMenuItem("/employee", t('nav.employee'), h(DashboardOutlined)),
+    // 权限
+    generateMenuItem("/permission", t('nav.permission'), h(LockOutlined)),
+    // 考勤
+    generateMenuItem("/attendance", t('nav.attendance'), h(CalendarOutlined)),
+  ]
+))
+
+
+
 </script>
 
 <template>
@@ -30,7 +54,7 @@ const { token } = useAntdToken()
     <!-- layout menu -->
     <QLogo />
     <!-- layout menu -->
-    <Menu :theme="themeStatus" v-model:selectedKeys="selectedKeys" :items="SiderMenuItem" mode="inline"
+    <Menu :theme="themeStatus" v-model:selectedKeys="selectedKeys" :items="siderMenuItem" mode="inline"
       @click="handleClickMenuItem" class="layout-sider-menu" />
   </LayoutSider>
 </template>

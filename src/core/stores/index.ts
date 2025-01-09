@@ -14,5 +14,6 @@ export const setupStore = async (app: App<Element>) => {
 
 
 export { useUserStore } from './modules/user'
+export { useLocaleStore } from './modules/locale'
 export { pinia }
 
