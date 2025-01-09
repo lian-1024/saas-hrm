@@ -7,7 +7,8 @@ import { useRequest } from '@/shared/composables/use-request/use-request';
 import type { FormInstance, FormProps, SelectProps } from 'ant-design-vue';
 import { Button, Flex, Form, Input, Select, message } from 'ant-design-vue';
 import { computed, ref, watch } from 'vue';
-
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n()
 interface DepartmentFormData {
   name: string;
   code: string;
@@ -20,7 +21,7 @@ defineOptions({
 })
 
 const props = defineProps<{
-  type: "add" | "edit";
+  type: "addChild" | "edit";
   departmentId?: string;
 }>();
 
@@ -34,7 +35,7 @@ const formRef = ref<FormInstance>();
 const formData = ref<DepartmentDetailVO>({
   name: '',
   code: '',
-  managerId: '',
+  managerId: 1,
   introduce: '',
   createTime: '',
   id: 0,
@@ -47,25 +48,25 @@ const emits = defineEmits(['success'])
 
 // 计算标题
 const computedTitle = computed(() => {
-  return props.type === "add" ? "添加子部门" : "编辑部门";
+  return props.type === "addChild" ? t('department.operations.addChild') : t('department.operations.edit');
 });
 
 // 表单验证规则
 const formRules: FormProps['rules'] = {
   name: [
-    { required: true, message: '请输入部门名称', trigger: 'blur', },
-    { min: 2, max: 10, message: '部门名称长度为2-10个字符', trigger: 'blur', }
+    { required: true, message: t('department.operations.formRules.name.required'), trigger: 'blur', },
+    { min: 2, max: 10, message: t('department.operations.formRules.name.min'), trigger: 'blur', }
   ],
   code: [
-    { required: true, message: '请输入部门编码', trigger: 'blur', },
-    { min: 2, max: 10, message: '部门编码长度为2-10个字符', trigger: 'blur', }
+    { required: true, message: t('department.operations.formRules.code.required'), trigger: 'blur', },
+    { min: 2, max: 10, message: t('department.operations.formRules.code.min'), trigger: 'blur', }
   ],
   managerId: [
-    { required: true, message: '请选择部门负责人', trigger: 'change', }
+    { required: true, message: t('department.operations.formRules.managerId.required'), trigger: 'change', }
   ],
   introduce: [
-    { required: true, message: '请输入部门介绍', trigger: 'blur', },
-    { max: 100, message: '部门介绍最多100个字符', trigger: 'blur', }
+    { required: true, message: t('department.operations.formRules.introduce.required'), trigger: 'blur', },
+    { max: 100, message: t('department.operations.formRules.introduce.max'), trigger: 'blur', }
   ]
 };
 
@@ -74,15 +75,11 @@ const { run: addDepartment, loading: addLoading } = useRequest(DepartmentService
   manual: true,
   onSuccess: (data) => {
     console.log(data);
-    message.success("新增部门成功")
+    message.success(t("department.operations.operationMessage.addSuccess"))
     emits('success')
   },
   onError: (error) => {
-    if (error.message) {
-      message.error(error.message)
-    } else {
-      message.error("新增部门失败")
-    }
+    message.error(t("department.operations.operationMessage.addError"))
   },
   onFinally: () => closeModal()
 })
@@ -106,15 +103,11 @@ const { run: getDepartmentDetail, loading: getDepartmentDetailLoading } = useReq
 const { run: updateDepartment, loading: updateDepartmentLoading } = useRequest(DepartmentService.updateDepartment, {
   manual: true,
   onSuccess: (data) => {
-    message.success("编辑部门成功")
+    message.success(t("department.operations.operationMessage.editSuccess"))
     emits('success')
   },
   onError: (error) => {
-    if (error.message) {
-      message.error(error.message)
-    } else {
-      message.error("编辑部门失败")
-    }
+    message.error(error.message || t("department.operations.operationMessage.editError"))
   },
   onFinally: () => closeModal()
 })
@@ -133,10 +126,10 @@ watch(() => props.departmentId, (newVal) => {
 const handleSubmit = () => {
   formRef.value?.validate().then(async () => {
     // 表单验证通过
-    if (!props.departmentId) return message.error("请先选择部门")
+    if (!props.departmentId) return message.error(t("department.operations.operationMessage.selectDepartment"))
 
     switch (props.type) {
-      case 'add':
+      case 'addChild':
         const { id, createTime, managerName, ...rest } = formData.value
 
         // 调用API保存数据
@@ -149,9 +142,7 @@ const handleSubmit = () => {
         updateDepartment(formData.value)
         break;
     }
-  }).catch(err => {
-    console.error('表单验证失败：', err);
-  });
+  })
 };
 
 // 关闭模态框
@@ -180,22 +171,25 @@ const loading = computed(() => getDepartmentDetailLoading.value || getDepartment
     :maskClosable="false">
     <QSpin :spinning="loading">
       <div class="department-modal">
-        <Form ref="formRef" :model="formData" :rules="formRules" :label-col="formLabelCol"
-          :wrapper-col="formWrapperCol">
-          <Form.Item label="部门名称" name="name">
-            <Input v-model:value="formData.name" placeholder="请输入部门名称" :maxLength="10" show-count />
+        <Form ref="formRef" layout="vertical" :model="formData" :rules="formRules">
+          <Form.Item :label="t('department.operations.formFields.name')" name="name">
+            <Input v-model:value="formData.name" :placeholder="t('department.operations.formPlaceholder.name')"
+              :maxLength="10" show-count />
           </Form.Item>
 
-          <Form.Item label="部门编码" name="code">
-            <Input v-model:value="formData.code" placeholder="请输入部门编码" :maxLength="10" show-count />
+          <Form.Item :label="t('department.operations.formFields.code')" name="code">
+            <Input v-model:value="formData.code" :placeholder="t('department.operations.formPlaceholder.code')"
+              :maxLength="10" show-count />
           </Form.Item>
 
-          <Form.Item label="部门负责人" name="managerId">
-            <Select placeholder="请选择部门负责人" v-model:value="formData.managerId" :options="departmentManagerList" />
+          <Form.Item :label="t('department.operations.formFields.managerId')" name="managerId">
+            <Select :placeholder="t('department.operations.formPlaceholder.managerId')"
+              v-model:value="formData.managerId" :options="departmentManagerList" />
           </Form.Item>
 
-          <Form.Item label="部门介绍" name="introduce">
-            <Input.TextArea v-model:value="formData.introduce" placeholder="请输入部门介绍" :maxLength="100"
+          <Form.Item :label="t('department.operations.formFields.introduce')" name="introduce">
+            <Input.TextArea v-model:value="formData.introduce"
+              :placeholder="t('department.operations.formPlaceholder.introduce')" :maxLength="100"
               :auto-size="{ minRows: 3, maxRows: 5 }" show-count />
           </Form.Item>
         </Form>

@@ -31,12 +31,12 @@ const LinkList = [
 </script>
 
 <template>
-  <QPanel :title="$t('dashboard.help_link.title')">
+  <QPanel :title="$t('dashboard.helpLink.title')">
     <Flex vertical gap="middle">
       <div class="help-link-item cursor-pointer" v-for="item in LinkList" :key="item.label">
         <component :is="item.icon" />
         <TypographyText type="secondary">
-          {{ $t(`dashboard.help_link.${item.label}`) }}
+          {{ $t(`dashboard.helpLink.${item.label}`) }}
         </TypographyText>
       </div>
     </Flex>

@@ -9,7 +9,9 @@ import { DownOutlined } from '@ant-design/icons-vue';
 import { type MenuProps, type TreeProps, Dropdown, Flex, Menu, Modal, Tree, TypographyText, message } from 'ant-design-vue';
 import type { MenuItemType } from 'ant-design-vue/es/menu/src/interface';
 import { h, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import DepartmentModal from '../components/modal.vue';
+const { t } = useI18n()
 const { token } = useAntdToken()
 defineOptions({
   name: "DepartmentPage"
@@ -22,25 +24,25 @@ const selectedDepartmentId = ref<string>();
 
 const operations: MenuProps['items'] = [
   {
-    key: "add",
-    label: "添加子部门",
+    key: "addChild",
+    label: t('department.operations.addChild'),
   },
   {
     key: "edit",
-    label: "编辑部门",
+    label: t('department.operations.edit'),
   },
   {
     key: "delete",
-    label: "删除",
+    label: t('department.operations.delete'),
   }
 ]
 
 
 const modalOpen = ref(false)
-const modalType = ref<'add' | 'edit'>("add")
+const modalType = ref<'addChild' | 'edit'>("addChild")
 
 
-const handleOpenModal = (type: "add" | "edit", departmentId?: string) => {
+const handleOpenModal = (type: "addChild" | "edit", departmentId?: string) => {
   modalOpen.value = true
   modalType.value = type
   selectedDepartmentId.value = departmentId
@@ -54,7 +56,7 @@ const { loading: getListLoading, run: getCompanyDepartmentList } = useRequest(De
 
 const handleAddSubDepartment = (key: string | number) => {
   console.log("添加子部门:", key)
-  handleOpenModal("add", key.toString())
+  handleOpenModal("addChild", key.toString())
 }
 
 const handleEditDepartment = (key: string | number) => {
@@ -68,15 +70,11 @@ const deleteDepartmentConfirm = ref(false)
 const { run: deleteDepartment, loading: deleteDepartmentLoading } = useRequest(DepartmentService.deleteDepartment, {
   manual: true,
   onSuccess: () => {
-    message.success("删除部门成功")
+    message.success(t("department.operations.operationMessage.deleteSuccess"))
     getCompanyDepartmentList()
   },
   onError: (error) => {
-    if (error.message) {
-      message.error(error.message)
-    } else {
-      message.error("删除部门失败")
-    }
+    message.error(error.message || t("department.operations.operationMessage.deleteError"))
   },
   onFinally: () => {
     deleteDepartmentConfirm.value = false
@@ -84,29 +82,22 @@ const { run: deleteDepartment, loading: deleteDepartmentLoading } = useRequest(D
 })
 
 const handleDeleteDepartment = (key: string | number) => {
-  console.log("删除部门", key)
 
   Modal.error({
-    title: "删除部门",
-    content: "确定要删除该部门吗？",
-    okText: "确定",
+    title: t("department.operations.operationMessage.deleteConfirmTitle"),
+    content: t("department.operations.operationMessage.deleteConfirmContent"),
+    okText: t("department.operations.operationMessage.confirmDelete"),
     closable: true,
-    cancelText: "取消",
+    cancelText: t("department.operations.operationMessage.cancelDelete"),
     onOk: async () => {
-      try {
-        await deleteDepartment(key.toString())
-      } catch (error) {
-        return null
-      }
-    },
-    onCancel: () => {
-      console.log("取消删除")
+      await deleteDepartment(key.toString())
+      return null
     }
   })
 }
 
 const operationClickMap = {
-  add: handleAddSubDepartment,
+  addChild: handleAddSubDepartment,
   edit: handleEditDepartment,
   delete: handleDeleteDepartment
 }
@@ -138,7 +129,7 @@ onMounted(async () => {
               <Dropdown :overlay="h(Menu, { items: operations, onClick: (info) => handleOperationClick(info, key) })"
                 :arrow="{ pointAtCenter: true }">
                 <TypographyText type="secondary">
-                  操作
+                  {{ $t('department.operations.title') }}
                   <DownOutlined />
                 </TypographyText>
               </Dropdown>
@@ -156,8 +147,8 @@ onMounted(async () => {
   &-wrapper {
 
     height: 100%;
-    padding-block: calc(var(--spacing-large) * 2);
-    padding-inline: calc(var(--spacing-large) + 10%);
+    padding-block: v-bind("`${token.paddingLG * 2}px`");
+    padding-inline: 15%;
     background-color: v-bind("token.colorBgContainer");
     border-radius: v-bind("`${token.borderRadiusLG}px`");
     border: 1px solid v-bind("token.colorBorderSecondary");
