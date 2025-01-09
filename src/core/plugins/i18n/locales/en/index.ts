@@ -281,6 +281,68 @@ const en: LocalMessageType = {
         cancel: "Cancel"
       }
     }
+  },
+  permission: {
+    table: {
+      columns: {
+        name: "Name",
+        key: "Key",
+        description: "Description",
+        operations: "Operations"
+      },
+      actions: {
+        add: "Add",
+        edit: "Edit",
+        delete: "Delete"
+      }
+    },
+    actions: {
+      addPermission: "Add Permission"
+    },
+    modal: {
+      title: {
+        add: "Add Permission",
+        edit: "Edit Permission"
+      },
+      form: {
+        fields: {
+          name: "Permission Name",
+          code: "Permission Key",
+          description: "Description",
+          enable: "Enable"
+        },
+        placeholder: {
+          name: "Please enter permission name",
+          code: "Please enter permission key",
+          description: "Please enter permission description"
+        },
+        rules: {
+          name: {
+            required: "Please enter permission name",
+            exists: "Permission name already exists",
+            length: "Permission name should be 2-50 characters"
+          },
+          code: {
+            required: "Please enter permission key",
+            exists: "Permission key already exists",
+            length: "Permission key should be 2-50 characters"
+          }
+        }
+      },
+      buttons: {
+        confirm: "Confirm",
+        cancel: "Cancel"
+      }
+    },
+    messages: {
+      deleteConfirm: "Are you sure you want to delete this permission?",
+      deleteSuccess: "Delete permission successfully",
+      deleteError: "Failed to delete permission",
+      editSuccess: "Edit permission successfully",
+      editError: "Failed to edit permission",
+      addSuccess: "Add permission successfully",
+      addError: "Failed to add permission"
+    }
   }
 }
 

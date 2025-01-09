@@ -283,6 +283,68 @@ const zhCN = {
         cancel: "取消"
       }
     }
+  },
+  permission: {
+    table: {
+      columns: {
+        name: "名称",
+        key: "标识",
+        description: "描述",
+        operations: "操作"
+      },
+      actions: {
+        add: "添加",
+        edit: "编辑",
+        delete: "删除"
+      }
+    },
+    actions: {
+      addPermission: "添加权限"
+    },
+    modal: {
+      title: {
+        add: "新增权限点",
+        edit: "编辑权限点"
+      },
+      form: {
+        fields: {
+          name: "权限名称",
+          code: "权限标识",
+          description: "权限描述",
+          enable: "开启"
+        },
+        placeholder: {
+          name: "请输入权限名称",
+          code: "请输入权限标识",
+          description: "请输入权限描述"
+        },
+        rules: {
+          name: {
+            required: "请输入权限名称",
+            exists: "权限名称已存在",
+            length: "权限名称长度应为2-50个字符"
+          },
+          code: {
+            required: "请输入权限标识",
+            exists: "权限标识已存在",
+            length: "权限标识长度应为2-50个字符"
+          }
+        }
+      },
+      buttons: {
+        confirm: "确定",
+        cancel: "取消"
+      }
+    },
+    messages: {
+      deleteConfirm: "确认删除该数据吗?",
+      deleteSuccess: "删除权限成功",
+      deleteError: "删除权限失败",
+      editSuccess: "编辑权限点成功",
+      editError: "编辑权限点失败",
+      addSuccess: "新增权限点成功",
+      addError: "新增权限点失败"
+    }
   }
 }
 export type LocalMessageType = typeof zhCN;

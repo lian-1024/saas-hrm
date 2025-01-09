@@ -9,29 +9,33 @@ import type { PermissionTableTreeNode } from '@/shared/utils/convert/types';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Button, Flex, message, Modal, Table, type TableProps } from 'ant-design-vue';
 import { h, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 // 权限管理
 defineOptions({
   name: "PermissionPage"
 })
 
+const { t } = useI18n()
+
 const columns: TableProps['columns'] = [
   {
-    title: '名称',
+    title: t('permission.table.columns.name'),
     dataIndex: "name",
     key: 'name'
   },
   {
-    title: '标识',
+    title: t('permission.table.columns.key'),
     dataIndex: "key",
     key: 'key'
   },
   {
-    title: '描述',
+    title: t('permission.table.columns.description'),
     dataIndex: "description",
     key: 'description'
   },
   {
-    title: '操作',
+    title: t('permission.table.columns.operations'),
     dataIndex: "operations",
     key: 'operations',
     fixed: 'right',
@@ -55,11 +59,11 @@ const { run: getPermissionList, loading: getPermissionListLoading } = useRequest
 const { run: deletePermissionById, loading: deletePermissionByIdLoading } = useRequest(PermissionService.deletePermissionById, {
   manual: true,
   onSuccess: () => {
-    message.success("删除权限成功")
+    message.success(t('permission.messages.deleteSuccess'))
     getPermissionList()
   },
   onError: (error) => {
-    message.error(error.message || "删除权限失败")
+    message.error(error.message || t('permission.messages.deleteError'))
   }
 })
 
@@ -83,7 +87,7 @@ const handleEditPermission = (permissionId: number) => {
 
 const handleShowConfirmDelete = (permissionId: number) => {
   Modal.confirm({
-    content: '确认删除该数据吗?',
+    content: t('permission.messages.deleteConfirm'),
     icon: h(ExclamationCircleOutlined),
     onOk: async () => {
       try {
@@ -105,7 +109,7 @@ const { token } = useAntdToken()
 <template>
   <Flex class="permission-wrapper h-full" vertical gap="middle">
     <div>
-      <Button type="primary" @click="handleAddPermission(0)">添加权限</Button>
+      <Button type="primary" @click="handleAddPermission(0)">{{ t('permission.actions.addPermission') }}</Button>
     </div>
     <QSpin :spinning="getPermissionListLoading">
       <Table :pagination="false" class="permission-table" :data-source="permissionTree" :columns="columns"
@@ -113,9 +117,12 @@ const { token } = useAntdToken()
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'operations'">
             <Flex>
-              <Button size="small" @click="handleAddPermission(record.id)" type="link">添加</Button>
-              <Button size="small" @click="handleEditPermission(record.id)" type="link">编辑</Button>
-              <Button size="small" @click="handleShowConfirmDelete(record.id)" type="link">删除</Button>
+              <Button size="small" @click="handleAddPermission(record.id)" type="link">{{
+                t('permission.table.actions.add') }}</Button>
+              <Button size="small" @click="handleEditPermission(record.id)" type="link">{{
+                t('permission.table.actions.edit') }}</Button>
+              <Button size="small" @click="handleShowConfirmDelete(record.id)" type="link">{{
+                t('permission.table.actions.delete') }}</Button>
             </Flex>
           </template>
         </template>

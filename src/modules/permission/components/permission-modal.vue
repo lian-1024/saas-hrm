@@ -3,13 +3,15 @@ import PermissionService from '@/modules/permission/services/permission.service'
 import type { Permission } from '@/modules/permission/types';
 import { QModal } from '@/shared/components/base/modal';
 import { QSpin } from '@/shared/components/base/spin';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import { OpenStatus } from '@/shared/constants/status';
 import type { PermissionTableTreeNode } from '@/shared/utils/convert/types';
 import { Button, Flex, Form, FormItem, Input, message, Switch, type FormInstance, type FormProps } from 'ant-design-vue';
 import { computed, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { isPermissionExistCode, isPermissionExistName } from '../utils/find-permission';
-import { useAntdToken } from '@/shared/composables/use-antd-token';
+
 interface PermissionModalProps {
   permissionId: number
   isEdit: boolean,
@@ -35,10 +37,10 @@ const permissionForm = reactive<Permission>({
 })
 
 
-const formLabelCol: FormProps['labelCol'] = { span: 6 }
-const formWrapperCol: FormProps['wrapperCol'] = { span: 18 }
 
-const modalTitle = computed(() => props.isEdit ? "编辑权限点" : "新增权限点")
+const { t } = useI18n()
+
+const modalTitle = computed(() => props.isEdit ? t('permission.modal.title.edit') : t('permission.modal.title.add'))
 
 const closeModal = () => {
   modalStatus.value = false
@@ -56,15 +58,13 @@ const handleChangeIsOpenPermission = () => {
 
 const permissionFormRules: FormProps['rules'] = {
   name: [
-    { required: true, message: '请输入权限名称', trigger: 'blur' },
+    { required: true, message: t('permission.modal.form.rules.name.required'), trigger: 'blur' },
     {
       validator: async (_, value) => {
-
         return new Promise((resolve, reject) => {
           if (props.isEdit) return resolve()
           const isExist = isPermissionExistName(props.permissionTree, value)
-          console.log("isExist", isExist);
-          if (isExist) reject('权限名称已存在')
+          if (isExist) reject(t('permission.modal.form.rules.name.exists'))
           return resolve();
         })
       },
@@ -73,20 +73,18 @@ const permissionFormRules: FormProps['rules'] = {
     {
       max: 50,
       min: 2,
-      message: "权限名称长度应为2-50个字符",
+      message: t('permission.modal.form.rules.name.length'),
       trigger: 'blur'
     }
   ],
   code: [
-    { required: true, message: '请输入权限标识', trigger: 'blur' },
+    { required: true, message: t('permission.modal.form.rules.code.required'), trigger: 'blur' },
     {
       validator: async (_, value) => {
         return new Promise((resolve, reject) => {
           if (props.isEdit) return resolve()
           const isExist = isPermissionExistCode(props.permissionTree, value)
-          console.log("isExist", isExist);
-
-          if (isExist) reject('权限标识已存在')
+          if (isExist) reject(t('permission.modal.form.rules.code.exists'))
           resolve();
         })
       },
@@ -95,22 +93,21 @@ const permissionFormRules: FormProps['rules'] = {
     {
       max: 50,
       min: 2,
-      message: "权限标识长度应为2-50个字符",
+      message: t('permission.modal.form.rules.code.length'),
       trigger: 'blur'
     }
   ]
-
 };
 
 const { run: updatePermission, loading: updatePermissionLoading } = useRequest(PermissionService.updatePermission, {
   manual: true,
   onSuccess: () => {
-    message.success("编辑权限点成功")
+    message.success(t('permission.messages.editSuccess'))
     closeModal()
     emits('success')
   },
   onError: (error) => {
-    message.error(error.message || "编辑权限点失败")
+    message.error(error.message || t('permission.messages.editError'))
   },
   onFinally: () => {
     closeModal()
@@ -128,9 +125,12 @@ const { run: getPermissionById, loading: getPermissionByIdLoading } = useRequest
 const { run: addPermission, loading: addPermissionLoading } = useRequest(PermissionService.addPermission, {
   manual: true,
   onSuccess: () => {
-    message.success("新增权限点成功")
+    message.success(t('permission.messages.addSuccess'))
     closeModal()
     emits('success')
+  },
+  onError: (error) => {
+    message.error(error.message || t('permission.messages.addError'))
   }
 })
 
@@ -165,18 +165,19 @@ const { token } = useAntdToken()
 <template>
   <QModal mask v-model:open="modalStatus" @cancel="handleCancel" :title="modalTitle" closable>
     <QSpin :spinning="getPermissionByIdLoading">
-      <Form ref="formRef" class="permission-form" :rules="permissionFormRules" :model="permissionForm"
-        :label-col="formLabelCol" :wrapper-col="formWrapperCol">
-        <FormItem label="权限名称" name="name">
-          <Input v-model:value="permissionForm.name" placeholder="请输入权限名称" />
+      <Form layout="vertical" ref="formRef" class="permission-form" :rules="permissionFormRules"
+        :model="permissionForm">
+        <FormItem :label="t('permission.modal.form.fields.name')" name="name">
+          <Input v-model:value="permissionForm.name" :placeholder="t('permission.modal.form.placeholder.name')" />
         </FormItem>
-        <FormItem label="权限标识" name="code">
-          <Input v-model:value="permissionForm.code" placeholder="请输入权限标识" />
+        <FormItem :label="t('permission.modal.form.fields.code')" name="code">
+          <Input v-model:value="permissionForm.code" :placeholder="t('permission.modal.form.placeholder.code')" />
         </FormItem>
-        <FormItem label="权限描述" name="description">
-          <Input v-model:value="permissionForm.description" placeholder="请输入权限描述" />
+        <FormItem :label="t('permission.modal.form.fields.description')" name="description">
+          <Input v-model:value="permissionForm.description"
+            :placeholder="t('permission.modal.form.placeholder.description')" />
         </FormItem>
-        <FormItem label="开启" name="enVisible">
+        <FormItem :label="t('permission.modal.form.fields.enable')" name="enVisible">
           <Switch :checked="isOpenPermission" @change="handleChangeIsOpenPermission" />
         </FormItem>
       </Form>
@@ -184,8 +185,9 @@ const { token } = useAntdToken()
 
     <template #footer>
       <Flex justify="center" gap="small">
-        <Button type="primary" @click="handleConfirm" :loading="loading">确定</Button>
-        <Button @click="handleCancel">取消</Button>
+        <Button type="primary" @click="handleConfirm" :loading="loading">{{ t('permission.modal.buttons.confirm')
+          }}</Button>
+        <Button @click="handleCancel">{{ t('permission.modal.buttons.cancel') }}</Button>
       </Flex>
     </template>
   </QModal>
