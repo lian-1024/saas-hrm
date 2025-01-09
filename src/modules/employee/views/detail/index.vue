@@ -12,7 +12,11 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import type { CascaderProps, FormInstance } from 'ant-design-vue';
 import { Button, Cascader, Col, DatePicker, Flex, Form, FormItem, Input, message, Row, Select, Upload, type FormProps, type UploadProps } from 'ant-design-vue';
 import { computed, onMounted, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
+
+const { t } = useI18n()
+
 const { token } = useAntdToken()
 defineOptions({
   name: "EmployeeDetailPage"
@@ -39,26 +43,26 @@ const formLabelCol: FormProps['labelCol'] = { span: 8 }
 const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
 const formRules: FormProps['rules'] = {
   username: [
-    { required: true, message: '请输入员工姓名', trigger: 'blur' },
-    { min: 1, max: 4, message: '员工名字长度为1-4位字符', trigger: 'blur' }
+    { required: true, message: t('employee.detail.form.rules.username.required'), trigger: 'blur' },
+    { min: 2, max: 4, message: t('employee.detail.form.rules.username.length'), trigger: 'blur' }
   ],
   mobile: [
-    { required: true, message: '请输入手机号', trigger: 'blur' },
-    { pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确', trigger: 'blur' }
+    { required: true, message: t('employee.detail.form.rules.mobile.required'), trigger: 'blur' },
+    { pattern: /^1[3-9]\d{9}$/, message: t('employee.detail.form.rules.mobile.format'), trigger: 'blur' }
   ],
   timeOfEntry: [
-    { required: true, message: '请选择入职日期', trigger: 'change' },
-    { type: 'date', message: '入职日期格式不正确', trigger: 'change' }
+    { required: true, message: t('employee.detail.form.rules.timeOfEntry.required'), trigger: 'change' },
+    { type: 'date', message: t('employee.detail.form.rules.timeOfEntry.format'), trigger: 'change' }
   ],
   correctionTime: [
-    { required: true, message: '请选择转正日期', trigger: 'change' },
-    { type: 'date', message: '转正日期格式不正确', trigger: 'change' }
+    { required: true, message: t('employee.detail.form.rules.correctionTime.required'), trigger: 'change' },
+    { type: 'date', message: t('employee.detail.form.rules.correctionTime.format'), trigger: 'change' }
   ],
   departmentId: [
-    { required: true, message: '请选择部门', trigger: 'change' }
+    { required: true, message: t('employee.detail.form.rules.department.required'), trigger: 'change' }
   ],
   formOfEmployment: [
-    { required: true, message: '请选择聘用形式', trigger: 'change' }
+    { required: true, message: t('employee.detail.form.rules.formOfEmployment.required'), trigger: 'change' }
   ]
 };
 const formRef = ref<FormInstance | null>(null)
@@ -94,11 +98,11 @@ const handleChange: UploadProps['onChange'] = (info) => {
 const beforeUpload: UploadProps['beforeUpload'] = (file) => {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
-    message.error('You can only upload JPG file!');
+    message.error(t('employee.detail.upload.error.type'));
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    message.error('Image must smaller than 2MB!');
+    message.error(t('employee.detail.upload.error.size'));
   }
   return isJpgOrPng && isLt2M;
 };
@@ -124,15 +128,21 @@ const loading = computed(() => getEmployeeDetailByIdLoading.value || getCompanyD
 const { run: updateEmployeeDetail, loading: updateEmployeeDetailLoading } = useRequest(EmployeeService.updateEmployeeDetail, {
   manual: true,
   onSuccess: () => {
-    message.success('更新成功')
+    message.success(t('employee.messages.updateSuccess'))
+  },
+  onError: (error) => {
+    message.error(error.message || t('employee.messages.updateError'))
   }
 })
 
 const { run: addEmployee, loading: addEmployeeLoading } = useRequest(EmployeeService.addEmployee, {
   manual: true,
   onSuccess: () => {
-    message.success('新增成功')
+    message.success(t('employee.messages.addSuccess'))
     router.push('/employee')
+  },
+  onError: (error) => {
+    message.error(error.message || t('employee.messages.addError'))
   }
 })
 
@@ -141,8 +151,8 @@ const confirmLoading = computed(() => updateEmployeeDetailLoading.value || addEm
 
 
 const formOfEmploymentOptions = [
-  { label: '正式', value: FormOfEmployment.Formal },
-  { label: '非正式', value: FormOfEmployment.InFormal },
+  { label: t('employee.table.formalOfEmployment.formal'), value: FormOfEmployment.Formal },
+  { label: t('employee.table.formalOfEmployment.informal'), value: FormOfEmployment.InFormal },
 ]
 
 // 保存操作
@@ -178,30 +188,31 @@ onMounted(async () => {
     <Flex class="detail-wrapper h-full" justify="star">
       <Form ref="formRef" :rules="formRules" class="detail-form" :model="formState" :label-col="formLabelCol"
         :wrapper-col="formWrapperCol">
-        <FormItem label="姓名" name="username">
-          <Input v-model:value="formState.username" placeholder="请输入员工姓名全称" />
+        <FormItem :label="t('employee.detail.form.fields.username')" name="username">
+          <Input v-model:value="formState.username" :placeholder="t('employee.detail.form.placeholder.username')" />
         </FormItem>
-        <FormItem label="工号" name="workNumber">
+        <FormItem :label="t('employee.detail.form.fields.workNumber')" name="workNumber">
           <Input v-model:value="formState.workNumber" disabled />
         </FormItem>
-        <FormItem label="手机" name="mobile">
+        <FormItem :label="t('employee.detail.form.fields.mobile')" name="mobile">
           <Input v-model:value="formState.mobile" :disabled="!!route.params.id" />
         </FormItem>
-        <FormItem label="部门" name="departmentId">
-          <Cascader :display-render="({ labels }) => labels.join('-')" placeholder="请选择部门" :options="cascaderOptions"
+        <FormItem :label="t('employee.detail.form.fields.department')" name="departmentId">
+          <Cascader :display-render="({ labels }) => labels.join('-')"
+            :placeholder="t('employee.detail.form.placeholder.department')" :options="cascaderOptions"
             v-model:value="selectedDepartmentId" />
         </FormItem>
-        <FormItem label="聘用形式" name="formOfEmployment">
-          <!-- <Input v-model:value="formState.formOfEmployment" /> -->
-          <Select placeholder="请选择聘用形式" v-model:value="formState.formOfEmployment" :options="formOfEmploymentOptions" />
+        <FormItem :label="t('employee.detail.form.fields.formOfEmployment')" name="formOfEmployment">
+          <Select :placeholder="t('employee.detail.form.placeholder.formOfEmployment')"
+            v-model:value="formState.formOfEmployment" :options="formOfEmploymentOptions" />
         </FormItem>
-        <FormItem label="入职时间" name="timeOfEntry">
+        <FormItem :label="t('employee.detail.form.fields.timeOfEntry')" name="timeOfEntry">
           <DatePicker value-format="YYYY-MM-DD" v-model:value="formState.timeOfEntry" />
         </FormItem>
-        <FormItem label="转正时间" name="correctionTime">
+        <FormItem :label="t('employee.detail.form.fields.correctionTime')" name="correctionTime">
           <DatePicker value-format="YYYY-MM-DD" v-model:value="formState.correctionTime" />
         </FormItem>
-        <FormItem label="员工头像" name="staffPhoto">
+        <FormItem :label="t('employee.detail.form.fields.staffPhoto')" name="staffPhoto">
           <Upload v-model:file-list="fileList" name="avatar" list-type="picture-card" class="avatar-uploader"
             :show-upload-list="false" action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
             :before-upload="beforeUpload" @change="handleChange">
@@ -209,7 +220,7 @@ onMounted(async () => {
             <div v-else>
               <LoadingOutlined v-if="uploadLoading"></LoadingOutlined>
               <PlusOutlined v-else></PlusOutlined>
-              <div class="ant-upload-text">Upload</div>
+              <div class="ant-upload-text">{{ t('employee.detail.upload.text') }}</div>
             </div>
           </Upload>
         </FormItem>
@@ -217,10 +228,10 @@ onMounted(async () => {
           <Row>
             <Col :span="12" />
             <Col>
-            <Button type="primary" @click="handleSave" :loading="confirmLoading">保存{{ route.params.id && "更新"
-              }}</Button>
+            <Button type="primary" @click="handleSave" :loading="confirmLoading">
+              {{ route.params.id ? t('employee.detail.form.buttons.update') : t('employee.detail.form.buttons.save') }}
+            </Button>
             </Col>
-
           </Row>
         </FormItem>
       </Form>

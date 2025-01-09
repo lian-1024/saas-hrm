@@ -159,6 +159,128 @@ const en: LocalMessageType = {
         }
       }
     }
+  },
+  employee: {
+    table: {
+      columns: {
+        staffPhoto: "Avatar",
+        username: "Name",
+        mobile: "Mobile",
+        workNumber: "Work ID",
+        formOfEmployment: "Employment Type",
+        departmentName: "Department",
+        timeOfEntry: "Entry Time",
+        operations: "Operations"
+      },
+      actions: {
+        view: "View",
+        role: "Role",
+        delete: "Delete",
+        deleteConfirm: "Are you sure you want to delete?"
+      },
+      pagination: {
+        total: "Total {total} items"
+      },
+      formalOfEmployment: {
+        formal: "Formal",
+        informal: "Informal"
+      }
+    },
+    actions: {
+      sendNotification: "Send Notification",
+      addEmployee: "Add Employee",
+      importExcel: "Import Excel",
+      exportExcel: "Export Excel"
+    },
+    search: {
+      placeholder: "Search employee name"
+    },
+    messages: {
+      deleteSuccess: "Employee deleted successfully",
+      deleteError: "Failed to delete employee",
+      updateSuccess: "Update employee successfully",
+      updateError: "Failed to update employee",
+      addSuccess: "Add employee successfully",
+      addError: "Failed to add employee"
+    },
+    detail: {
+      title: "Employee Detail",
+      form: {
+        fields: {
+          username: "Name",
+          workNumber: "Work ID",
+          mobile: "Mobile",
+          department: "Department",
+          formOfEmployment: "Employment Type",
+          timeOfEntry: "Entry Time",
+          correctionTime: "Correction Time",
+          staffPhoto: "Photo"
+        },
+        placeholder: {
+          username: "Please enter employee full name",
+          department: "Please select department",
+          formOfEmployment: "Please select employment type"
+        },
+        rules: {
+          username: {
+            required: "Please enter employee name",
+            length: "Name length should be 1-4 characters"
+          },
+          mobile: {
+            required: "Please enter mobile number",
+            format: "Invalid mobile number format"
+          },
+          timeOfEntry: {
+            required: "Please select entry time",
+            format: "Invalid entry time format"
+          },
+          correctionTime: {
+            required: "Please select correction time",
+            format: "Invalid correction time format"
+          },
+          department: {
+            required: "Please select department"
+          },
+          formOfEmployment: {
+            required: "Please select employment type"
+          }
+        },
+        buttons: {
+          save: "Save",
+          update: "Update"
+        }
+      },
+      upload: {
+        text: "Upload",
+        error: {
+          type: "You can only upload JPG file!",
+          size: "Image must be smaller than 2MB!",
+          upload: "Upload error"
+        }
+      }
+    },
+    roleModal: {
+      title: "Assign Roles",
+      success: "Roles assigned successfully",
+      error: "Failed to assign roles",
+      confirm: "Confirm",
+      cancel: "Cancel"
+    },
+    importModal: {
+      title: "Import Employees",
+      downloadTemplate: "Download Template",
+      dragText: "Drag file here or",
+      clickToUpload: "click to upload",
+      success: "Import successful",
+      error: "Import failed",
+      fileType: {
+        error: "Only Excel files are allowed!"
+      },
+      buttons: {
+        confirm: "Confirm",
+        cancel: "Cancel"
+      }
+    }
   }
 }
 

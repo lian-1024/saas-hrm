@@ -5,6 +5,9 @@ import { useRequest } from '@/shared/composables/use-request/use-request';
 import { InboxOutlined } from '@ant-design/icons-vue';
 import { Button, Flex, message, TypographyLink, UploadDragger, type UploadProps } from 'ant-design-vue';
 import FileSaver from 'file-saver';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n()
 
 const modalStatus = defineModel("open", { default: false })
 
@@ -46,7 +49,7 @@ const uploadProps: UploadProps = {
     const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
       file.type === 'application/vnd.ms-excel';
     if (!isExcel) {
-      message.error('只能上传 Excel 文件!');
+      message.error(t('employee.importModal.fileType.error'));
       return false;
     }
     return true;
@@ -57,11 +60,11 @@ const uploadProps: UploadProps = {
 const { run: uploadEmployee, loading: uploadEmployeeLoading } = useRequest(EmployeeService.uploadEmployee, {
   manual: true,
   onSuccess: () => {
-    message.success("导入成功")
+    message.success(t('employee.importModal.success'))
     modalStatus.value = false // 关闭弹窗
   },
   onError: (error) => {
-    message.error(error.message || "导入失败")
+    message.error(error.message || t('employee.importModal.error'))
   }
 })
 
@@ -73,24 +76,25 @@ const handleCancel = () => {
 </script>
 
 <template>
-  <QModal v-model:open="modalStatus" title="员工导入" mask mask-closable>
+  <QModal v-model:open="modalStatus" :title="t('employee.importModal.title')" mask mask-closable>
     <div class="import-wrapper">
       <UploadDragger v-bind="uploadProps">
         <p class="ant-upload-drag-icon">
           <InboxOutlined />
         </p>
         <TypographyLink class="ant-upload-text" @click.stop="getExportTemplate">
-          下载导入模版
+          {{ t('employee.importModal.downloadTemplate') }}
         </TypographyLink>
         <p class="ant-upload-hint import-click">
-          将文件拖到此处或 <TypographyLink>点击上传</TypographyLink>
+          {{ t('employee.importModal.dragText') }} <TypographyLink>{{ t('employee.importModal.clickToUpload') }}
+          </TypographyLink>
         </p>
       </UploadDragger>
     </div>
     <template #footer>
       <Flex justify="flex-end" gap="small">
-        <Button @click="handleCancel">取消</Button>
-        <Button type="primary" :loading="uploadEmployeeLoading">确定</Button>
+        <Button @click="handleCancel">{{ t('employee.importModal.buttons.cancel') }}</Button>
+        <Button type="primary" :loading="uploadEmployeeLoading">{{ t('employee.importModal.buttons.confirm') }}</Button>
       </Flex>
     </template>
   </QModal>

@@ -3,7 +3,7 @@ import router from '@/core/router';
 import DepartmentService from '@/modules/department/services/department.service';
 import ImportExcelModal from '@/modules/employee/components/import-excel-modal.vue';
 import RoleModal from '@/modules/employee/components/role-modal.vue';
-import { FormOfEmploymentMap, type FormOfEmploymentType } from '@/modules/employee/constants';
+import { type FormOfEmploymentType } from '@/modules/employee/constants';
 import EmployeeService from '@/modules/employee/services/employee.service';
 import type { EmployeeVO, PagingEmployeeListParams } from '@/modules/employee/types';
 import { QAvatar } from '@/shared/components/base/avatar';
@@ -17,9 +17,13 @@ import { DepartmentTree } from '@/shared/utils/convert/department';
 import { Button, Flex, InputSearch, message, Popconfirm, Table, Tree, TypographyText, type ButtonProps, type TableProps, type TreeProps } from 'ant-design-vue';
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
 import FileSaver from 'file-saver';
-import { onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { FormOfEmployment } from '../constants';
 const { isDark } = useTheme()
 const { token } = useAntdToken()
+const { t } = useI18n()
+
 // 员工管理
 defineOptions({
   name: "EmployeePage"
@@ -47,45 +51,45 @@ const actionsSize: ButtonProps['size'] = 'middle'
 const columns: TableProps<EmployeeVO>['columns'] = [
 
   {
-    title: "头像",
+    title: t('employee.table.columns.staffPhoto'),
     dataIndex: "staffPhoto",
     key: "staffPhoto",
   },
   {
-    title: "昵称",
+    title: t('employee.table.columns.username'),
     dataIndex: "username",
     key: "username",
   },
   {
-    title: "手机号",
+    title: t('employee.table.columns.mobile'),
     dataIndex: "mobile",
     key: "mobile",
     sorter: (a: EmployeeVO, b: EmployeeVO) => a.mobile.length - b.mobile.length
   },
   {
-    title: "工号",
+    title: t('employee.table.columns.workNumber'),
     dataIndex: "workNumber",
     key: "workNumber",
     sorter: (a: EmployeeVO, b: EmployeeVO) => a.workNumber.length - b.workNumber.length
   },
   {
-    title: "聘用形式",
+    title: t('employee.table.columns.formOfEmployment'),
     dataIndex: "formOfEmployment",
     key: 'formOfEmployment'
   },
   {
-    title: '部门',
+    title: t('employee.table.columns.departmentName'),
     dataIndex: "departmentName",
     key: "departmentName"
   },
   {
-    title: "入职时间",
+    title: t('employee.table.columns.timeOfEntry'),
     dataIndex: 'timeOfEntry',
     key: "timeOfEntry",
     sorter: (a: EmployeeVO, b: EmployeeVO) => a.timeOfEntry.length - b.timeOfEntry.length
   },
   {
-    title: "操作",
+    title: t('employee.table.columns.operations'),
     dataIndex: "operations",
     key: "operations",
     fixed: "right",
@@ -134,14 +138,14 @@ const { loading: getEmployeeListLoading, run: getEmployeeList } = useRequest(() 
 const { run: deleteEmployee } = useRequest(EmployeeService.deleteEmployee, {
   manual: true,
   onSuccess: () => {
-    message.success("删除员工成功")
+    message.success(t('employee.messages.deleteSuccess'))
     getEmployeeList(pagingEmployeeParams)
   },
   onError: (error) => {
     if (error.message) {
       message.error(error.message)
     } else {
-      message.error("删除员工失败")
+      message.error(t('employee.messages.deleteError'))
     }
   }
 })
@@ -186,12 +190,16 @@ watch(() => pagingEmployeeParams.departmentId, (newVal) => {
 onMounted(async () => {
   await Promise.all([getCompanyDepartmentList(), getEmployeeList()])
 })
+
+const formalOfEmployment = computed(() => (formOfEmployment: FormOfEmploymentType) => {
+  return formOfEmployment === FormOfEmployment.Formal ? t('employee.table.formalOfEmployment.formal') : t('employee.table.formalOfEmployment.informal')
+})
 </script>
 
 <template>
   <Flex gap="small" class="h-full employee-wrapper">
     <Flex vertical class="employee-left" gap="middle">
-      <InputSearch @search="getEmployeeList(pagingEmployeeParams)" placeholder="请输入员工姓名全员搜索"
+      <InputSearch @search="getEmployeeList(pagingEmployeeParams)" :placeholder="t('employee.search.placeholder')"
         v-model:value="pagingEmployeeParams.keyword" />
       <QSkeleton :loading="getDepartmentLoading" active :title="false" :paragraph="{
         rows: 16
@@ -203,17 +211,17 @@ onMounted(async () => {
     <Flex vertical gap="small" class="flex-1 employee-right h-full">
       <Flex justify="space-between" class="employee-right-actions">
         <Button :size="actionsSize">
-          群发通知
+          {{ t('employee.actions.sendNotification') }}
         </Button>
         <Flex gap="small">
           <Button type="primary" :size="actionsSize" @click="handleAddEmployee">
-            添加员工
+            {{ t('employee.actions.addEmployee') }}
           </Button>
           <Button :size="actionsSize" @click="importExcelModalStatus = true">
-            excel导入
+            {{ t('employee.actions.importExcel') }}
           </Button>
           <Button :loading="exportEmployeeListLoading" :size="actionsSize" @click="exportEmployeeList">
-            excel导出
+            {{ t('employee.actions.exportExcel') }}
           </Button>
         </Flex>
       </Flex>
@@ -225,7 +233,7 @@ onMounted(async () => {
           total: employeeTableDataSource.total,
           current: pagingEmployeeParams.page,
           onChange: handleChangeTablePagination,
-          showTotal: total => `共 ${total} 条数据`
+          showTotal: total => t('employee.table.pagination.total', { total })
         }" class="flex-1 h-full employee-right-table" :columns="columns" :data-source="employeeTableDataSource.rows"
           :row-selection="tableRowSelection">
           <template #headerCell="{ title }">
@@ -239,16 +247,18 @@ onMounted(async () => {
 
             <!-- 聘用形式 -->
             <template v-else-if="column.key === 'formOfEmployment'">
-              {{ FormOfEmploymentMap[(record.formOfEmployment) as FormOfEmploymentType] }}
+              {{ formalOfEmployment(record.formOfEmployment) }}
             </template>
 
             <!-- 操作 -->
             <template v-else-if="column.key === 'operations'">
               <Flex>
-                <Button type="link" size="small" @click="handleViewEmployee(record.key)">查看</Button>
-                <Button type="link" size="small" @click="openGiveRoleModal(record.key)">角色</Button>
-                <Popconfirm @confirm="deleteEmployee(record.key)" title="确定要删除吗？">
-                  <Button type="link" size="small">删除</Button>
+                <Button type="link" size="small" @click="handleViewEmployee(record.key)">{{
+                  t('employee.table.actions.view') }}</Button>
+                <Button type="link" size="small" @click="openGiveRoleModal(record.key)">{{
+                  t('employee.table.actions.role') }}</Button>
+                <Popconfirm @confirm="deleteEmployee(record.key)" :title="t('employee.table.actions.deleteConfirm')">
+                  <Button type="link" size="small" danger>{{ t('employee.table.actions.delete') }}</Button>
                 </Popconfirm>
               </Flex>
             </template>

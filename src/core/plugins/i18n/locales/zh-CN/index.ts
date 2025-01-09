@@ -1,4 +1,3 @@
-
 const zhCN = {
   common: {
     confirm: "确定",
@@ -161,8 +160,130 @@ const zhCN = {
         }
       }
     }
-  }
+  },
+  employee: {
+    table: {
+      columns: {
+        staffPhoto: "头像",
+        username: "昵称",
+        mobile: "手机号",
+        workNumber: "工号",
+        formOfEmployment: "聘用形式",
+        departmentName: "部门",
+        timeOfEntry: "入职时间",
+        operations: "操作",
 
+      },
+      actions: {
+        view: "查看",
+        role: "角色",
+        delete: "删除",
+        deleteConfirm: "确定要删除吗？"
+      },
+      pagination: {
+        total: "共 {total} 条数据"
+      },
+      formalOfEmployment: {
+        formal: "正式",
+        informal: "非正式"
+      }
+    },
+    actions: {
+      sendNotification: "群发通知",
+      addEmployee: "添加员工",
+      importExcel: "excel导入",
+      exportExcel: "excel导出"
+    },
+    search: {
+      placeholder: "请输入员工姓名全员搜索"
+    },
+    messages: {
+      deleteSuccess: "删除员工成功",
+      deleteError: "删除员工失败",
+      updateSuccess: "更新员工成功",
+      updateError: "更新员工失败",
+      addSuccess: "新增员工成功",
+      addError: "新增员工失败"
+    },
+    detail: {
+      title: "员工详情",
+      form: {
+        fields: {
+          username: "姓名",
+          workNumber: "工号",
+          mobile: "手机",
+          department: "部门",
+          formOfEmployment: "聘用形式",
+          timeOfEntry: "入职时间",
+          correctionTime: "转正时间",
+          staffPhoto: "员工头像"
+        },
+        placeholder: {
+          username: "请输入员工姓名全称",
+          department: "请选择部门",
+          formOfEmployment: "请选择聘用形式"
+        },
+        rules: {
+          username: {
+            required: "请输入员工姓名",
+            length: "员工名字长度为2-4位字符"
+          },
+          mobile: {
+            required: "请输入手机号",
+            format: "手机号格式不正确"
+          },
+          timeOfEntry: {
+            required: "请选择入职日期",
+            format: "入职日期格式不正确"
+          },
+          correctionTime: {
+            required: "请选择转正日期",
+            format: "转正日期格式不正确"
+          },
+          department: {
+            required: "请选择部门"
+          },
+          formOfEmployment: {
+            required: "请选择聘用形式"
+          }
+        },
+        buttons: {
+          save: "保存",
+          update: "更新"
+        }
+      },
+      upload: {
+        text: "上传",
+        error: {
+          type: "只能上传JPG文件!",
+          size: "图片必须小于2MB!",
+          upload: "上传失败"
+        }
+      }
+    },
+    roleModal: {
+      title: "分配角色",
+      success: "分配角色成功",
+      error: "分配角色失败",
+      confirm: "确定",
+      cancel: "取消"
+    },
+    importModal: {
+      title: "员工导入",
+      downloadTemplate: "下载导入模版",
+      dragText: "将文件拖到此处或",
+      clickToUpload: "点击上传",
+      success: "导入成功",
+      error: "导入失败",
+      fileType: {
+        error: "只能上传 Excel 文件!"
+      },
+      buttons: {
+        confirm: "确定",
+        cancel: "取消"
+      }
+    }
+  }
 }
 export type LocalMessageType = typeof zhCN;
 
