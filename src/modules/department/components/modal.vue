@@ -54,19 +54,19 @@ const computedTitle = computed(() => {
 // 表单验证规则
 const formRules: FormProps['rules'] = {
   name: [
-    { required: true, message: t('department.operations.formRules.name.required'), trigger: 'blur', },
-    { min: 2, max: 10, message: t('department.operations.formRules.name.min'), trigger: 'blur', }
+    { required: true, message: t('department.form.rules.name.required'), trigger: 'blur', },
+    { min: 2, max: 10, message: t('department.form.rules.name.min'), trigger: 'blur', }
   ],
   code: [
-    { required: true, message: t('department.operations.formRules.code.required'), trigger: 'blur', },
-    { min: 2, max: 10, message: t('department.operations.formRules.code.min'), trigger: 'blur', }
+    { required: true, message: t('department.form.rules.code.required'), trigger: 'blur', },
+    { min: 2, max: 10, message: t('department.form.rules.code.min'), trigger: 'blur', }
   ],
   managerId: [
-    { required: true, message: t('department.operations.formRules.managerId.required'), trigger: 'change', }
+    { required: true, message: t('department.form.rules.managerId.required'), trigger: 'change', }
   ],
   introduce: [
-    { required: true, message: t('department.operations.formRules.introduce.required'), trigger: 'blur', },
-    { max: 100, message: t('department.operations.formRules.introduce.max'), trigger: 'blur', }
+    { required: true, message: t('department.form.rules.introduce.required'), trigger: 'blur', },
+    { max: 100, message: t('department.form.rules.introduce.max'), trigger: 'blur', }
   ]
 };
 
@@ -172,25 +172,24 @@ const loading = computed(() => getDepartmentDetailLoading.value || getDepartment
     <QSpin :spinning="loading">
       <div class="department-modal">
         <Form ref="formRef" layout="vertical" :model="formData" :rules="formRules">
-          <Form.Item :label="t('department.operations.formFields.name')" name="name">
-            <Input v-model:value="formData.name" :placeholder="t('department.operations.formPlaceholder.name')"
-              :maxLength="10" show-count />
+          <Form.Item :label="t('department.form.fields.name')" name="name">
+            <Input v-model:value="formData.name" :placeholder="t('department.form.placeholder.name')" :maxLength="10"
+              show-count />
           </Form.Item>
 
-          <Form.Item :label="t('department.operations.formFields.code')" name="code">
-            <Input v-model:value="formData.code" :placeholder="t('department.operations.formPlaceholder.code')"
-              :maxLength="10" show-count />
+          <Form.Item :label="t('department.form.fields.code')" name="code">
+            <Input v-model:value="formData.code" :placeholder="t('department.form.placeholder.code')" :maxLength="10"
+              show-count />
           </Form.Item>
 
-          <Form.Item :label="t('department.operations.formFields.managerId')" name="managerId">
-            <Select :placeholder="t('department.operations.formPlaceholder.managerId')"
-              v-model:value="formData.managerId" :options="departmentManagerList" />
+          <Form.Item :label="t('department.form.fields.managerId')" name="managerId">
+            <Select :placeholder="t('department.form.placeholder.managerId')" v-model:value="formData.managerId"
+              :options="departmentManagerList" />
           </Form.Item>
 
-          <Form.Item :label="t('department.operations.formFields.introduce')" name="introduce">
-            <Input.TextArea v-model:value="formData.introduce"
-              :placeholder="t('department.operations.formPlaceholder.introduce')" :maxLength="100"
-              :auto-size="{ minRows: 3, maxRows: 5 }" show-count />
+          <Form.Item :label="t('department.form.fields.introduce')" name="introduce">
+            <Input.TextArea v-model:value="formData.introduce" :placeholder="t('department.form.placeholder.introduce')"
+              :maxLength="100" :auto-size="{ minRows: 3, maxRows: 5 }" show-count />
           </Form.Item>
         </Form>
       </div>

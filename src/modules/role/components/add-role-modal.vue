@@ -7,6 +7,8 @@ import { useRequest } from '@/shared/composables/use-request/use-request';
 import { EnableStatus } from '@/shared/constants/status';
 import { Button, Flex, Form, FormItem, Input, message, Switch, Textarea, type FormInstance, type FormProps } from 'ant-design-vue';
 import { computed, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n()
 const { token } = useAntdToken()
 const modalStatus = defineModel('open', { default: false })
 const emits = defineEmits(['success'])
@@ -17,8 +19,8 @@ const formData = reactive<AddRoleParams>({
   description: ''
 });
 const rules: FormProps['rules'] = {
-  name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-  description: [{ required: true, message: '请输入角色描述', trigger: 'blur' }]
+  name: [{ required: true, message: t("role.form.rules.name.required"), trigger: 'blur' }],
+  description: [{ required: true, message: t("role.form.rules.description.required"), trigger: 'blur' }]
 };
 
 const closeModal = () => modalStatus.value = false
@@ -26,15 +28,11 @@ const closeModal = () => modalStatus.value = false
 const { run: addRole, loading: addRoleLoading } = useRequest(RoleService.addRole, {
   manual: true,
   onSuccess: () => {
-    message.success("新增角色成功")
+    message.success(t("role.table.operationMessage.addRoleSuccess"))
     emits("success")
   },
   onError: (error) => {
-    if (error.message) {
-      message.error(error.message)
-    } else {
-      message.error(error)
-    }
+    message.error(error.message || t("role.table.operationMessage.addRoleError"))
   },
   onFinally: () => {
     formRef.value?.resetFields()
@@ -62,24 +60,24 @@ const isEnable = computed({
 const labelCol: FormProps['labelCol'] = { span: 6 }
 </script>
 <template>
-  <QModal v-model:open="modalStatus" title="新建角色" mask :closeable="true">
+  <QModal v-model:open="modalStatus" :title="$t('role.form.title')" mask :closeable="true">
     <div class="add-role-modal-wrapper">
-      <Form ref="formRef" :model="formData" :rules="rules" :label-col="labelCol">
-        <FormItem label="角色名称" name="name">
-          <Input v-model:value="formData.name" placeholder="请输入角色名称" />
+      <Form layout="vertical" ref="formRef" :model="formData" :rules="rules" :label-col="labelCol">
+        <FormItem :label="$t('role.form.fields.name')" name="name">
+          <Input v-model:value="formData.name" :placeholder="$t('role.form.placeholder.name')" />
         </FormItem>
-        <FormItem label="启用">
+        <FormItem :label="$t('role.form.fields.status')">
           <Switch v-model:checked="isEnable" />
         </FormItem>
-        <FormItem label="角色描述" name="description">
-          <Textarea v-model:value="formData.description" placeholder="请输入角色描述" />
+        <FormItem :label="$t('role.form.fields.description')" name="description">
+          <Textarea v-model:value="formData.description" :placeholder="$t('role.form.placeholder.description')" />
         </FormItem>
       </Form>
     </div>
     <template #footer>
       <Flex gap="middle" justify="center">
-        <Button type="primary" @click="handleSubmit" :loading="addRoleLoading">确定</Button>
-        <Button @click="closeModal()">取消</Button>
+        <Button type="primary" @click="handleSubmit" :loading="addRoleLoading">{{ $t("common.confirm") }}</Button>
+        <Button @click="closeModal()">{{ $t("common.cancel") }}</Button>
       </Flex>
     </template>
   </QModal>

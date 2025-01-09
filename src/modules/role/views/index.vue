@@ -6,12 +6,12 @@ import type { RoleItemVO } from '@/modules/role/types';
 import { QSpin } from '@/shared/components/base/spin';
 import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { useRequest } from '@/shared/composables/use-request/use-request';
-import type { EnableStatusType } from '@/shared/constants/status';
-import { EnableStatusMap } from '@/shared/constants/status';
 import type { PagingQueryParams, PagingResponse } from '@/shared/types';
 import { Button, Flex, Input, message, Popconfirm, Switch, Table, Tag, Textarea, TypographyLink, TypographyText, type PaginationProps, type TablePaginationConfig, type TableProps } from 'ant-design-vue';
 import { cloneDeep } from 'lodash-es';
 import { computed, onMounted, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n()
 const { token } = useAntdToken()
 // 角色管理
 defineOptions({
@@ -23,27 +23,27 @@ const canEditable = ['name', 'state', 'description']
 
 const roleColumns: TableProps['columns'] = [
   {
-    title: '序号',
+    title: t("role.table.columns.key"),
     dataIndex: 'id',
     key: 'key',
   },
   {
-    title: '角色',
+    title: t("role.table.columns.role"),
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: '启用',
+    title: t("role.table.columns.status"),
     dataIndex: "state",
     key: "state",
   },
   {
-    title: '描述',
+    title: t("role.table.columns.description"),
     dataIndex: 'description',
     key: 'description',
   },
   {
-    title: '操作',
+    title: t("role.table.columns.actions"),
     key: 'actions',
   }
 ]
@@ -73,37 +73,28 @@ const { run: getRoleList, loading: getRoleListLoading } = useRequest(() => RoleS
   manual: true,
   onSuccess: ({ data }) => {
     roleTableDataSource.value = data
-    console.log("roleTableDataSource:", roleTableDataSource.value);
   }
 })
 
 const { run: updateRole, loading: updateRoleLoading } = useRequest(RoleService.updateRole, {
   manual: true,
   onSuccess: () => {
-    message.success("更新角色成功")
+    message.success(t("role.table.actions.editRoleSuccess"))
   },
   onError: (error) => {
-    if (error.message) {
-      message.error(error.message)
-    } else {
-      message.error("更新角色失败")
-    }
+    message.error(error.message || t("role.table.actions.editRoleError"))
   }
 })
 
 const { run: deleteRoleById, loading: deleteRoleLoading } = useRequest(RoleService.deleteRoleById, {
   manual: true,
   onSuccess: () => {
-    message.success("删除角色成功")
+    message.success(t("role.table.actions.deleteRoleSuccess"))
     // roleTableDataSource.value.rows = roleTableDataSource.value.rows.filter(row => row.id !== selectedRoleId.value)
     getRoleList()
   },
   onError: (error) => {
-    if (error.message) {
-      message.error(error.message)
-    } else {
-      message.error("删除角色失败")
-    }
+    message.error(error.message || t("role.table.actions.deleteRoleError"))
   }
 })
 
@@ -115,15 +106,12 @@ const handleGivePermission = (key: string | number) => {
 
 // handle edit role 
 const handleEditRole = (key: string | number) => {
-  console.log("edit role", key);
   // 将当前行数据克隆到editableData（可编辑数据当中）
   editableData[key] = cloneDeep(roleTableDataSource.value.rows.filter(item => item.id === key)[0])
 }
 
 // save edit role
 const handleSaveEditRole = async (key: string | number) => {
-  console.log("save edit role", key);
-
   const newData = editableData[key]
 
   // 请求
@@ -193,7 +181,7 @@ onMounted(async () => {
 
 <template>
   <Flex class="role-wrapper" vertical align="start" gap="middle">
-    <Button type="primary" @click="addRoleModalStatus = true">添加角色</Button>
+    <Button type="primary" @click="addRoleModalStatus = true">{{ $t("role.table.actions.addRole") }}</Button>
     <QSpin :spinning="getRoleListLoading || updateRoleLoading" wrapper-class-name="flex-1 w-full">
       <Table class="w-full" :pagination="{
         position: tablePaginationPosition,
@@ -222,7 +210,7 @@ onMounted(async () => {
               <!-- 如果当前列是状态，则显示标签 -->
               <template v-if="column.key === 'state'">
                 <Tag :color="Boolean(record.state) ? 'blue' : 'default'">
-                  {{ Boolean(record.state) ? EnableStatusMap[record.state as EnableStatusType] : "未启用" }}
+                  {{ Boolean(record.state) ? $t("common.enable.enable") : $t("common.enable.disable") }}
                 </Tag>
               </template>
               <!-- 如果当前列是其他，则显示文本 -->
@@ -236,17 +224,21 @@ onMounted(async () => {
           <template v-if="column.key === 'actions'">
             <Flex gap="small" wrap="wrap">
               <template v-if="!editableData[record.id]">
-                <TypographyLink @click="handleGivePermission(record.id)">分配权限</TypographyLink>
-                <TypographyLink @click="handleEditRole(record.id)">编辑</TypographyLink>
-                <Popconfirm @confirm="handleDeleteRole(record.id)" title="您确定要删除吗?">
-                  <TypographyLink>删除</TypographyLink>
+                <TypographyLink @click="handleGivePermission(record.id)">{{ $t("role.table.actions.givePermission") }}
+                </TypographyLink>
+                <TypographyLink @click="handleEditRole(record.id)">{{ $t("role.table.actions.edit") }}</TypographyLink>
+                <Popconfirm :title="t('role.table.operationMessage.deleteConfirmTitle')"
+                  @confirm="handleDeleteRole(record.id)">
+                  <TypographyLink>{{ $t("role.table.actions.delete") }}</TypographyLink>
 
                 </Popconfirm>
               </template>
               <template v-else>
-                <TypographyLink @click="handleSaveEditRole(record.id)">保存</TypographyLink>
-                <Popconfirm title="确定要取消吗？" @confirm="handleCancelEditRole(record.id)">
-                  <TypographyLink>取消</TypographyLink>
+                <TypographyLink @click="handleSaveEditRole(record.id)">{{ $t("role.table.actions.save") }}
+                </TypographyLink>
+                <Popconfirm :title="$t('role.table.operationMessage.cancelConfirmTitle')"
+                  @confirm="handleCancelEditRole(record.id)">
+                  <TypographyLink>{{ $t("role.table.actions.cancel") }}</TypographyLink>
                 </Popconfirm>
               </template>
             </Flex>

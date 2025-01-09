@@ -15,7 +15,7 @@ defineOptions({
 
 
 const props = defineProps<{
-  roleId: number
+  roleId?: number
 }>()
 
 

@@ -1,5 +1,13 @@
 
 const zhCN = {
+  common: {
+    confirm: "确定",
+    cancel: "取消",
+    enable: {
+      enable: "已启用",
+      disable: "未启用"
+    }
+  },
   nav: {
     dashboard: '首页',
     department: '部门',
@@ -51,7 +59,23 @@ const zhCN = {
       addChild: "添加子部门",
       edit: "编辑",
       delete: "删除",
-      formRules: {
+
+      operationMessage: {
+        addSuccess: "新增部门成功",
+        addError: "新增部门失败",
+        editSuccess: "编辑部门成功",
+        editError: "编辑部门失败",
+        deleteSuccess: "删除部门成功",
+        deleteError: "删除部门失败",
+        selectDepartment: "请选择部门",
+        deleteConfirmContent: "确定要删除该部门吗？",
+        deleteConfirmTitle: "删除部门",
+        confirmDelete: "确定删除",
+        cancelDelete: "取消删除"
+      },
+    },
+    form: {
+      rules: {
         name: {
           required: "请输入部门名称",
           min: "部门名称长度为2-10个字符",
@@ -68,34 +92,77 @@ const zhCN = {
           max: "部门介绍最多100个字符",
         }
       },
-      operationMessage: {
-        addSuccess: "新增部门成功",
-        addError: "新增部门失败",
-        editSuccess: "编辑部门成功",
-        editError: "编辑部门失败",
-        deleteSuccess: "删除部门成功",
-        deleteError: "删除部门失败",
-        selectDepartment: "请选择部门",
-        deleteConfirmContent: "确定要删除该部门吗？",
-        deleteConfirmTitle: "删除部门",
-        confirmDelete: "确定删除",
-        cancelDelete: "取消删除"
-      },
-      formFields: {
+      fields: {
         name: "部门名称",
         code: "部门编码",
         managerId: "部门负责人",
         introduce: "部门介绍"
 
       },
-      formPlaceholder: {
+      placeholder: {
         name: "请输入部门名称",
         code: "请输入部门编码",
         managerId: "请选择部门负责人",
         introduce: "请输入部门介绍"
       }
+    },
+
+  },
+  role: {
+    table: {
+      columns: {
+        key: "序号",
+        role: "角色",
+        status: "启用",
+        description: '描述',
+        actions: "操作"
+      },
+      actions: {
+        addRole: '添加角色',
+        givePermission: "分配权限",
+        edit: "编辑",
+        save: "保存",
+        cancel: "取消",
+        delete: "删除",
+      },
+      operationMessage: {
+        deleteConfirmTitle: "删除角色",
+        deleteConfirmContent: "确定要删除该角色吗？",
+        confirmDelete: "确定删除",
+        cancelDelete: "取消删除",
+        deleteRoleSuccess: "删除角色成功",
+        deleteRoleError: "删除角色失败",
+        addRoleSuccess: "新增角色成功",
+        addRoleError: "新增角色失败",
+        editRoleSuccess: "编辑角色成功",
+        editRoleError: "编辑角色失败",
+        cancelConfirmTitle: "确定要取消编辑吗?",
+
+      },
+
+    },
+    form: {
+      title: "新建角色",
+      fields: {
+        name: "角色名称",
+        description: "角色描述",
+        status: "启用",
+      },
+      placeholder: {
+        name: "请输入角色名称",
+        description: "请输入角色描述",
+      },
+      rules: {
+        name: {
+          required: "请输入角色名称",
+        },
+        description: {
+          required: "请输入角色描述",
+        }
+      }
     }
   }
+
 }
 export type LocalMessageType = typeof zhCN;
 
