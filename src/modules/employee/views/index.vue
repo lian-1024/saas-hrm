@@ -9,14 +9,16 @@ import type { EmployeeVO, PagingEmployeeListParams } from '@/modules/employee/ty
 import { QAvatar } from '@/shared/components/base/avatar';
 import { QSkeleton } from '@/shared/components/base/skeleton';
 import { QSpin } from '@/shared/components/base/spin';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { useRequest } from '@/shared/composables/use-request/use-request';
+import { useTheme } from '@/shared/composables/use-theme';
 import type { PagingResponse } from '@/shared/types';
 import { DepartmentTree } from '@/shared/utils/convert/department';
 import { Button, Flex, InputSearch, message, Popconfirm, Table, Tree, TypographyText, type ButtonProps, type TableProps, type TreeProps } from 'ant-design-vue';
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
 import FileSaver from 'file-saver';
 import { onMounted, reactive, ref, watch } from 'vue';
-import { useAntdToken } from '@/shared/composables/use-antd-token';
+const { isDark } = useTheme()
 const { token } = useAntdToken()
 // 员工管理
 defineOptions({
@@ -271,6 +273,16 @@ onMounted(async () => {
     max-width: 280px;
     padding: v-bind("`${token.paddingLG}px`");
     background-color: v-bind("token.colorBgContainer");
+
+    :deep(.ant-tree-node-content-wrapper) {
+      border: 1px solid transparent;
+      transition: border-color 0.3s;
+      background-color: v-bind("isDark && `transparent`") !important;
+
+      &:hover {
+        border-color: v-bind("isDark ? token.colorPrimary : token.colorPrimaryHover");
+      }
+    }
   }
 
   &-right {
