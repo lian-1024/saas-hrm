@@ -2,7 +2,9 @@
 import { QrcodeOutlined } from '@ant-design/icons-vue'
 import { Button } from 'ant-design-vue'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const loading = ref(false)
 </script>
 
@@ -10,10 +12,10 @@ const loading = ref(false)
   <div class="qrcode-form">
     <div class="qrcode-wrapper">
       <QrcodeOutlined style="font-size: 180px; color: #eee;" />
-      <p class="qrcode-tip">请使用移动端扫码登录</p>
+      <p class="qrcode-tip">{{ t('user.qrcodeForm.tip') }}</p>
     </div>
     <Button type="primary" :loading="loading" block size="large">
-      刷新二维码
+      {{ t('user.qrcodeForm.button.refresh') }}
     </Button>
   </div>
 </template>

@@ -2,9 +2,12 @@
 import { useUserStore } from '@/core/stores'
 import { Modal } from 'ant-design-vue'
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { OpenModalType, type ModalType } from '../../constants'
 import AvatarForm from './avatar.vue'
 import PasswordForm from './password.vue'
+
+const { t } = useI18n()
 
 const type = defineModel<ModalType>("type", { default: OpenModalType.PASSWORD })
 const open = defineModel<boolean>("open")
@@ -14,9 +17,9 @@ const componentsRef = ref()
 const title = computed(() => {
   switch (type.value) {
     case OpenModalType.PASSWORD:
-      return '修改密码'
+      return t('user.updateModal.title.password')
     case OpenModalType.AVATAR:
-      return '修改头像'
+      return t('user.updateModal.title.avatar')
     default:
       return ''
   }

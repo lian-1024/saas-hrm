@@ -3,6 +3,9 @@ import UserService from '@/modules/user/services/user.service'
 import { useRequest } from '@/shared/composables/use-request'
 import { Form, Input, message, type FormProps } from 'ant-design-vue'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface FormState {
   oldPassword: string
@@ -22,17 +25,17 @@ const model = ref<FormState>({
 })
 
 const rules = {
-  oldPassword: [{ required: true, message: '请输入原密码' }],
+  oldPassword: [{ required: true, message: t('user.updateModal.password.rules.old.required') }],
   newPassword: [
-    { required: true, message: '请输入新密码' },
-    { min: 6, message: '密码长度不能小于6位' }
+    { required: true, message: t('user.updateModal.password.rules.new.required') },
+    { min: 6, message: t('user.updateModal.password.rules.new.minLength') }
   ],
   confirmPassword: [
-    { required: true, message: '请确认新密码' },
+    { required: true, message: t('user.updateModal.password.rules.confirm.required') },
     {
       validator: async (_rule: any, value: string) => {
         if (value && value !== model.value.newPassword) {
-          return Promise.reject('两次输入的密码不一致')
+          return Promise.reject(t('user.updateModal.password.rules.confirm.match'))
         }
         return Promise.resolve()
       }
@@ -43,11 +46,11 @@ const rules = {
 const { loading, run: updatePassword } = useRequest(UserService.updatePassword, {
   manual: true,
   onSuccess: () => {
-    message.success('修改密码成功')
+    message.success(t('user.updateModal.password.messages.success'))
     emit('success')
   },
   onError: (error) => {
-    message.error(error.message || '修改密码失败')
+    message.error(error.message || t('user.updateModal.password.messages.error'))
   }
 })
 
@@ -59,8 +62,6 @@ const handleSubmit = () => {
       oldPassword,
       newPassword
     })
-
-
   })
 }
 
@@ -69,7 +70,6 @@ defineExpose({
   handleSubmit
 })
 
-
 const formLabeCol: FormProps['labelCol'] = {
   span: 6
 }
@@ -77,19 +77,19 @@ const formLabeCol: FormProps['labelCol'] = {
 const formWrapperCol: FormProps['wrapperCol'] = {
   span: 14
 }
-
 </script>
 
 <template>
   <Form ref="formRef" :model="model" :rules="rules" :label-col="formLabeCol" :wrapper-col="formWrapperCol">
-    <Form.Item name="oldPassword" label="原密码">
-      <Input.Password v-model:value="model.oldPassword" placeholder="请输入原密码" />
+    <Form.Item name="oldPassword" :label="t('user.updateModal.password.label.old')">
+      <Input.Password v-model:value="model.oldPassword" :placeholder="t('user.updateModal.password.placeholder.old')" />
     </Form.Item>
-    <Form.Item name="newPassword" label="新密码">
-      <Input.Password v-model:value="model.newPassword" placeholder="请输入新密码" />
+    <Form.Item name="newPassword" :label="t('user.updateModal.password.label.new')">
+      <Input.Password v-model:value="model.newPassword" :placeholder="t('user.updateModal.password.placeholder.new')" />
     </Form.Item>
-    <Form.Item name="confirmPassword" label="确认密码">
-      <Input.Password v-model:value="model.confirmPassword" placeholder="请确认新密码" />
+    <Form.Item name="confirmPassword" :label="t('user.updateModal.password.label.confirm')">
+      <Input.Password v-model:value="model.confirmPassword"
+        :placeholder="t('user.updateModal.password.placeholder.confirm')" />
     </Form.Item>
   </Form>
 </template>

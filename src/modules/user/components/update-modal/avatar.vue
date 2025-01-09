@@ -10,8 +10,11 @@ import { Button, Flex, Image, message } from 'ant-design-vue';
 import { h, onMounted, reactive, ref } from 'vue';
 import { VueCropper } from 'vue-cropper';
 import 'vue-cropper/dist/index.css';
+import { useI18n } from 'vue-i18n';
 import { AvatarCropperOperation } from '../../constants';
 import UserService from '../../services/user.service';
+
+const { t } = useI18n()
 const emit = defineEmits(['success'])
 
 const userStore = useUserStore()
@@ -47,38 +50,28 @@ const getCropDataBase64 = (): Promise<string> => {
   }))
 }
 
-
-
-
-
-
-
 const clickCropOperationMap = {
   [AvatarCropperOperation.ROTATE_LEFT]: () => cropperRef.value.rotateLeft(),
   [AvatarCropperOperation.ROTATE_RIGHT]: () => cropperRef.value.rotateRight(),
 }
 
-
 const { run: updateAvatar, loading } = useRequest(UserService.updateAvatar, {
   manual: true,
   onSuccess: () => {
-    message.success("上传头像成功")
+    message.success(t('user.updateModal.avatar.messages.success'))
     emit('success')
   },
   onError: (error) => {
-    message.error(error.message || "上传头像失败")
+    message.error(error.message || t('user.updateModal.avatar.messages.error'))
   }
 })
 
-
 const handleSubmit = () => {
-  if (!previewOptions.url) return message.warn("请先选择头像")
+  if (!previewOptions.url) return message.warn(t('user.updateModal.avatar.messages.warning'))
   updateAvatar({
     staffPhoto: previewOptions.url
   })
 }
-
-
 
 const { open: openFileDialog, onChange: handleFileChange } = useFileDialog({
   accept: 'image/*',
@@ -93,12 +86,10 @@ handleFileChange(async (files) => {
   cropperOptions.img = base64
 })
 
-
 defineExpose({
   loading,
   handleSubmit
 })
-
 
 const loadingImage = ref(false)
 const loadImage = async () => {
@@ -107,7 +98,6 @@ const loadImage = async () => {
     cropperOptions.img = await preloadImage(userStore.userInfo?.staffPhoto || '')
   } finally {
     loadingImage.value = false
-
   }
 }
 

@@ -414,12 +414,12 @@ const en: LocalMessageType = {
     status: {
       1: "Normal",
       2: "Absent",
-      3: "Late", 
+      3: "Late",
       4: "Early Leave",
       5: "Out",
       6: "Business Trip",
       7: "Annual Leave",
-      8: "Personal Leave", 
+      8: "Personal Leave",
       9: "Sick Leave",
       10: "Marriage Leave",
       11: "Bereavement Leave",
@@ -481,7 +481,7 @@ const en: LocalMessageType = {
         department: "Department",
         overtimeRules: "Overtime Rules",
         workday: "Can apply for overtime on workdays",
-        restDay: "Can apply for overtime on rest days", 
+        restDay: "Can apply for overtime on rest days",
         holiday: "Can apply for overtime on statutory holidays",
         clockValidation: "Clock Validation",
         clockRequired: "Clock-in required for overtime",
@@ -494,6 +494,104 @@ const en: LocalMessageType = {
           updateSuccess: "Update overtime settings successful",
           updateError: "Update overtime settings failed"
         }
+      }
+    }
+  },
+  user: {
+    signIn: {
+      title: {
+        mobile: "Mobile Login",
+        qrcode: "QR Code Login"
+      },
+      switchType: {
+        mobile: "Use Mobile Login",
+        qrcode: "Use QR Code Login"
+      },
+      messages: {
+        loginSuccess: "Login successful",
+        loginError: "Login failed"
+      }
+    },
+    mobileForm: {
+      placeholder: {
+        mobile: "Please enter mobile number",
+        password: "Please enter password"
+      },
+      rules: {
+        mobile: {
+          required: "Please enter mobile number",
+          format: "Invalid mobile number format"
+        },
+        password: {
+          required: "Please enter password",
+          minLength: "Password must be at least 6 characters"
+        },
+        agreement: {
+          required: "Please read and agree to the User Platform Agreement"
+        }
+      },
+      agreement: {
+        text: "I have read and agree to",
+        link: "User Platform Agreement"
+      },
+      button: {
+        login: "Login"
+      }
+    },
+    qrcodeForm: {
+      tip: "Please scan QR code with mobile app",
+      button: {
+        refresh: "Refresh QR Code"
+      }
+    },
+    updateModal: {
+      title: {
+        password: "Change Password",
+        avatar: "Change Avatar"
+      },
+      password: {
+        label: {
+          old: "Old Password",
+          new: "New Password",
+          confirm: "Confirm Password"
+        },
+        placeholder: {
+          old: "Please enter old password",
+          new: "Please enter new password",
+          confirm: "Please confirm new password"
+        },
+        rules: {
+          old: {
+            required: "Please enter old password"
+          },
+          new: {
+            required: "Please enter new password",
+            minLength: "Password must be at least 6 characters"
+          },
+          confirm: {
+            required: "Please confirm new password",
+            match: "The two passwords do not match"
+          }
+        },
+        messages: {
+          success: "Password changed successfully",
+          error: "Failed to change password"
+        }
+      },
+      avatar: {
+        messages: {
+          success: "Avatar uploaded successfully",
+          error: "Failed to upload avatar",
+          warning: "Please select an avatar first"
+        }
+      }
+    },
+    dropdown: {
+      menu: {
+        dashboard: "Dashboard",
+        password: "Change Password",
+        avatar: "Change Avatar",
+        logout: "Logout"
       }
     }
   }

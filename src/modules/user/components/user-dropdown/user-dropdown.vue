@@ -8,8 +8,12 @@ import { generateMenuItem } from '@/shared/utils/generate-menu-item'
 import { DashboardOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import { Dropdown, Flex, Menu, Space, TypographyText, type FlexProps, type MenuProps } from 'ant-design-vue'
 import { h, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { OpenModalType, type ModalType } from '../../constants'
 import UpdateModal from '../update-modal/index.vue'
+
+const { t } = useI18n()
+
 defineOptions({
   name: "UserDropdown",
 })
@@ -22,10 +26,10 @@ const WrapperStyle: FlexProps = {
 }
 
 const avatarDropdownItems: MenuProps['items'] = [
-  generateMenuItem("/dashboard", "首页", h(DashboardOutlined)),
-  generateMenuItem("update-password", "修改密码", h(SettingOutlined)),
-  generateMenuItem("update-avatar", "修改头像", h(SettingOutlined)),
-  generateMenuItem("logout", "退出登录", h(LogoutOutlined)),
+  generateMenuItem("/dashboard", t('user.dropdown.menu.dashboard'), h(DashboardOutlined)),
+  generateMenuItem("update-password", t('user.dropdown.menu.password'), h(SettingOutlined)),
+  generateMenuItem("update-avatar", t('user.dropdown.menu.avatar'), h(SettingOutlined)),
+  generateMenuItem("logout", t('user.dropdown.menu.logout'), h(LogoutOutlined)),
 ]
 
 const updateModalStatus = ref<boolean>(false)

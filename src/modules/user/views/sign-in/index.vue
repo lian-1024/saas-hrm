@@ -5,10 +5,13 @@ import QrcodeForm from '@/modules/user/components/qrcode-form.vue'
 import { useAntdToken } from '@/shared/composables/use-antd-token'
 import { Flex, TypographyTitle } from 'ant-design-vue'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 defineOptions({
   name: 'SignInPage'
 })
+
+const { t } = useI18n()
 
 const loginType = ref<'mobile' | 'qrcode'>('mobile')
 
@@ -24,17 +27,15 @@ const { token } = useAntdToken()
     <SignInHero class="sign-in-hero" />
     <div class="sign-in-form">
       <div class="sign-in-form-wrapper">
-        <!-- <h2 class="sign-in-form-title">
-        </h2> -->
         <TypographyTitle :level="3" class="sign-in-form-title">
-          {{ loginType === 'mobile' ? '手机号登录' : '扫码登录' }}
+          {{ t(`user.signIn.title.${loginType}`) }}
         </TypographyTitle>
 
         <component :is="loginType === 'mobile' ? MobileForm : QrcodeForm" />
 
         <div class="sign-in-form-footer">
           <a @click="toggleLoginType">
-            使用{{ loginType === 'mobile' ? '扫码登录' : '手机号登录' }}
+            {{ t(`user.signIn.switchType.${loginType}`) }}
           </a>
         </div>
       </div>

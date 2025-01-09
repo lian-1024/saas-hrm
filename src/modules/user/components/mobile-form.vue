@@ -3,6 +3,9 @@ import { useUserStore } from '@/core/stores';
 import type { LoginParams } from '@/modules/user/types';
 import { Button, Checkbox, Form, Input, TypographyLink, type FormProps } from 'ant-design-vue';
 import { reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 interface FormState extends LoginParams {
   isAgree: boolean
@@ -16,21 +19,20 @@ const formState = reactive<FormState>({
   isAgree: true
 })
 
-
 const rules: FormProps['rules'] = {
   mobile: [
-    { required: true, message: '请输入手机号' },
-    { pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确' }
+    { required: true, message: t('user.mobileForm.rules.mobile.required') },
+    { pattern: /^1[3-9]\d{9}$/, message: t('user.mobileForm.rules.mobile.format') }
   ],
   password: [
-    { required: true, message: '请输入密码' },
-    { min: 6, message: '密码不能少于6位' }
+    { required: true, message: t('user.mobileForm.rules.password.required') },
+    { min: 6, message: t('user.mobileForm.rules.password.minLength') }
   ],
   isAgree: [
     {
       validator: (_, value) => {
         if (!value) {
-          return Promise.reject('请阅读并同意用户平台使用协议')
+          return Promise.reject(t('user.mobileForm.rules.agreement.required'))
         }
         return Promise.resolve()
       }
@@ -39,8 +41,6 @@ const rules: FormProps['rules'] = {
 }
 
 const userStore = useUserStore()
-
-
 
 // 表单提交
 const handleFinish = async (values: FormState) => {
@@ -56,7 +56,7 @@ const formLayout: FormProps = {
 <template>
   <Form ref="formRef" :model="formState" :rules="rules" v-bind="formLayout" @finish="handleFinish">
     <Form.Item name="mobile">
-      <Input v-model:value="formState.mobile" size="large" placeholder="请输入手机号">
+      <Input v-model:value="formState.mobile" size="large" :placeholder="t('user.mobileForm.placeholder.mobile')">
       <template #prefix>
         <span class="anticon">
           <i class="iconfont icon-phone"></i>
@@ -65,7 +65,8 @@ const formLayout: FormProps = {
       </Input>
     </Form.Item>
     <Form.Item name="password">
-      <Input.Password v-model:value="formState.password" size="large" placeholder="请输入密码">
+      <Input.Password v-model:value="formState.password" size="large"
+        :placeholder="t('user.mobileForm.placeholder.password')">
         <template #prefix>
           <span class="anticon">
             <i class="iconfont icon-lock"></i>
@@ -75,13 +76,13 @@ const formLayout: FormProps = {
     </Form.Item>
     <Form.Item name="isAgree">
       <Checkbox v-model:checked="formState.isAgree">
-        我已阅读并同意
-        <TypographyLink>《用户平台使用协议》</TypographyLink>
+        {{ t('user.mobileForm.agreement.text') }}
+        <TypographyLink>{{ t('user.mobileForm.agreement.link') }}</TypographyLink>
       </Checkbox>
     </Form.Item>
     <Form.Item>
       <Button :loading="userStore.loginLoading" type="primary" html-type="submit" block size="large">
-        登录
+        {{ t('user.mobileForm.button.login') }}
       </Button>
     </Form.Item>
   </Form>

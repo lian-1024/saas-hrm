@@ -416,7 +416,7 @@ const zhCN = {
     status: {
       1: "正常",
       2: "旷工",
-      3: "迟到", 
+      3: "迟到",
       4: "早退",
       5: "外出",
       6: "出差",
@@ -496,6 +496,104 @@ const zhCN = {
           updateSuccess: "更新加班设置成功",
           updateError: "更新加班设置失败"
         }
+      }
+    }
+  },
+  user: {
+    signIn: {
+      title: {
+        mobile: "手机号登录",
+        qrcode: "扫码登录"
+      },
+      switchType: {
+        mobile: "使用手机号登录",
+        qrcode: "使用扫码登录"
+      },
+      messages: {
+        loginSuccess: "登录成功",
+        loginError: "登录失败"
+      }
+    },
+    mobileForm: {
+      placeholder: {
+        mobile: "请输入手机号",
+        password: "请输入密码"
+      },
+      rules: {
+        mobile: {
+          required: "请输入手机号",
+          format: "手机号格式不正确"
+        },
+        password: {
+          required: "请输入密码",
+          minLength: "密码不能少于6位"
+        },
+        agreement: {
+          required: "请阅读并同意用户平台使用协议"
+        }
+      },
+      agreement: {
+        text: "我已阅读并同意",
+        link: "《用户平台使用协议》"
+      },
+      button: {
+        login: "登录"
+      }
+    },
+    qrcodeForm: {
+      tip: "请使用移动端扫码登录",
+      button: {
+        refresh: "刷新二维码"
+      }
+    },
+    updateModal: {
+      title: {
+        password: "修改密码",
+        avatar: "修改头像"
+      },
+      password: {
+        label: {
+          old: "原密码",
+          new: "新密码",
+          confirm: "确认密码"
+        },
+        placeholder: {
+          old: "请输入原密码",
+          new: "请输入新密码",
+          confirm: "请确认新密码"
+        },
+        rules: {
+          old: {
+            required: "请输入原密码"
+          },
+          new: {
+            required: "请输入新密码",
+            minLength: "密码不能少于6位"
+          },
+          confirm: {
+            required: "请确认新密码",
+            match: "两次输入的密码不一致"
+          }
+        },
+        messages: {
+          success: "修改密码成功",
+          error: "修改密码失败"
+        }
+      },
+      avatar: {
+        messages: {
+          success: "上传头像成功",
+          error: "上传头像失败",
+          warning: "请先选择头像"
+        }
+      }
+    },
+    dropdown: {
+      menu: {
+        dashboard: "首页",
+        password: "修改密码",
+        avatar: "修改头像",
+        logout: "退出登录"
       }
     }
   }
