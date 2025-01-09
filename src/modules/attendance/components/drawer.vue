@@ -2,6 +2,7 @@
 import AttendanceService from '@/modules/attendance/services/attendance.service'
 import type { CompanyVO } from '@/modules/attendance/types'
 import { QSkeleton } from '@/shared/components/base/skeleton'
+import { useAntdToken } from '@/shared/composables/use-antd-token'
 import { useRequest } from '@/shared/composables/use-request/use-request'
 import { convertDistance } from '@/shared/utils/convert/distance'
 import { generateMenuItem } from '@/shared/utils/generate-menu-item'
@@ -10,7 +11,6 @@ import type { MenuProps, SliderProps } from 'ant-design-vue'
 import { Button, Drawer, Flex, Menu, Slider, TypographyText, message } from 'ant-design-vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import ScopedMap from './map.vue'
-import { useAntdToken } from '@/shared/composables/use-antd-token';
 
 const drawerStatus = defineModel<boolean>('open', { required: false })
 
@@ -115,7 +115,7 @@ const { token } = useAntdToken()
 <template>
   <Drawer height="100vh" @close="closeDrawer" title="打卡范围设置" :open="drawerStatus" placement="top" :closable="false">
     <template #extra>
-      <CloseOutlined @click="closeDrawer" />
+      <CloseOutlined @click="closeDrawer" :style="{ color: token.colorText }" />
     </template>
     <template #default>
       <Flex class="h-full" gap="middle">
@@ -127,8 +127,8 @@ const { token } = useAntdToken()
             rows: 8
           }">
             <div class="attendance-scope-company-list flex-1">
-              <Menu v-model:selectedKeys="selectedCompanyIds" :items="companyMenuItems"
-                @click="handleSelectedCompany" />
+              <Menu class="attendance-scope-company-list-inner" v-model:selectedKeys="selectedCompanyIds"
+                :items="companyMenuItems" @click="handleSelectedCompany" />
             </div>
           </QSkeleton>
           <div>
@@ -153,6 +153,10 @@ const { token } = useAntdToken()
   &-company-list {
     height: 100%;
     overflow-y: scroll;
+
+    &-inner {
+      border-radius: v-bind("`${token.borderRadiusLG}px`");
+    }
   }
 
   &-right {
@@ -163,5 +167,6 @@ const { token } = useAntdToken()
       background-color: v-bind('token.colorBgContainer');
     }
   }
+
 }
 </style>

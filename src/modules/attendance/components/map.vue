@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useTheme } from '@/shared/composables/use-theme';
 import { convertDistance } from '@/shared/utils/convert/distance';
 import { BaseMap, MultiCircle, MultiLabel, MultiMarker } from 'tlbs-map-vue';
 import { computed, ref } from 'vue';
@@ -6,6 +7,8 @@ import { computed, ref } from 'vue';
 defineOptions({
   name: "AttendanceScopedMap"
 })
+
+const { isDark } = useTheme()
 
 defineProps<{
   scopedRadius: number,
@@ -27,6 +30,10 @@ const mapControl = {
   zoom: {
     position: 'topRight',
   },
+}
+
+const mapOptions = {
+  mapStyleId: isDark ? "style2" : "style1"
 }
 
 // circle 样式 
@@ -88,10 +95,16 @@ const computedMarker = computed(() => ({
   },
 }))
 
+const mapRef = ref()
+
+// watch(isDark, (newVal) => {
+//   mapRef.value.map.setMapStyleId(newVal ? 'style2' : 'style1')
+// })
+
 </script>
 <template>
-  <BaseMap class="h-full w-full" api-key="OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77" :center="scopedCenter" :zoom="mapZoom"
-    :control="mapControl" @click="handleClickMap">
+  <BaseMap ref="mapRef" :options="mapOptions" class="h-full w-full" api-key="OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77"
+    :center="scopedCenter" :zoom="mapZoom" :control="mapControl" @click="handleClickMap">
     <MultiCircle :geometries="circleGeometriesComputed" :styles="circleStyles" :options="circleOptions" />
     <MultiLabel :styles="labelStyles" :geometries="labelGeometriesComputed" />
     <MultiMarker :geometries="computedMarker.geometries" :styles="computedMarker.styles"

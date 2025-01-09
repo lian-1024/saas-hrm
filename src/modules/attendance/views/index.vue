@@ -9,6 +9,7 @@ import type { AttendancePagingParams, AttendanceRecord, AttendanceRow, EmployeeA
 import DepartmentService from '@/modules/department/services/department.service'
 import { QSkeleton } from '@/shared/components/base/skeleton'
 import { QSpin } from '@/shared/components/base/spin'
+import { useAntdToken } from '@/shared/composables/use-antd-token'
 import { useRequest } from '@/shared/composables/use-request/use-request'
 import {
   Button,
@@ -23,7 +24,6 @@ import {
 } from 'ant-design-vue'
 import { h, reactive, ref, watch } from 'vue'
 import { CountTo } from 'vue3-count-to'
-import { useAntdToken } from '@/shared/composables/use-antd-token';
 const { token } = useAntdToken()
 
 interface EmployeeAttendance extends EmployeeAttendanceVO {
@@ -309,22 +309,22 @@ watch(() => selectedDepartmentIds.value, () => {
 .attendance {
   &-top {
     width: 100%;
-    padding: var(--spacing-large);
-    background-color: var(--color-background);
+    padding: v-bind("`${token.paddingLG}px`");
+    background-color: v-bind("token.colorBgContainer");
 
     &-title {
-      font-size: var(--font-size-middle);
+      font-size: v-bind("`${token.fontSizeLG}px`");
     }
 
     &-total {
-      font-size: var(--font-size-large);
+      font-size: v-bind("`${token.fontSizeXL}px`");
     }
   }
 
   &-middle {
-    padding-block: var(--spacing-large);
-    padding-inline: calc(var(--spacing-large) * 2);
-    background-color: var(--color-background);
+    padding-block: v-bind("`${token.paddingLG}px`");
+    padding-inline: calc(v-bind("`${token.paddingLG}px`") * 2);
+    background-color: v-bind("token.colorBgContainer");
 
     &-label {
       min-width: max-content;
@@ -336,13 +336,13 @@ watch(() => selectedDepartmentIds.value, () => {
       grid-template-columns: repeat(auto-fill, 120px);
       grid-template-rows: repeat(auto-fill, 1fr);
       height: 60px;
-      gap: var(--spacing-middle);
+      gap: v-bind("`${token.padding}px`");
     }
   }
 
   &-table {
     height: 100%;
-    padding: var(--spacing-large);
+    padding: v-bind("`${token.paddingLG}px`");
     background-color: v-bind('token.colorBgContainer');
     overflow: auto;
   }
@@ -353,7 +353,7 @@ watch(() => selectedDepartmentIds.value, () => {
       min-width: 300px;
 
       :deep(.table-striped) td {
-        background-color: var(--color-background-secondary);
+        background-color: v-bind("token.colorBgElevated");
       }
     }
   }
