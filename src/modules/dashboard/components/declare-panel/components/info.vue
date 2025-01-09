@@ -17,11 +17,11 @@ const props = defineProps<{
 
 const declareTotalList = computed(() => {
   return [
-    { label: '已申报人数', value: props.info.declaredTotal || 0 },
-    { label: '申报中人数', value: props.info.declaringTotal || 0 },
-    { label: '待申报人数', value: props.info.toDeclareTotal || 0 },
+    { label: 'declaredTotal', value: props.info.declaredTotal || 0 },
+    { label: 'declaringTotal', value: props.info.declaringTotal || 0 },
+    { label: 'toDeclareTotal', value: props.info.toDeclareTotal || 0 },
   ]
-})
+})  
 </script>
 
 <template>
@@ -33,7 +33,7 @@ const declareTotalList = computed(() => {
         rows: 1,
       }">
         <TypographyText type="secondary">
-          申报人数
+          {{ $t('dashboard.declare.total') }}
         </TypographyText>
         <CountTo class="declare-total" :start-val="0" :end-val="info.declarationTotal" :duration="3000" />
       </QSkeleton>
@@ -45,7 +45,7 @@ const declareTotalList = computed(() => {
         <QSkeleton :loading="!info.declarationTotal" active block :paragraph="{
           rows: 1,
         }">
-          <TypographyText type="secondary">{{ item.label }}</TypographyText>
+          <TypographyText type="secondary">{{ $t(`dashboard.declare.${item.label}`) }}</TypographyText>
           <CountTo class="declare-info-item-total" :start-val="0" :end-val="item.value" :duration="3000" />
         </QSkeleton>
 

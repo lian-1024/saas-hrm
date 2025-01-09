@@ -135,8 +135,8 @@ const { token } = useAntdToken()
 
     &-inner {
       height: 100%;
-      padding-inline: var(--spacing-small);
-      padding-block: var(--spacing-large);
+      padding-inline: v-bind("`${token.paddingXXS}px`");
+      padding-block: v-bind("`${token.paddingLG}px`");
     }
   }
 }

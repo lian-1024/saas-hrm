@@ -11,7 +11,11 @@ import { pinia } from '..'
 export const createUserStore = defineStore('user', () => {
   // 状态
   const token = ref<string>('')
-  const userInfo = ref<UserInfoVO | null>(null)
+  const userInfo = ref<Partial<UserInfoVO> | null>({
+    username: "管理员",
+    company: "字节跳动",
+    departmentName: "CEO"
+  })
 
   // 登录方法
   const { run: login, loading: loginLoading } = useRequest(UserService.login, {

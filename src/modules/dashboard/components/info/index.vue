@@ -41,7 +41,8 @@ onMounted(async () => {
       <QAvatar shape="square" :size="66" :src="userStore.userInfo?.staffPhoto" />
       <div>
         <Flex gap="middle" align="center">
-          <TypographyText class="dashboard-info-name" :level="4" ellipsis>江苏传智博客教育科技股份有限公司</TypographyText>
+          <TypographyText class="dashboard-info-name" :level="4" ellipsis>{{ $t("dashboard.companyName") }}
+          </TypographyText>
           <Tag>体验版</Tag>
         </Flex>
         <Flex align="center">
@@ -57,7 +58,8 @@ onMounted(async () => {
     <div class="dashboard-todo-wrapper">
       <template v-if="Boolean(dashboardInfoList.length)">
         <Flex vertical class="dashboard-todo-item" v-for="item in dashboardInfoList" :key="item.title">
-          <TypographyText type="secondary" class="dashboard-todo-title">{{ item.title }}</TypographyText>
+          <TypographyText type="secondary" class="dashboard-todo-title">{{ $t(`dashboard.${item.title}`) }}
+          </TypographyText>
           <!-- <TypographyTitle :level="1">999</TypographyTitle> -->
           <CountTo :start-val="0" :end-val="item.total" :duration="3000" class="dashboard-todo-total" />
         </Flex>

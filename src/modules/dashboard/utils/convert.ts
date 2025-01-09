@@ -1,4 +1,3 @@
-import { DASHBOARD_TITLES } from '../constants/index';
 import type { DashboardInfoItem, HomeDataVO } from '../types/index';
 
 // 转换数据
@@ -6,27 +5,27 @@ export const convertDashboardInfoList = (data: HomeDataVO): DashboardInfoItem[] 
   const { employeeTotal, regularEmployeeTotal, contractSignTotal, toBeEmployed, toBeConfirmed, interfaceAccessTotal } = data;
   return [
     {
-      title: DASHBOARD_TITLES.TOTAL_EMPLOYEES,
+      title: "employeeTotal",
       total: employeeTotal
     },
     {
-      title: DASHBOARD_TITLES.REGULAR_EMPLOYEES,
+      title: "regularEmployeeTotal",
       total: regularEmployeeTotal
     },
     {
-      title: DASHBOARD_TITLES.PENDING_CONTRACTS,
+      title: "contractSignTotal",
       total: contractSignTotal
     },
     {
-      title: DASHBOARD_TITLES.PENDING_ONBOARD,
+      title: "toBeEmployed",
       total: toBeEmployed
     },
     {
-      title: DASHBOARD_TITLES.PENDING_CONVERSION,
+      title: "toBeConfirmed",
       total: toBeConfirmed
     },
     {
-      title: DASHBOARD_TITLES.TOTAL_API_CALLS,
+      title: "interfaceAccessTotal",
       total: interfaceAccessTotal
     }
   ]

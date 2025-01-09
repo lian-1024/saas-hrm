@@ -47,7 +47,7 @@ const { token } = useAntdToken()
 </script>
 
 <template>
-  <QPanel title="通知公告">
+  <QPanel :title="$t('dashboard.notification.title')">
     <template v-if="!loading">
       <List :data-source="computedNoticeList">
         <template #renderItem="{ item }">
@@ -57,7 +57,7 @@ const { token } = useAntdToken()
                 <RouterLink to="/">
                   <Flex gap="small">
                     <TypographyLink>{{ item.name }}</TypographyLink>
-                    <TypographyText type="secondary">发布了</TypographyText>
+                    <TypographyText type="secondary">{{ $t('dashboard.notification.published') }}</TypographyText>
                     <TypographyText>{{ item.content }}</TypographyText>
                   </Flex>
                 </RouterLink>

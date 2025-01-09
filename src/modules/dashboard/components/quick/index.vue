@@ -15,32 +15,33 @@ const WrapperAttrs: FlexProps = {
 const quickItems = [
   {
     iconUrl: new URL('@/assets/common/approval.png', import.meta.url).href,
-    name: '假期审批'
+    name: 'leaveApproval'
   },
   {
     iconUrl: new URL('@/assets/common/social.png', import.meta.url).href,
-    name: '考勤打卡'
+    name: 'attendance'
   },
   {
     iconUrl: new URL('@/assets/common/role.png', import.meta.url).href,
-    name: '角色管理'
+    name: 'roleManagement'
   },
   {
     iconUrl: new URL('@/assets/common/salary.png', import.meta.url).href,
-    name: '薪资设置'
+    name: 'salarySettings'
   },
   {
     iconUrl: new URL('@/assets/common/bpm.png', import.meta.url).href,
-    name: '添加权限'
+    name: 'addPermission'
   }
 ]
 
 </script>
 
 <template>
-  <QPanel title="快捷入口">
+  <QPanel :title="$t('dashboard.quick.title')">
     <Flex gap="large" justify="space-between">
-      <DashboardQuickItem v-for="item in quickItems" :key="item.name" :icon-url="item.iconUrl" :name="item.name" />
+      <DashboardQuickItem v-for="item in quickItems" :key="item.name" :icon-url="item.iconUrl"
+        :name="$t(`dashboard.quick.${item.name}`)" />
     </Flex>
   </QPanel>
 </template>

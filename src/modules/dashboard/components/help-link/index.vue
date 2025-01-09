@@ -11,19 +11,19 @@ defineOptions({
 const { token } = useAntdToken()
 const LinkList = [
   {
-    label: "入门指南",
+    label: "gettingStarted",
     icon: h(FlagTwoTone)
   },
   {
-    label: "在线帮助手册",
+    label: "onlineHelpManual",
     icon: h(BookTwoTone)
   },
   {
-    label: "联系技术支持",
+    label: "contactSupport",
     icon: h(PhoneTwoTone)
   },
   {
-    label: "添加链接",
+    label: "addLink",
     icon: h(PlusCircleTwoTone)
   }
 ]
@@ -31,12 +31,12 @@ const LinkList = [
 </script>
 
 <template>
-  <QPanel title="帮助链接">
+  <QPanel :title="$t('dashboard.help_link.title')">
     <Flex vertical gap="middle">
       <div class="help-link-item cursor-pointer" v-for="item in LinkList" :key="item.label">
         <component :is="item.icon" />
         <TypographyText type="secondary">
-          {{ item.label }}
+          {{ $t(`dashboard.help_link.${item.label}`) }}
         </TypographyText>
       </div>
     </Flex>
