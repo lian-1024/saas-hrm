@@ -8,6 +8,7 @@ import type { PermissionTableTreeNode } from '@/shared/utils/convert/types';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Button, Flex, message, Modal, Table, type TableProps } from 'ant-design-vue';
 import { h, onMounted, ref } from 'vue';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 // 权限管理
 defineOptions({
   name: "PermissionPage"
@@ -97,6 +98,8 @@ const handleShowConfirmDelete = (permissionId: number) => {
 onMounted(async () => {
   await getPermissionList()
 })
+
+const { token } = useAntdToken()
 </script>
 
 <template>
@@ -127,8 +130,8 @@ onMounted(async () => {
 <style scoped lang="scss">
 .permission {
   &-wrapper {
-    padding: var(--spacing-large);
-    background-color: var(--color-background);
+    padding: v-bind("`${token.paddingLG}px`");
+    background-color: v-bind("token.colorBgContainer");
   }
 
   &-table {

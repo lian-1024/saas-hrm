@@ -9,6 +9,7 @@ import type { PermissionTableTreeNode } from '@/shared/utils/convert/types';
 import { Button, Flex, Form, FormItem, Input, message, Switch, type FormInstance, type FormProps } from 'ant-design-vue';
 import { computed, reactive, ref, watch } from 'vue';
 import { isPermissionExistCode, isPermissionExistName } from '../utils/find-permission';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
 interface PermissionModalProps {
   permissionId: number
   isEdit: boolean,
@@ -158,6 +159,7 @@ watch([modalStatus, () => props.permissionId], ([modalStatus, permissionId]) => 
   props.isEdit && modalStatus && permissionId && getPermissionById(permissionId)
 })
 
+const { token } = useAntdToken()
 </script>
 
 <template>
@@ -192,7 +194,10 @@ watch([modalStatus, () => props.permissionId], ([modalStatus, permissionId]) => 
 <style scoped lang="scss">
 .permission {
   &-form {
-    padding-inline: var(--spacing-small)
+    margin-block: v-bind("`${token.marginLG}px`");
+    padding: v-bind("`${token.paddingLG}px`");
+    border-radius: v-bind("`${token.borderRadiusLG}px`");
+    background-color: v-bind("token.colorBgContainer");
   }
 }
 </style>
