@@ -265,6 +265,9 @@ onMounted(async () => {
     height: 100%;
     padding: v-bind("`${token.paddingLG}px`");
     background-color: v-bind("token.colorBgContainer");
+
+    border-radius: v-bind("`${token.borderRadiusLG}px`");
+    border: 1px solid v-bind("token.colorBorderSecondary");
   }
 }
 </style>

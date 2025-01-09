@@ -189,7 +189,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Flex gap="small" class="h-full">
+  <Flex gap="small" class="h-full employee-wrapper">
     <Flex vertical class="employee-left" gap="middle">
       <InputSearch @search="getEmployeeList(pagingEmployeeParams)" placeholder="请输入员工姓名全员搜索"
         v-model:value="pagingEmployeeParams.keyword" />
@@ -269,6 +269,11 @@ onMounted(async () => {
 }
 
 .employee {
+  &-wrapper {
+    border-radius: v-bind("`${token.borderRadiusLG}px`");
+    border: 1px solid v-bind("token.colorBorderSecondary");
+  }
+
   &-left {
     max-width: 280px;
     padding: v-bind("`${token.paddingLG}px`");

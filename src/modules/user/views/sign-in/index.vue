@@ -2,7 +2,8 @@
 import SignInHero from '@/modules/user/components/hero.vue'
 import MobileForm from '@/modules/user/components/mobile-form.vue'
 import QrcodeForm from '@/modules/user/components/qrcode-form.vue'
-import { Flex } from 'ant-design-vue'
+import { useAntdToken } from '@/shared/composables/use-antd-token'
+import { Flex, TypographyTitle } from 'ant-design-vue'
 import { ref } from 'vue'
 
 defineOptions({
@@ -14,6 +15,8 @@ const loginType = ref<'mobile' | 'qrcode'>('mobile')
 const toggleLoginType = () => {
   loginType.value = loginType.value === 'mobile' ? 'qrcode' : 'mobile'
 }
+
+const { token } = useAntdToken()
 </script>
 
 <template>
@@ -21,9 +24,11 @@ const toggleLoginType = () => {
     <SignInHero class="sign-in-hero" />
     <div class="sign-in-form">
       <div class="sign-in-form-wrapper">
-        <h2 class="sign-in-form-title">
+        <!-- <h2 class="sign-in-form-title">
+        </h2> -->
+        <TypographyTitle :level="3" class="sign-in-form-title">
           {{ loginType === 'mobile' ? '手机号登录' : '扫码登录' }}
-        </h2>
+        </TypographyTitle>
 
         <component :is="loginType === 'mobile' ? MobileForm : QrcodeForm" />
 
@@ -42,7 +47,7 @@ const toggleLoginType = () => {
   display: flex;
   height: 100vh;
   overflow: hidden;
-  background-color: #fff;
+  background-color: v-bind('token.colorBgContainer');
 
   &-hero {
     flex: 2;
@@ -63,10 +68,7 @@ const toggleLoginType = () => {
 
     &-title {
       margin-bottom: 40px;
-      color: #1e2022;
-      font-weight: 700;
-      font-size: 24px;
-      text-align: left;
+
     }
 
     &-footer {

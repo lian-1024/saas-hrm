@@ -33,7 +33,7 @@ const LinkList = [
 <template>
   <QPanel title="帮助链接">
     <Flex vertical gap="middle">
-      <div class="help-link-item" v-for="item in LinkList" :key="item.label">
+      <div class="help-link-item cursor-pointer" v-for="item in LinkList" :key="item.label">
         <component :is="item.icon" />
         <TypographyText type="secondary">
           {{ item.label }}
@@ -50,6 +50,14 @@ const LinkList = [
   gap: 10px;
   padding-block: v-bind("`${token.padding}px`");
   padding-inline: v-bind("`${token.padding}px`");
-  background-color: v-bind("token.colorBgContainer");
+  background-color: v-bind("token.colorBgElevated");
+
+  border-radius: v-bind("`${token.borderRadiusLG}px`");
+  border: 1px solid v-bind("token.colorBorderSecondary");
+  transition: border-color 0.3s;
+
+  &:hover {
+    border-color: v-bind("token.colorBorder");
+  }
 }
 </style>

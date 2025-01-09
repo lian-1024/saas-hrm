@@ -51,7 +51,7 @@ const { token } = useAntdToken()
     <template v-if="!loading">
       <List :data-source="computedNoticeList">
         <template #renderItem="{ item }">
-          <ListItem class="notification-item">
+          <ListItem class="notification-item cursor-pointer">
             <ListItemMeta :description="item.createTime">
               <template #title>
                 <RouterLink to="/">

@@ -36,7 +36,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Flex v-bind="WrapperAttrs" class="dashboard-info">
+  <Flex v-bind="WrapperAttrs" class="dashboard-info cursor-pointer">
     <Flex v-bind="UserInfoWrapperAttrs">
       <QAvatar shape="square" :size="66" :src="userStore.userInfo?.staffPhoto" />
       <div>

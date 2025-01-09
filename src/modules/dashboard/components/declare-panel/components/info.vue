@@ -25,7 +25,7 @@ const declareTotalList = computed(() => {
 </script>
 
 <template>
-  <Flex class="declare" vertical>
+  <Flex class="declare cursor-pointer" vertical>
     <Flex vertical>
 
 

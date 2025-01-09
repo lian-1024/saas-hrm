@@ -25,7 +25,7 @@ const avatarDropdownItems: MenuProps['items'] = [
   generateMenuItem("/dashboard", "首页", h(DashboardOutlined)),
   generateMenuItem("update-password", "修改密码", h(SettingOutlined)),
   generateMenuItem("update-avatar", "修改头像", h(SettingOutlined)),
-  generateMenuItem("logou,", "退出登录", h(LogoutOutlined)),
+  generateMenuItem("logout", "退出登录", h(LogoutOutlined)),
 ]
 
 const updateModalStatus = ref<boolean>(false)

@@ -307,10 +307,13 @@ watch(() => selectedDepartmentIds.value, () => {
 
 <style scoped lang="less">
 .attendance {
+
   &-top {
     width: 100%;
     padding: v-bind("`${token.paddingLG}px`");
     background-color: v-bind("token.colorBgContainer");
+    border-radius: v-bind("`${token.borderRadiusLG}px`");
+    border: 1px solid v-bind("token.colorBorderSecondary");
 
     &-title {
       font-size: v-bind("`${token.fontSizeLG}px`");
@@ -325,6 +328,8 @@ watch(() => selectedDepartmentIds.value, () => {
     padding-block: v-bind("`${token.paddingLG}px`");
     padding-inline: calc(v-bind("`${token.paddingLG}px`") * 2);
     background-color: v-bind("token.colorBgContainer");
+    border-radius: v-bind("`${token.borderRadiusLG}px`");
+    border: 1px solid v-bind("token.colorBorderSecondary");
 
     &-label {
       min-width: max-content;
@@ -345,6 +350,8 @@ watch(() => selectedDepartmentIds.value, () => {
     padding: v-bind("`${token.paddingLG}px`");
     background-color: v-bind('token.colorBgContainer');
     overflow: auto;
+    border-radius: v-bind("`${token.borderRadiusLG}px`");
+    border: 1px solid v-bind("token.colorBorderSecondary");
   }
 
   &-scope {

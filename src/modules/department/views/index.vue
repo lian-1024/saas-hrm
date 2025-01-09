@@ -159,6 +159,9 @@ onMounted(async () => {
     padding-block: calc(var(--spacing-large) * 2);
     padding-inline: calc(var(--spacing-large) + 10%);
     background-color: v-bind("token.colorBgContainer");
+    border-radius: v-bind("`${token.borderRadiusLG}px`");
+    border: 1px solid v-bind("token.colorBorderSecondary");
+
   }
 
   &-tree {
