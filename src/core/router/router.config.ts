@@ -11,7 +11,6 @@ import user from './modules/user';
 export const constantRoutes: RouteRecordRaw[] = [
   dashboard,
   user,
-  // error
 ]
 
 // 动态路由

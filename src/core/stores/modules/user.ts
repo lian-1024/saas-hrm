@@ -3,17 +3,21 @@ import router from '@/core/router'
 import UserService from '@/modules/user/services/user.service'
 import type { UserInfoVO } from '@/modules/user/types'
 import { useRequest } from '@/shared/composables/use-request/use-request'
+import useRouter from '@/shared/composables/use-router'
 import { message } from 'ant-design-vue'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { ref } from 'vue'
 import { pinia } from '..'
 
+const { resetRoutes, setIsRoutesGenerated } = useRouter()
+
 export const createUserStore = defineStore('user', () => {
-  // 状态
+  // token
   const token = ref<string>('')
+  // 用户信息
   const userInfo = ref<UserInfoVO | null>(null)
 
-  // 登录方法
+  // 登录
   const { run: login, loading: loginLoading } = useRequest(UserService.login, {
     manual: true,
     onSuccess: (res) => {
@@ -27,6 +31,7 @@ export const createUserStore = defineStore('user', () => {
     }
   })
 
+  // 获取用户信息
   const { run: getUserInfo, loading: getUserInfoLoading } = useRequest(UserService.getUserInfoByToken, {
     manual: true,
     onSuccess: (res) => {
@@ -39,8 +44,13 @@ export const createUserStore = defineStore('user', () => {
 
   // 退出登录
   const logout = () => {
+    // 清除 token
     token.value = ''
+    // 清除用户信息
     userInfo.value = null
+    // 重置路由
+    resetRoutes()
+    // 跳转登录页
     router.push('/sign-in')
   }
 
@@ -55,9 +65,7 @@ export const createUserStore = defineStore('user', () => {
   }
 }, {
   persist: true
-})
-
-// 热更新
+})// 热更新
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(createUserStore, import.meta.hot))
 }
@@ -66,3 +74,4 @@ if (import.meta.hot) {
 export const useUserStore = () => {
   return createUserStore(pinia)
 }
+

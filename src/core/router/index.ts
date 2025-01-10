@@ -1,6 +1,6 @@
 import type { App } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
-import { registerGlobalRouteGuard } from "./guard";
+import { registerGlobalRouteGuard } from "./plugins/guard";
 import { constantRoutes } from "./router.config";
 
 // 创建路由实例
