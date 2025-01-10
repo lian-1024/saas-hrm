@@ -598,6 +598,13 @@ const zhCN = {
         logout: "退出登录"
       }
     }
+  },
+  result: {
+    404: {
+      title: "404",
+      subTitle: "你是不是走错路了？",
+      extra: "返回首页"
+    }
   }
 }
 export type LocalMessageType = typeof zhCN;

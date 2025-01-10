@@ -4,7 +4,7 @@ import NProgress from 'nprogress'
 import type { NavigationGuardNext, RouteLocationNormalizedLoadedGeneric, Router } from 'vue-router'
 // 白名单路由 - 不需要登录就可以访问
 const whiteList = ['/sign-in']
-const { registerRoutes } = useRouter()
+const { registerRoutes, addResultRoute } = useRouter()
 
 /**
  * 注册全局路由守卫
@@ -87,6 +87,7 @@ const handleRouteRegistration = async (
       // 否则直接使用现有用户信息注册路由
       registerRoutes(userStore.userInfo.roles.menus)
     }
+    addResultRoute()
     next({ ...to, replace: true })
   } catch (error) {
     // 发生错误时重定向到登录页

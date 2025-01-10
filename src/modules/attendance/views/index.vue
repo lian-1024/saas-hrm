@@ -18,7 +18,7 @@ import {
   type CheckboxOptionType,
   type TableProps
 } from 'ant-design-vue'
-import { h, reactive, ref, watch, defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, h, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { CountTo } from 'vue3-count-to'
 const { token } = useAntdToken()
@@ -259,7 +259,7 @@ watch(() => selectedDepartmentIds.value, () => {
 </script>
 
 <template>
-  <Flex class="attendance-wrapper" vertical gap="middle">
+  <Flex class="attendance-wrapper h-full" vertical gap="middle">
     <Flex justify="space-between" align="center" class="attendance-top">
       <Flex vertical align="center" gap="small">
         <TypographyText class="attendance-top-title">{{ t('attendance.top.unprocessed') }}</TypographyText>

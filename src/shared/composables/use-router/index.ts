@@ -1,5 +1,5 @@
 import router from '@/core/router'
-import { constantRoutes, dynamicRoutes } from '@/core/router/router.config'
+import { constantRoutes, dynamicRoutes, resultRoutes } from '@/core/router/router.config'
 import { ref } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 
@@ -34,6 +34,15 @@ const useRouter = () => {
     // 重置路由生成状态
     isRoutesGenerated.value = false
 
+  }
+
+
+  const addResultRoute = () => {
+    resultRoutes.forEach(route => {
+      if (!router.hasRoute(route.name as string)) {
+        router.addRoute(route)
+      }
+    })
   }
 
   /**
@@ -118,7 +127,8 @@ const useRouter = () => {
     removeRoute,
     setIsRoutesGenerated,
     getIsRoutesGenerated,
-    getRouteByMetaName
+    getRouteByMetaName,
+    addResultRoute
   }
 }
 
