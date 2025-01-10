@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import AddRoleModal from '@/modules/role/components/add-role-modal.vue';
-import GivePermissionModal from '@/modules/role/components/give-permission-modal.vue';
 import RoleService from '@/modules/role/services/role.service';
 import type { RoleItemVO } from '@/modules/role/types';
 import { QSpin } from '@/shared/components/base/spin';
@@ -9,10 +7,12 @@ import { useRequest } from '@/shared/composables/use-request/use-request';
 import type { PagingQueryParams, PagingResponse } from '@/shared/types';
 import { Button, Flex, Input, message, Popconfirm, Switch, Table, Tag, Textarea, TypographyLink, TypographyText, type PaginationProps, type TablePaginationConfig, type TableProps } from 'ant-design-vue';
 import { cloneDeep } from 'lodash-es';
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, defineAsyncComponent, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n()
 const { token } = useAntdToken()
+const AddRoleModal = defineAsyncComponent(() => import('../components/add-role-modal.vue'))
+const GivePermissionModal = defineAsyncComponent(() => import('../components/give-permission-modal.vue'))
 // 角色管理
 defineOptions({
   name: "RolePage"

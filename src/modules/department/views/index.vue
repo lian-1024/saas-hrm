@@ -8,9 +8,9 @@ import { DepartmentTree } from '@/shared/utils/convert/department';
 import { DownOutlined } from '@ant-design/icons-vue';
 import { type MenuProps, type TreeProps, Dropdown, Flex, Menu, Modal, Tree, TypographyText, message } from 'ant-design-vue';
 import type { MenuItemType } from 'ant-design-vue/es/menu/src/interface';
-import { h, onMounted, ref } from 'vue';
+import { defineAsyncComponent, h, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import DepartmentModal from '../components/modal.vue';
+const DepartmentModal = defineAsyncComponent(() => import('../components/modal.vue'))
 const { t } = useI18n()
 const { token } = useAntdToken()
 defineOptions({

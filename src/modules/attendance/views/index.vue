@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import CompanyDrawerCompanyDrawer from '@/modules/attendance/components/drawer.vue'
-import SettingModal from '@/modules/attendance/components/setting/modal.vue'
-import TablePopover from '@/modules/attendance/components/table-popover.vue'
-import UpdateAttendance from '@/modules/attendance/components/update-attendance.vue'
 import { ATTENDANCE_STATUS, type AttendanceStatusKey } from '@/modules/attendance/constants/attendance'
 import AttendanceService from '@/modules/attendance/services/attendance.service'
 import type { AttendancePagingParams, AttendanceRecord, AttendanceRow, EmployeeAttendanceVO } from '@/modules/attendance/types'
@@ -22,10 +18,15 @@ import {
   type CheckboxOptionType,
   type TableProps
 } from 'ant-design-vue'
-import { h, reactive, ref, watch } from 'vue'
+import { h, reactive, ref, watch, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { CountTo } from 'vue3-count-to'
 const { token } = useAntdToken()
+
+const TablePopover = defineAsyncComponent(() => import('@/modules/attendance/components/table-popover.vue'))
+const SettingModal = defineAsyncComponent(() => import('@/modules/attendance/components/setting/modal.vue'))
+const UpdateAttendance = defineAsyncComponent(() => import('@/modules/attendance/components/update-attendance.vue'))
+const CompanyDrawerCompanyDrawer = defineAsyncComponent(() => import('@/modules/attendance/components/drawer.vue'))
 
 interface EmployeeAttendance extends EmployeeAttendanceVO {
   key: string | number | null
@@ -87,7 +88,6 @@ const employeeDataSource = reactive({
 
 const drawerStatus = ref(false)
 const settingModalStatus = ref(false)
-const selectedDepartmentId = ref<string>()
 
 
 const attendanceInfo = reactive({

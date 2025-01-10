@@ -7,12 +7,12 @@ import { useAntdToken } from '@/shared/composables/use-antd-token'
 import { generateMenuItem } from '@/shared/utils/generate-menu-item'
 import { DashboardOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import { Dropdown, Flex, Menu, Space, TypographyText, type FlexProps, type MenuProps } from 'ant-design-vue'
-import { h, onMounted, ref } from 'vue'
+import { defineAsyncComponent, h, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { OpenModalType, type ModalType } from '../../constants'
-import UpdateModal from '../update-modal/index.vue'
 
 const { t } = useI18n()
+const UpdateModal = defineAsyncComponent(() => import('../update-modal/index.vue'))
 
 defineOptions({
   name: "UserDropdown",

@@ -9,9 +9,10 @@ import { generateMenuItem } from '@/shared/utils/generate-menu-item'
 import { CloseOutlined } from '@ant-design/icons-vue'
 import type { MenuProps, SliderProps } from 'ant-design-vue'
 import { Button, Drawer, Flex, Menu, Slider, TypographyText, message } from 'ant-design-vue'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, defineAsyncComponent, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import ScopedMap from './map.vue'
+
+const ScopedMap = defineAsyncComponent(() => import('./map.vue'))
 
 const drawerStatus = defineModel<boolean>('open', { required: false })
 

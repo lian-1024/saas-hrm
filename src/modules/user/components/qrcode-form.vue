@@ -22,7 +22,7 @@ const qrcodeStatusMap: Record<QRCodeStatusType, QRCodeProps['status']> = {
 }
 
 // 获取二维码key
-const { run: getQRCodeKey, } = useRequest(UserService.getQRCodeKey, {
+const { run: getQRCodeKey, loading: getQRCodeKeyLoading } = useRequest(UserService.getQRCodeKey, {
   manual: true,
   onSuccess: ({ data }) => {
     qrcodeKey.value = data

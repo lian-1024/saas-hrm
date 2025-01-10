@@ -6,10 +6,10 @@ import { useAntdToken } from '@/shared/composables/use-antd-token'
 import { Flex, TypographyTitle } from 'ant-design-vue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-
 defineOptions({
   name: 'SignInPage'
 })
+
 
 const { t } = useI18n()
 
@@ -31,7 +31,9 @@ const { token } = useAntdToken()
           {{ t(`user.signIn.title.${loginType}`) }}
         </TypographyTitle>
 
-        <component :is="loginType === 'mobile' ? MobileForm : QrcodeForm" />
+        <div class="sign-in-form-component">
+          <component :is="loginType === 'mobile' ? MobileForm : QrcodeForm" />
+        </div>
 
         <div class="sign-in-form-footer">
           <a @click="toggleLoginType">
@@ -49,6 +51,10 @@ const { token } = useAntdToken()
   height: 100vh;
   overflow: hidden;
   background-color: v-bind('token.colorBgContainer');
+
+  &-form-component {
+    min-height: 300px;
+  }
 
   &-hero {
     flex: 2;

@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import router from '@/core/router';
 import DepartmentService from '@/modules/department/services/department.service';
-import ImportExcelModal from '@/modules/employee/components/import-excel-modal.vue';
-import RoleModal from '@/modules/employee/components/role-modal.vue';
 import { type FormOfEmploymentType } from '@/modules/employee/constants';
 import EmployeeService from '@/modules/employee/services/employee.service';
 import type { EmployeeVO, PagingEmployeeListParams } from '@/modules/employee/types';
@@ -17,25 +15,20 @@ import { DepartmentTree } from '@/shared/utils/convert/department';
 import { Button, Flex, InputSearch, message, Popconfirm, Table, Tree, TypographyText, type ButtonProps, type TableProps, type TreeProps } from 'ant-design-vue';
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
 import FileSaver from 'file-saver';
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, onMounted, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { FormOfEmployment } from '../constants';
 const { isDark } = useTheme()
 const { token } = useAntdToken()
 const { t } = useI18n()
-
+const RoleModal = defineAsyncComponent(() => import('../components/role-modal.vue'))
+const ImportExcelModal = defineAsyncComponent(() => import('../components/import-excel-modal.vue'))
 // 员工管理
 defineOptions({
   name: "EmployeePage"
 })
 
 
-const defaultPagingParams = {
-  departmentId: 1,
-  page: 1,
-  pagesize: 10,
-  keyword: ""
-}
 const departmentTree = ref<TreeProps['treeData']>()
 const pagingEmployeeParams = reactive<PagingEmployeeListParams>({
   departmentId: departmentTree.value?.[0]?.id ?? 1,

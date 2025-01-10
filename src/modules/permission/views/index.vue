@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import PermissionModal from '@/modules/permission/components/permission-modal.vue';
 import PermissionService from '@/modules/permission/services/permission.service';
 import { QSpin } from '@/shared/components/base/spin';
 import { useAntdToken } from '@/shared/composables/use-antd-token';
@@ -8,9 +7,10 @@ import { PermissionTree } from '@/shared/utils/convert/permission';
 import type { PermissionTableTreeNode } from '@/shared/utils/convert/types';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Button, Flex, message, Modal, Table, type TableProps } from 'ant-design-vue';
-import { h, onMounted, ref } from 'vue';
+import { defineAsyncComponent, h, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+const PermissionModal = defineAsyncComponent(() => import('../components/permission-modal.vue'))
 // 权限管理
 defineOptions({
   name: "PermissionPage"
