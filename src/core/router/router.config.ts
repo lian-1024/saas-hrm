@@ -21,3 +21,4 @@ export const dynamicRoutes: RouteRecordRaw[] = [
   role,
   permission,
 ]
+

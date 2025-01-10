@@ -11,6 +11,7 @@ export default {
       path: '/employee',
       component: () => import("@/modules/employee/views/index.vue"),
       meta: {
+        name: 'employee',
         index: 3,
         title: "nav.employee",
         icon: h(TeamOutlined),
@@ -20,8 +21,10 @@ export default {
       path: "/employee/detail/:id?",
       component: () => import("@/modules/employee/views/detail/index.vue"),
       meta: {
-        title: "nav.employee.detail",
-        hidden: true
+        name: 'employeeDetail',
+        title: "nav.employeeDetail",
+        hidden: true,
+        parentKey: 'employee'
       }
     }
   ]

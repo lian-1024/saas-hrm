@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import UserDropdown from "@/modules/user/components/user-dropdown/user-dropdown.vue";
-import { LocalSelect } from "@/shared/components/base/local-select";
-import ThemeSwitch from "@/shared/components/base/theme-switch/src/theme-switch.vue";
+import { QLocalSelect } from "@/shared/components/base/local-select";
+import { QThemeSwitch } from "@/shared/components/base/theme-switch";
 import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons-vue';
 import { Flex, LayoutHeader, type FlexProps } from "ant-design-vue";
+
 defineOptions({
   name: "QLayoutHeader",
 });
@@ -15,7 +16,7 @@ const collapsed = defineModel("collapsed", { default: false });
 
 
 const LayoutHeaderFlex: FlexProps = {
-  align: "center",
+  align: "cent,r",
   justify: "space-between",
 }
 const { token } = useAntdToken()
@@ -30,10 +31,10 @@ const { token } = useAntdToken()
         <MenuFoldOutlined v-else class="trigger layout-header-collapsed-icon" @click="emits('changeCollapsed')" />
       </div>
       <Flex gap="large" align="center">
-        <ThemeSwitch />
+        <QThemeSwitch />
         <UserDropdown />
-        <LocalSelect />
-      </Flex>
+        <QLocalSelect />
+      </Flex>,
     </Flex>
   </LayoutHeader>
 </template>

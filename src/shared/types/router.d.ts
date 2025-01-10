@@ -4,9 +4,10 @@ export { }
 
 declare module "vue-router" {
   interface RouteMeta {
-    title: string
-    index?: number
-    icon?: string | VNode
-    hidden?: boolean
+    title: string // 标题
+    index?: number // 排序
+    icon?: string | VNode // 图标
+    hidden?: boolean // 是否隐藏不显示在菜单中
+    parentKey?: string // 父级路由名称
   }
 }

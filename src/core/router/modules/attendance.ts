@@ -13,6 +13,7 @@ export default {
       component: () => import("@/modules/attendance/views/index.vue"),
       meta: {
         index: 5,
+        name: 'attendance',
         title: "nav.attendance",
         icon: h(CalendarOutlined),
       }

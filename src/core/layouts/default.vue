@@ -4,7 +4,7 @@ import { Layout } from 'ant-design-vue';
 import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { ref } from 'vue';
 import QLayoutContent from './components/default/content.vue';
-import QLayoutHeader from './components/default/header/header.vue';
+import QLayoutHeader from './components/default/header.vue';
 import QLayoutSider from './components/default/sider.vue';
 defineOptions({
   name: "LayoutDefault"

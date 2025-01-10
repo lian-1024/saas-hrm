@@ -4,8 +4,8 @@ import { useLocale } from '@/shared/composables/use-locale';
 import { GlobalOutlined } from '@ant-design/icons-vue';
 import { Button, Dropdown, Menu, type MenuProps } from 'ant-design-vue';
 import { computed, type CSSProperties, defineComponent } from "vue";
-const LocalSelect = defineComponent({
-  name: 'LocalSelect',
+const QLocalSelect = defineComponent({
+  name: 'QLocalSelect',
   setup() {
     const {localeOptions} = useLocaleStore()
     const {changeLocale,currentLocale} = useLocale()
@@ -39,4 +39,4 @@ const LocalSelect = defineComponent({
   }
 })
 
-export default LocalSelect
+export default QLocalSelect

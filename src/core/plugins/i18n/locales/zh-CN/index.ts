@@ -8,12 +8,13 @@ const zhCN = {
     }
   },
   nav: {
-    dashboard: '首页',
-    department: '部门',
-    role: '角色',
-    permission: '权限',
-    attendance: '考勤',
-    employee: '员工',
+    dashboard: '仪表盘',
+    employee: '员工管理',
+    employeeDetail: '员工详情',
+    department: '部门管理',
+    role: '角色管理',
+    permission: '权限管理',
+    attendance: '考勤管理'
   },
   dashboard: {
     companyName: "北京字节跳动科技有限公司",

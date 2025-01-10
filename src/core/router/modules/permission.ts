@@ -12,6 +12,7 @@ export default {
       path: '/permission',
       component: () => import("@/modules/permission/views/index.vue"),
       meta: {
+        name: 'permission',
         index: 4,
         title: "nav.permission",
         icon: h(KeyOutlined),

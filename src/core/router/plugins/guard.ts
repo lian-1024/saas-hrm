@@ -19,6 +19,7 @@ export const registerGlobalRouteGuard = async (router: Router) => {
     const userStore = useUserStore()
     const { getIsRoutesGenerated } = useRouter()
 
+
     // 如果没有token,处理未认证情况
     if (!userStore.token) {
       handleUnauthenticated(to, next)

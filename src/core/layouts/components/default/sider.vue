@@ -4,6 +4,7 @@ import useRouter from '@/shared/composables/use-router';
 import { useTheme } from '@/shared/composables/use-theme';
 import { generateMenuItem } from '@/shared/utils/generate-menu-item';
 import { LayoutSider, Menu, type MenuProps } from 'ant-design-vue';
+import type { ItemType } from 'ant-design-vue/es/menu/hooks/useItems';
 import { computed, h, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAntdToken } from '../../../../shared/composables/use-antd-token/index';
@@ -26,21 +27,17 @@ const handleClickMenuItem: MenuProps['onClick'] = ({ key }) => {
 }
 
 const { themeStatus } = useTheme()
-
 const { token } = useAntdToken()
 
-const menuItems = computed<MenuProps['items']>(() => {
+const menuItems = computed<ItemType[]>(() => {
   return getRoutes()
-    .filter(item => item.meta)
-    .filter(route => route.meta.title && !route.meta.hidden)
-    .sort((a, b) => (a.meta.index ?? 0) - (b.meta.index ?? 0))
-    .map(route => {
-      return generateMenuItem(
-        route.path,
-        t(route.meta.title as string),
-        typeof route.meta.icon === 'string' ? h(route.meta.icon) : route.meta.icon
-      )
-    })
+    .filter(route => route.meta?.title && !route.meta?.hidden)
+    .sort((a, b) => (a.meta?.index ?? 0) - (b.meta?.index ?? 0))
+    .map(route => generateMenuItem(
+      route.path,
+      t(route.meta.title),
+      route.meta.icon
+    ))
 })
 
 onMounted(() => {

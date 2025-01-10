@@ -12,6 +12,7 @@ export default {
       component: () => import("@/modules/dashboard/views/index.vue"),
       meta: {
         index: 0,
+        name: 'dashboard',
         title: "nav.dashboard",
         icon: h(DashboardOutlined),
       }

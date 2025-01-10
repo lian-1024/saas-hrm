@@ -67,6 +67,19 @@ const useRouter = () => {
     return router.getRoutes()
   }
 
+
+  const getRouteByMetaName = (routes: RouteRecordRaw[], name: string): RouteRecordRaw | undefined => {
+    return routes.find(route => {
+      if (route.meta?.name === name) {
+        return route
+      }
+
+      if (route.children) {
+        return getRouteByMetaName(route.children, name)
+      }
+    })
+  }
+
   /**
    * 添加单个路由
    * @param route 路由配置
@@ -104,7 +117,8 @@ const useRouter = () => {
     addRoutes,
     removeRoute,
     setIsRoutesGenerated,
-    getIsRoutesGenerated
+    getIsRoutesGenerated,
+    getRouteByMetaName
   }
 }
 

@@ -13,6 +13,7 @@ export default {
       component: () => import("@/modules/department/views/index.vue"),
       meta: {
         index: 1,
+        name: 'department',
         title: "nav.department",
         icon: h(ApartmentOutlined),
       }

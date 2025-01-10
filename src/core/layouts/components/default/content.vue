@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { QBreadcrumbs } from '@/shared/components/base/breadcrumbs';
 import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { LayoutContent } from 'ant-design-vue';
 defineOptions({
@@ -10,6 +11,7 @@ const { token } = useAntdToken()
 
 <template>
   <LayoutContent class="layout-content">
+    <QBreadcrumbs />
     <!-- router view -->
     <RouterView v-slot="{ Component, route }">
       <Transition name="fade" mode="out-in">

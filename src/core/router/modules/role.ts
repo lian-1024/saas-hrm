@@ -12,6 +12,7 @@ export default {
       path: '/role',
       component: () => import("@/modules/role/views/index.vue"),
       meta: {
+        name: 'role',
         index: 2,
         title: "nav.role",
         icon: h(UserOutlined),

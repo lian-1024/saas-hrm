@@ -11,11 +11,12 @@ const en: LocalMessageType = {
   },
   nav: {
     dashboard: 'Dashboard',
+    employee: 'Employee',
+    employeeDetail: 'Employee Detail',
     department: 'Department',
     role: 'Role',
     permission: 'Permission',
-    attendance: 'Attendance',
-    employee: 'Employee',
+    attendance: 'Attendance'
   },
   dashboard: {
     companyName: 'Beijing Bytedance Technology Company Limited',
