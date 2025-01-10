@@ -1,6 +1,6 @@
 import type { EmployeeDetailVO, EmployeeVO, GiveEmployeeRoleParams, PagingEmployeeListParams, UpdateWithAddEmployeeParams } from '@/modules/employee/types';
 import type { PagingResponse } from '@/shared/types';
-import { request } from '@/shared/utils/http/request/instance';
+import { request } from '@/shared/utils/http/request';
 
 class EmployeeService {
   static getEmployeeList(params: PagingEmployeeListParams) {

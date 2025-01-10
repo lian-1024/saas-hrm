@@ -1,6 +1,7 @@
 import type { AddRoleParams, EnableRoleItem, GivePermissionParams, RoleDetailVO, RoleItemVO, UpdateRoleParams } from '@/modules/role/types';
 import type { PagingQueryParams, PagingResponse } from '@/shared/types';
-import { request } from '@/shared/utils/http/request/instance';
+import { request } from '@/shared/utils/http/request';
+
 class RoleService {
   static getRoleList(params: PagingQueryParams) {
     return request.get<PagingResponse<RoleItemVO>>('/sys/role', { params });

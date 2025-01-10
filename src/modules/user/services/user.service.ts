@@ -1,5 +1,5 @@
 import type { LoginParams, QRCodeStatus, UpdateAvatarParams, UpdatePasswordParams, UserInfoVO } from '@/modules/user/types';
-import { request } from '@/shared/utils/http/request/instance';
+import { request } from '@/shared/utils/http/request';
 
 class UserService {
   static async getUserInfoByToken() {

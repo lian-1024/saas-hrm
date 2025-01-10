@@ -1,5 +1,5 @@
 import type { DashboardNoticeVO, HomeDataVO } from '@/modules/dashboard/types';
-import { request } from '@/shared/utils/http/request/instance';
+import { request } from '@/shared/utils/http/request';
 class HomeService {
   static async getDashboardData() {
     return request.get<HomeDataVO>('/home/data')

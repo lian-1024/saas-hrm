@@ -1,6 +1,6 @@
 import type { AddPermissionParams, PermissionVO, UpdatePermissionParams } from "@/modules/permission/types";
-import { request } from "@/shared/utils/http/request/instance";
-
+import { request } from "@/shared/utils/http/request";
+  
 class PermissionService {
   // 获取权限列表
   static getPermissionList() {

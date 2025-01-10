@@ -1,5 +1,5 @@
-import type { AttendanceAdtStatu, AttendanceList, CompanyVO, AttendancePagingParams, UpdateAttendanceParams, UpdateCompanyParams } from '@/modules/attendance/types';
-import { request } from '@/shared/utils/http/request/instance';
+import type { AttendanceAdtStatu, AttendanceList, AttendancePagingParams, CompanyVO, UpdateAttendanceParams, UpdateCompanyParams } from '@/modules/attendance/types';
+import { request } from '@/shared/utils/http/request';
 class AttendanceService {
 
   static getAttendanceList(params: AttendancePagingParams) {

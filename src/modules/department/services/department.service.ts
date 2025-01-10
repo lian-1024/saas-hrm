@@ -1,5 +1,5 @@
 import type { AddDepartmentParams, DepartmentDetailVO, DepartmentItemVO, DepartmentMangerItemVO, UpdateDepartmentParams } from '@/modules/department/types'
-import { request } from '@/shared/utils/http/request/instance'
+import { request } from '@/shared/utils/http/request'
 
 class DepartmentService {
   static getCompanyDepartmentList() {

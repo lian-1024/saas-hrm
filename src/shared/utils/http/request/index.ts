@@ -1,8 +1,8 @@
 import { RequestMethods } from '@/shared/constants/api';
 import type { Response } from '@/shared/types/index';
 import type { AxiosInstance, AxiosResponse } from 'axios'; // 从axios库中导入AxiosInstance和AxiosResponse类型
+import { axiosInstance } from './axios';
 import type { RequestAdapter, RequestConfig } from './types';
-
 
 // Axios适配器，实现了RequestAdapter接口，使用axios库进行请求
 export class AxiosAdapter implements RequestAdapter {
@@ -59,3 +59,9 @@ export class Request {
     return this.request<T>(url, { ...config, method: RequestMethods.DELETE });
   }
 }
+
+// 创建单例实例
+const instance = new Request(axiosInstance)
+
+// 导出单例
+export { instance as request }

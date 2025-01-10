@@ -1,5 +1,6 @@
 import { useUserStore } from '@/core/stores'
 import useRouter from '@/shared/composables/use-router'
+import { requestCancel } from '@/shared/utils/http/request/axios/request-cancel'
 import NProgress from 'nprogress'
 import type { NavigationGuardNext, RouteLocationNormalizedLoadedGeneric, Router } from 'vue-router'
 // 白名单路由 - 不需要登录就可以访问
@@ -15,6 +16,10 @@ export const registerGlobalRouteGuard = async (router: Router) => {
   router.beforeEach(async (to, from, next) => {
     // 开启进度条
     NProgress.start()
+
+    // 清除所有正在进行的请求
+    requestCancel.clearPending()
+
     // 获取用户状态
     const userStore = useUserStore()
     const { getIsRoutesGenerated } = useRouter()
