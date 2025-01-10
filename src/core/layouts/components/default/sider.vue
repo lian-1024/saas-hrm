@@ -4,7 +4,7 @@ import { useTheme } from '@/shared/composables/use-theme';
 import { generateMenuItem } from '@/shared/utils/generate-menu-item';
 import { ApartmentOutlined, CalendarOutlined, DashboardOutlined, LockOutlined, UserOutlined } from '@ant-design/icons-vue';
 import { LayoutSider, Menu, type MenuProps } from 'ant-design-vue';
-import { computed, h, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAntdToken } from '../../../../shared/composables/use-antd-token/index';
 import QLogo from './logo.vue';
@@ -44,6 +44,14 @@ const siderMenuItem = computed<MenuProps['items']>(() => (
   ]
 ))
 
+
+const getRoutes = () => {
+  console.log("router.getRoutes():", router.getRoutes())
+}
+
+onMounted(() => {
+  getRoutes()
+})
 
 
 </script>
