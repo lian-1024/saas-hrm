@@ -1,3 +1,5 @@
+import { CalendarOutlined } from "@ant-design/icons-vue";
+import { h } from "vue";
 import type { RouteRecordRaw } from "vue-router";
 
 export default {
@@ -10,8 +12,9 @@ export default {
       path: '/attendance',
       component: () => import("@/modules/attendance/views/index.vue"),
       meta: {
+        index: 5,
         title: "nav.attendance",
-        icon: "CalendarOutlined",
+        icon: h(CalendarOutlined),
       }
     }
   ]

@@ -3,12 +3,11 @@ import { constantRoutes, dynamicRoutes } from '@/core/router/router.config'
 import { ref } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 
-// 是否已生成动态路由
-// 必须是全局唯一的
+// 是否已生成动态路由状态
+// 必须要是全局唯一的
 const isRoutesGenerated = ref<boolean>(false)
 
 const useRouter = () => {
-
 
   const setIsRoutesGenerated = (value: boolean) => {
     isRoutesGenerated.value = value
@@ -58,7 +57,6 @@ const useRouter = () => {
     addRoutes(routes)
     // 设置路由已生成标志
     isRoutesGenerated.value = true
-    console.log("registerRoutes isRoutesGenerated", isRoutesGenerated.value);
 
   }
 

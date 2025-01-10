@@ -1,5 +1,6 @@
+import { TeamOutlined } from "@ant-design/icons-vue";
+import { h } from "vue";
 import type { RouteRecordRaw } from "vue-router";
-
 export default {
   path: '/',
   redirect: "/dashboard",
@@ -10,15 +11,16 @@ export default {
       path: '/employee',
       component: () => import("@/modules/employee/views/index.vue"),
       meta: {
+        index: 3,
         title: "nav.employee",
-        icon: "UserOutlined",
+        icon: h(TeamOutlined),
       }
     },
     {
       path: "/employee/detail/:id?",
       component: () => import("@/modules/employee/views/detail/index.vue"),
       meta: {
-        title: "menu.employee.detail",
+        title: "nav.employee.detail",
         hidden: true
       }
     }

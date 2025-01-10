@@ -1,5 +1,6 @@
+import { UserOutlined } from "@ant-design/icons-vue";
+import { h } from "vue";
 import type { RouteRecordRaw } from "vue-router";
-
 
 export default {
   path: '/',
@@ -11,8 +12,9 @@ export default {
       path: '/role',
       component: () => import("@/modules/role/views/index.vue"),
       meta: {
+        index: 2,
         title: "nav.role",
-        icon: "UserOutlined",
+        icon: h(UserOutlined),
       }
     }
   ]

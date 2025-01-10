@@ -1,3 +1,5 @@
+import { KeyOutlined } from "@ant-design/icons-vue";
+import { h } from "vue";
 import type { RouteRecordRaw } from "vue-router";
 
 export default {
@@ -10,8 +12,9 @@ export default {
       path: '/permission',
       component: () => import("@/modules/permission/views/index.vue"),
       meta: {
+        index: 4,
         title: "nav.permission",
-        icon: "KeyOutlined",
+        icon: h(KeyOutlined),
       }
     }
   ]
