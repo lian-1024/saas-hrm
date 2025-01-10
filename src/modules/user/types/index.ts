@@ -1,4 +1,4 @@
-
+import { type QRCodeStatusType } from '../constants'
 export interface LoginParams {
   mobile: string
   password: string
@@ -45,3 +45,15 @@ export interface UpdateAvatarParams {
   staffPhoto: string
 }
 
+
+export interface QRCodeStatus {
+  /**
+   * 1 用户未扫码但是加密串正常
+   * 2 用户已扫码但未点击登录
+   * 3 扫码登录成功
+   * 4 二维码密钥已失效
+   * 5 用户取消了登录
+   */
+  status: QRCodeStatusType
+  userId: number
+}

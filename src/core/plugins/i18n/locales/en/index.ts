@@ -484,6 +484,7 @@ const en: LocalMessageType = {
         workday: "Can apply for overtime on workdays",
         restDay: "Can apply for overtime on rest days",
         holiday: "Can apply for overtime on statutory holidays",
+        timeOff: "Time Off",
         clockValidation: "Clock Validation",
         clockRequired: "Clock-in required for overtime",
         enableCompensation: "Enable Compensation",
@@ -505,8 +506,8 @@ const en: LocalMessageType = {
         qrcode: "QR Code Login"
       },
       switchType: {
-        mobile: "Use Mobile Login",
-        qrcode: "Use QR Code Login"
+        mobile: "Use QR Code Login",
+        qrcode: "Use Mobile Login"
       },
       messages: {
         loginSuccess: "Login successful",

@@ -486,6 +486,7 @@ const zhCN = {
         workday: "工作日可申请加班",
         restDay: "休息日可申请加班",
         holiday: "法定节假日可申请加班",
+        timeOff: "调休假",
         clockValidation: "打卡验证",
         clockRequired: "加班需要有打卡记录",
         enableCompensation: "开启补偿",
@@ -507,8 +508,8 @@ const zhCN = {
         qrcode: "扫码登录"
       },
       switchType: {
-        mobile: "使用手机号登录",
-        qrcode: "使用扫码登录"
+        mobile: "使用扫码登录",
+        qrcode: "使用手机号登录"
       },
       messages: {
         loginSuccess: "登录成功",

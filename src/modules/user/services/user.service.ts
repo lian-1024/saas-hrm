@@ -1,4 +1,4 @@
-import type { LoginParams, UpdateAvatarParams, UpdatePasswordParams, UserInfoVO } from '@/modules/user/types';
+import type { LoginParams, QRCodeStatus, UpdateAvatarParams, UpdatePasswordParams, UserInfoVO } from '@/modules/user/types';
 import { request } from '@/shared/utils/http/request/instance';
 
 class UserService {
@@ -20,6 +20,17 @@ class UserService {
   static updateAvatar = (data: UpdateAvatarParams) => {
     return request.put('/sys/updateStaffPhoto', {
       data
+    })
+  }
+  static getQRCodeKey = () => {
+    return request.get<string>('/sys/qrcodeKey')
+  }
+
+  static getQRCodeStatus = (qrcodeKey: string) => {
+    return request.get<QRCodeStatus>('/sys/qrcodeState', {
+      params: {
+        qrcode_key: qrcodeKey
+      }
     })
   }
 
