@@ -79,22 +79,22 @@ const { run: getRoleList, loading: getRoleListLoading } = useRequest(() => RoleS
 const { run: updateRole, loading: updateRoleLoading } = useRequest(RoleService.updateRole, {
   manual: true,
   onSuccess: () => {
-    message.success(t("role.table.actions.editRoleSuccess"))
+    message.success(t("role.table.operationMessage.editRoleSuccess"))
   },
   onError: (error) => {
-    message.error(error.message || t("role.table.actions.editRoleError"))
+    message.error(error.message || t("role.table.operationMessage.editRoleError"))
   }
 })
 
 const { run: deleteRoleById, loading: deleteRoleLoading } = useRequest(RoleService.deleteRoleById, {
   manual: true,
   onSuccess: () => {
-    message.success(t("role.table.actions.deleteRoleSuccess"))
+    message.success(t("role.table.operationMessage.deleteRoleSuccess"))
     // roleTableDataSource.value.rows = roleTableDataSource.value.rows.filter(row => row.id !== selectedRoleId.value)
     getRoleList()
   },
   onError: (error) => {
-    message.error(error.message || t("role.table.actions.deleteRoleError"))
+    message.error(error.message || t("role.table.operationMessage.deleteRoleError"))
   }
 })
 

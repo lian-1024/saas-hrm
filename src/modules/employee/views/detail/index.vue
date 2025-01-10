@@ -216,7 +216,7 @@ onMounted(async () => {
           <Upload v-model:file-list="fileList" name="avatar" list-type="picture-card" class="avatar-uploader"
             :show-upload-list="false" action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
             :before-upload="beforeUpload" @change="handleChange">
-            <img v-if="formState.staffPhoto" :src="formState.staffPhoto" alt="avatar" />
+            <img class="w-full h-full" v-if="formState.staffPhoto" :src="formState.staffPhoto" alt="avatar" />
             <div v-else>
               <LoadingOutlined v-if="uploadLoading"></LoadingOutlined>
               <PlusOutlined v-else></PlusOutlined>

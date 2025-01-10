@@ -92,13 +92,14 @@ const handleSliderAfterChange: SliderProps['onAfterChange'] = (value) => {
 
 // 将后端返回的数据转换为 map可接受的数据
 const convertScopedCenter = computed(() => ({ lat: selectedCompany.point[1], lng: selectedCompany.point[0] }))
-const { run: updateCompanyList } = useRequest(AttendanceService.updateCompanyList, {
+const { run: updateCompanyList, loading: updateCompanyListLoading } = useRequest(AttendanceService.updateCompanyList, {
   manual: true,
   onSuccess: () => {
-    message.success("更新成功")
+    message.success(t('attendance.drawer.messages.updateSuccess'))
+    closeDrawer()
   },
   onError: ({ message }) => {
-    message.error(message || '更新失败')
+    message.error(message || t('attendance.drawer.messages.updateError'))
   }
 })
 
@@ -147,8 +148,9 @@ const { t } = useI18n()
     <template #footer>
       <Flex justify="end" gap="middle">
         <Button @click="closeDrawer">{{ t('attendance.drawer.buttons.cancel') }}</Button>
-        <Button type="primary" @click="handleBatchSaveCompanyPoint">{{ t('attendance.drawer.buttons.batchSave')
-          }}</Button>
+        <Button type="primary" @click="handleBatchSaveCompanyPoint" :loading="updateCompanyListLoading">{{
+          t('attendance.drawer.buttons.batchSave')
+        }}</Button>
       </Flex>
     </template>
   </Drawer>
