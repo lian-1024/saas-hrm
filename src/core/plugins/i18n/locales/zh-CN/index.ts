@@ -5,6 +5,21 @@ const zhCN = {
     enable: {
       enable: "已启用",
       disable: "未启用"
+    },
+    title: {
+      prefix: "IHRM",
+      dashboard: "仪表盘",
+      employee: "员工管理",
+      employeeDetail: "员工详情",
+      department: "部门管理",
+      role: "角色管理",
+      permission: "权限管理",
+      attendance: "考勤管理",
+      settings: "设置",
+      signIn: "登录",
+      result: {
+        404: "404"
+      }
     }
   },
   nav: {

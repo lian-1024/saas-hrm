@@ -13,7 +13,7 @@ import { useI18n } from 'vue-i18n';
 import { isPermissionExistCode, isPermissionExistName } from '../utils/find-permission';
 
 interface PermissionModalProps {
-  permissionId: number
+  permissionId?: number
   isEdit: boolean,
   permissionTree: PermissionTableTreeNode[]
 }

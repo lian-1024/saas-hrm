@@ -8,7 +8,7 @@ import { DepartmentTree } from '@/shared/utils/convert/department';
 import { DownOutlined } from '@ant-design/icons-vue';
 import { type MenuProps, type TreeProps, Dropdown, Flex, Menu, Modal, Tree, TypographyText, message } from 'ant-design-vue';
 import type { MenuItemType } from 'ant-design-vue/es/menu/src/interface';
-import { defineAsyncComponent, h, onMounted, ref } from 'vue';
+import { defineAsyncComponent, h, onMounted, ref, shallowRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 const DepartmentModal = defineAsyncComponent(() => import('../components/modal.vue'))
 const { t } = useI18n()
@@ -17,7 +17,7 @@ defineOptions({
   name: "DepartmentPage"
 })
 
-const departmentTree = ref<TreeProps['treeData']>([]);
+const departmentTree = shallowRef<TreeProps['treeData']>([]);
 const selectedDepartmentId = ref<string>();
 
 
@@ -55,12 +55,10 @@ const { loading: getListLoading, run: getCompanyDepartmentList } = useRequest(De
 })
 
 const handleAddSubDepartment = (key: string | number) => {
-  console.log("添加子部门:", key)
   handleOpenModal("addChild", key.toString())
 }
 
 const handleEditDepartment = (key: string | number) => {
-  console.log("编辑部门", key)
   handleOpenModal("edit", key.toString())
 }
 
@@ -138,7 +136,8 @@ onMounted(async () => {
         </template>
       </Tree>
     </QSkeleton>
-    <DepartmentModal v-model:open="modalOpen" :type="modalType" :department-id="selectedDepartmentId" />
+    <DepartmentModal v-model:open="modalOpen" :type="modalType" :department-id="selectedDepartmentId"
+      @success="getCompanyDepartmentList" />
   </Flex>
 </template>
 

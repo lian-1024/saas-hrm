@@ -9,7 +9,7 @@ import { generateMenuItem } from '@/shared/utils/generate-menu-item'
 import { CloseOutlined } from '@ant-design/icons-vue'
 import type { MenuProps, SliderProps } from 'ant-design-vue'
 import { Button, Drawer, Flex, Menu, Slider, TypographyText, message } from 'ant-design-vue'
-import { computed, defineAsyncComponent, onMounted, reactive, ref } from 'vue'
+import { computed, defineAsyncComponent, onMounted, reactive, ref, shallowRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const ScopedMap = defineAsyncComponent(() => import('./map.vue'))
@@ -36,11 +36,11 @@ const formatSliderTip: SliderProps['tipFormatter'] = (value = 0) =>
   t('attendance.drawer.radiusTip', { distance: convertDistance(value) })
 
 
-const companyMenuItems = ref<MenuProps['items']>()
+const companyMenuItems = shallowRef<MenuProps['items']>()
 
 const convertCompanyListToMenuItems = (list: CompanyVO[]): MenuProps['items'] => (list.map(item => generateMenuItem(item.id.toString(), item.name)))
 
-const companyList = ref<CompanyVO[]>([])
+const companyList = shallowRef<CompanyVO[]>([])
 
 const selectedCompany = reactive<CompanyVO>({
   address: '',
@@ -84,9 +84,7 @@ const handleSelectedCompany: MenuProps['onClick'] = (info) => {
 
 // 滑动结束之后 将当前company 复制到company 对应的数据上去
 const handleSliderAfterChange: SliderProps['onAfterChange'] = (value) => {
-  console.log("value:", value);
   saveCompanyToCompanyList(selectedCompany, selectedCompany.id)
-  console.log("company list:", companyList);
 }
 
 

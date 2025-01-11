@@ -88,10 +88,10 @@ onMounted(() => {
   getAttendanceSettingById(selectedDepartmentId.value)
 })
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   if (!formRef.value) return
   if (!validateDate.value) return
-  formRef.value.validateFields().then(() => updateAttendanceSetting({ ...formState, companyId: +formState.companyId }))
+  await formRef.value.validateFields().then(() => updateAttendanceSetting({ ...formState, companyId: +formState.companyId }))
 }
 
 

@@ -21,13 +21,14 @@ import {
 import { defineAsyncComponent, h, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { CountTo } from 'vue3-count-to'
-const { token } = useAntdToken()
 
+// 组件导入
 const TablePopover = defineAsyncComponent(() => import('@/modules/attendance/components/table-popover.vue'))
 const SettingModal = defineAsyncComponent(() => import('@/modules/attendance/components/setting/modal.vue'))
 const UpdateAttendance = defineAsyncComponent(() => import('@/modules/attendance/components/update-attendance.vue'))
 const CompanyDrawerCompanyDrawer = defineAsyncComponent(() => import('@/modules/attendance/components/drawer.vue'))
 
+// 类型定义
 interface EmployeeAttendance extends EmployeeAttendanceVO {
   key: string | number | null
   attendanceRecord: AttendanceRecord[]
@@ -37,10 +38,16 @@ defineOptions({
   name: 'AttendancePage',
 })
 
-const departmentOptions = ref<CheckboxOptionType[]>([])
-
+// 状态定义
+const { token } = useAntdToken()
 const { t } = useI18n()
+const departmentOptions = ref<CheckboxOptionType[]>([])
+const selectedDepartmentIds = ref<string[]>([])
+const drawerStatus = ref(false)
+const settingModalStatus = ref(false)
+const updateModalOpenStatus = ref(false)
 
+// 表格基础列定义
 const baseColumns: TableProps<EmployeeAttendance>['columns'] = [
   {
     title: t('attendance.table.columns.key'),
@@ -81,14 +88,11 @@ const baseColumns: TableProps<EmployeeAttendance>['columns'] = [
 
 const attendanceColumns = ref<TableProps<EmployeeAttendance>['columns']>(baseColumns)
 
+// 响应式数据
 const employeeDataSource = reactive({
   total: 0,
   rows: [] as EmployeeAttendance[]
 })
-
-const drawerStatus = ref(false)
-const settingModalStatus = ref(false)
-
 
 const attendanceInfo = reactive({
   monthOfReport: 1,
@@ -98,7 +102,20 @@ const attendanceInfo = reactive({
   attendanceRecord: [] as AttendanceRow[]
 })
 
-// 格式化表格数据
+const attendancePagingParams = reactive<AttendancePagingParams>({
+  page: 1,
+  pagesize: 10,
+  deptID: selectedDepartmentIds.value.join(",")
+})
+
+const updateAttendanceProps = reactive({
+  day: '',
+  adtStatu: 0,
+  userId: 0,
+  departmentId: 0
+})
+
+// 工具函数
 const formatTableData = (records: AttendanceRow[]): EmployeeAttendance[] => {
   const { yearOfReport, monthOfReport } = attendanceInfo
   return records.map(record => {
@@ -112,7 +129,6 @@ const formatTableData = (records: AttendanceRow[]): EmployeeAttendance[] => {
       workNumber: record.workNumber,
       attendanceRecord: record.attendanceRecord
     }
-
 
     const attendanceData = record.attendanceRecord.reduce((acc, curr) => {
       const day = parseInt(curr.day.slice(6))
@@ -128,58 +144,12 @@ const formatTableData = (records: AttendanceRow[]): EmployeeAttendance[] => {
     }
   })
 }
-const selectedDepartmentIds = ref<string[]>([])
 
-const attendancePagingParams = reactive<AttendancePagingParams>({
-  page: 1,
-  pagesize: 10,
-  deptID: selectedDepartmentIds.value.join(",")
-})
-
-const { run: getAttendanceList, loading: getAttendanceListLoading } = useRequest(AttendanceService.getAttendanceList, {
-  onSuccess: ({ data }) => {
-    const { yearOfReport, monthOfReport, tobeTaskCount, data: { rows } } = data
-
-    attendanceInfo.tobeTaskCount = tobeTaskCount
-    attendanceInfo.dayOfMonth = new Date(yearOfReport, monthOfReport, 0).getDate()
-    attendanceInfo.attendanceRecord = rows
-    attendanceInfo.yearOfReport = yearOfReport
-    attendanceInfo.monthOfReport = monthOfReport
-    employeeDataSource.rows = formatTableData(rows)
-    employeeDataSource.total = data.data.total
-  }
-})
-
-
-
-
-// 当分页发生变化时，重新获取员工列表
-const handleChangeTablePagination = (page: number, pageSize: number) => {
-  attendancePagingParams.page = page
-  attendancePagingParams.pagesize = pageSize
-  getAttendanceList(attendancePagingParams)
-}
-
-const updateModalOpenStatus = ref(false)
-
-
-const updateAttendanceProps = reactive({
-  day: '',
-  adtStatu: 0,
-  userId: 0,
-  departmentId: 0
-})
-
-
-// 生成日期列
 const generateDateColumns = (days: number) => {
   const dateColumns: TableProps<EmployeeAttendance>['columns'] = []
-
   const { yearOfReport, monthOfReport } = attendanceInfo
 
-  // 循环生成日期列
   for (let day = 1; day <= days; day++) {
-
     const date = `${yearOfReport}/${monthOfReport}/${day}`
     dateColumns.push({
       title: `${monthOfReport}/${day}`,
@@ -193,7 +163,6 @@ const generateDateColumns = (days: number) => {
 
         if (!status) return text
 
-        // popover
         return h(TablePopover, {
           username: record.username,
           yearOfReport: yearOfReport,
@@ -205,33 +174,45 @@ const generateDateColumns = (days: number) => {
           adtInPlace: attendanceRecord?.adtInPlace,
           adtOutPlace: attendanceRecord?.adtOutPlace,
           onClick: () => {
-            // 在这里处理点击事件
-            updateAttendanceProps.userId = record.id ?? 0
-            updateAttendanceProps.day = date
-            updateAttendanceProps.adtStatu = text
-            updateAttendanceProps.departmentId = record.departmentId
+            Object.assign(updateAttendanceProps, {
+              userId: record.id ?? 0,
+              day: date,
+              adtStatu: text,
+              departmentId: record.departmentId
+            })
             updateModalOpenStatus.value = true
           }
         })
       },
-
-
     })
   }
 
   return dateColumns
 }
 
-// 监听天数变化，更新columns
-watch(() => attendanceInfo.dayOfMonth, (newDays) => {
-  if (newDays > 0) {
-    attendanceColumns.value = [
-      ...baseColumns,
-      ...generateDateColumns(newDays)
-    ]
+// 事件处理
+const handleChangeTablePagination = (page: number, pageSize: number) => {
+  Object.assign(attendancePagingParams, { page, pagesize: pageSize })
+  getAttendanceList(attendancePagingParams)
+}
+
+// API请求
+const { run: getAttendanceList, loading: getAttendanceListLoading } = useRequest(AttendanceService.getAttendanceList, {
+  onSuccess: ({ data }) => {
+    const { yearOfReport, monthOfReport, tobeTaskCount, data: { rows } } = data
+
+    Object.assign(attendanceInfo, {
+      tobeTaskCount,
+      dayOfMonth: new Date(yearOfReport, monthOfReport, 0).getDate(),
+      attendanceRecord: rows,
+      yearOfReport,
+      monthOfReport
+    })
+
+    employeeDataSource.rows = formatTableData(rows)
+    employeeDataSource.total = data.data.total
   }
 })
-
 
 const { loading: getDepartmentListLoading } = useRequest(DepartmentService.getCompanyDepartmentList, {
   onSuccess: ({ data }) => {
@@ -242,19 +223,20 @@ const { loading: getDepartmentListLoading } = useRequest(DepartmentService.getCo
   }
 })
 
-
-
-
-
-
-watch(() => selectedDepartmentIds.value, () => {
-  const deptID = selectedDepartmentIds.value.join(",")
-  attendancePagingParams.deptID = deptID
-  getAttendanceList(attendancePagingParams)
+// 监听器
+watch(() => attendanceInfo.dayOfMonth, (newDays) => {
+  if (newDays > 0) {
+    attendanceColumns.value = [
+      ...baseColumns,
+      ...generateDateColumns(newDays)
+    ]
+  }
 })
 
-
-
+watch(() => selectedDepartmentIds.value, () => {
+  attendancePagingParams.deptID = selectedDepartmentIds.value.join(",")
+  getAttendanceList(attendancePagingParams)
+})
 
 </script>
 

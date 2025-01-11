@@ -15,7 +15,7 @@ import { DepartmentTree } from '@/shared/utils/convert/department';
 import { Button, Flex, InputSearch, message, Popconfirm, Table, Tree, TypographyText, type ButtonProps, type TableProps, type TreeProps } from 'ant-design-vue';
 import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface';
 import FileSaver from 'file-saver';
-import { computed, defineAsyncComponent, onMounted, reactive, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, onMounted, reactive, ref, shallowReactive, shallowRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { FormOfEmployment } from '../constants';
 const { isDark } = useTheme()
@@ -29,7 +29,7 @@ defineOptions({
 })
 
 
-const departmentTree = ref<TreeProps['treeData']>()
+const departmentTree = shallowRef<TreeProps['treeData']>()
 const pagingEmployeeParams = reactive<PagingEmployeeListParams>({
   departmentId: departmentTree.value?.[0]?.id ?? 1,
   keyword: "",
@@ -90,7 +90,7 @@ const columns: TableProps<EmployeeVO>['columns'] = [
   }
 ]
 
-const employeeTableDataSource = reactive<PagingResponse<(EmployeeVO & { key: number | string })>>({
+const employeeTableDataSource = shallowReactive<PagingResponse<(EmployeeVO & { key: number | string })>>({
   total: 0,
   rows: []
 })
@@ -106,8 +106,7 @@ const openGiveRoleModal = (employeeId: number | string) => {
 
 const tableRowSelection = ref<TableProps['rowSelection']>({
   onChange: (selectedRowKeys, selectedRows) => {
-    console.log("selectedRowKeys:", selectedRowKeys);
-    console.log("selectedRows:", selectedRows);
+
   }
 })
 
@@ -184,9 +183,12 @@ onMounted(async () => {
   await Promise.all([getCompanyDepartmentList(), getEmployeeList()])
 })
 
-const formalOfEmployment = computed(() => (formOfEmployment: FormOfEmploymentType) => {
-  return formOfEmployment === FormOfEmployment.Formal ? t('employee.table.formalOfEmployment.formal') : t('employee.table.formalOfEmployment.informal')
-})
+const getFormalOfEmployment = (formOfEmployment: FormOfEmploymentType) => formalOfEmploymentMap[formOfEmployment].value
+
+const formalOfEmploymentMap = {
+  [FormOfEmployment.Formal]: computed(() => t('employee.table.formalOfEmployment.formal')),
+  [FormOfEmployment.InFormal]: computed(() => t('employee.table.formalOfEmployment.informal'))
+}
 </script>
 
 <template>
@@ -240,7 +242,7 @@ const formalOfEmployment = computed(() => (formOfEmployment: FormOfEmploymentTyp
 
             <!-- 聘用形式 -->
             <template v-else-if="column.key === 'formOfEmployment'">
-              {{ formalOfEmployment(record.formOfEmployment) }}
+              {{ getFormalOfEmployment(record.formOfEmployment) }}
             </template>
 
             <!-- 操作 -->

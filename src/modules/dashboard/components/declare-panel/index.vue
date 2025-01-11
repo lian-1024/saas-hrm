@@ -15,21 +15,15 @@ const props = defineProps<{
 
 
 const info = computed<Omit<DashboardDeclareVO, 'xAxis' | 'yAxis'>>(() => {
-  return {
-    category: props.info.category,
-    categoryType: props.info.categoryType,
-    declaringTotal: props.info.declaringTotal,
-    declarationTotal: props.info.declarationTotal,
-    declaredTotal: props.info.declaredTotal,
-    toDeclareTotal: props.info.toDeclareTotal,
-
-  }
+  const { xAxis, yAxis, ...rest } = props.info
+  return rest
 })
 
 const chartsData = computed<Pick<DashboardDeclareVO, 'xAxis' | 'yAxis'>>(() => {
+  const { xAxis, yAxis } = props.info
   return {
-    xAxis: props.info.xAxis,
-    yAxis: props.info.yAxis
+    xAxis,
+    yAxis
   }
 })
 

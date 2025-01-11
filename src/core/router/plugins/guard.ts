@@ -1,12 +1,17 @@
+import { i18n } from '@/core/plugins/i18n'
 import { useUserStore } from '@/core/stores'
 import useRouter from '@/shared/composables/use-router'
 import { requestCancel } from '@/shared/utils/http/request/axios/request-cancel'
+import { useTitle } from '@vueuse/core'
 import NProgress from 'nprogress'
 import type { NavigationGuardNext, RouteLocationNormalizedLoadedGeneric, Router } from 'vue-router'
+import { useRoute } from 'vue-router'
 // 白名单路由 - 不需要登录就可以访问
 const whiteList = ['/sign-in']
 const { registerRoutes, addResultRoute } = useRouter()
+const pageTitle = useTitle()
 
+const route = useRoute()
 /**
  * 注册全局路由守卫
  * @param router 路由实例
@@ -27,23 +32,24 @@ export const registerGlobalRouteGuard = async (router: Router) => {
 
     // 如果没有token,处理未认证情况
     if (!userStore.token) {
-      handleUnauthenticated(to, next)
+      await withSetPageTitle(to.meta.title)(handleUnauthenticated(to, next))
       return
     }
 
     // 如果已登录且要跳转登录页,重定向到首页
     if (to.path === '/sign-in') {
-      next({ path: '/dashboard' })
+      await withSetPageTitle(to.meta.title)(() => next({ path: '/dashboard' }))
       return
     }
 
 
     // 如果路由未生成，进行路由注册
     if (!getIsRoutesGenerated()) {
-      await handleRouteRegistration(userStore, next, to)
+      await withSetPageTitle(to.meta.title)(() => handleRouteRegistration(userStore, next, to))
       return
     }
 
+    setPageTitle(to.meta.title)
     // 都不匹配直接放行
     next()
   })
@@ -53,6 +59,23 @@ export const registerGlobalRouteGuard = async (router: Router) => {
     // 关闭进度条
     NProgress.done()
   })
+}
+
+const withSetPageTitle = (name: string) => (func?: any) => {
+  setPageTitle(name)
+  return func ? func() : null
+}
+
+
+
+const setPageTitle = (name?: string) => {
+  if (!name) return
+
+  // 设置页面标题
+  const title = name.split('.').pop()
+  const t = i18n.global.t
+  const prefix = t('common.title.prefix')
+  pageTitle.value = `${t(`common.title.${title}`)} | ${prefix}`
 }
 
 /**

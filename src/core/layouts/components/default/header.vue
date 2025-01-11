@@ -16,7 +16,7 @@ const collapsed = defineModel("collapsed", { default: false });
 
 
 const LayoutHeaderFlex: FlexProps = {
-  align: "cent,r",
+  align: "center",
   justify: "space-between",
 }
 const { token } = useAntdToken()

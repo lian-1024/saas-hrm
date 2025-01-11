@@ -7,6 +7,21 @@ const en: LocalMessageType = {
     enable: {
       enable: "Enabled",
       disable: "Disabled"
+    },
+    title: {
+      prefix: "IHRM",
+      dashboard: "Dashboard",
+      employee: "Employee Management",
+      employeeDetail: "Employee Detail",
+      department: "Department Management",
+      role: "Role Management",
+      permission: "Permission Management",
+      attendance: "Attendance Management",
+      settings: "Settings",
+      signIn: "Sign In",
+      result: {
+        404: "404"
+      }
     }
   },
   nav: {

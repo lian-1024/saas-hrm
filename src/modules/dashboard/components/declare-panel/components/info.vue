@@ -15,13 +15,11 @@ const props = defineProps<{
   info: Omit<DashboardDeclareVO, 'xAxis' | 'yAxis'>
 }>()
 
-const declareTotalList = computed(() => {
-  return [
-    { label: 'declaredTotal', value: props.info.declaredTotal || 0 },
-    { label: 'declaringTotal', value: props.info.declaringTotal || 0 },
-    { label: 'toDeclareTotal', value: props.info.toDeclareTotal || 0 },
-  ]
-})  
+const declareTotalList = computed(() => [
+  { label: 'declaredTotal', value: props.info.declaredTotal || 0 },
+  { label: 'declaringTotal', value: props.info.declaringTotal || 0 },
+  { label: 'toDeclareTotal', value: props.info.toDeclareTotal || 0 },
+])  
 </script>
 
 <template>
@@ -29,7 +27,7 @@ const declareTotalList = computed(() => {
     <Flex vertical>
 
 
-      <QSkeleton :loading="!info.declarationTotal" active :paragraph="{
+      <QSkeleton :loading="!info.declarationTotal" :active="true" :paragraph="{
         rows: 1,
       }">
         <TypographyText type="secondary">

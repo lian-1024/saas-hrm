@@ -7,7 +7,7 @@ import { useAntdToken } from '@/shared/composables/use-antd-token'
 import { generateMenuItem } from '@/shared/utils/generate-menu-item'
 import { DashboardOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import { Dropdown, Flex, Menu, Space, TypographyText, type FlexProps, type MenuProps } from 'ant-design-vue'
-import { defineAsyncComponent, h, onMounted, ref } from 'vue'
+import { defineAsyncComponent, h, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { OpenModalType, type ModalType } from '../../constants'
 
@@ -57,9 +57,6 @@ const handleClickMenuItemActions: MenuProps['onClick'] = (info) => {
   }
 }
 
-onMounted(() => {
-  console.log('userStore.userInfo:', userStore.userInfo)
-})
 
 const { token } = useAntdToken()
 </script>

@@ -84,7 +84,6 @@ watch(() => props.chartsData, (newValue) => {
 }, { immediate: true })
 
 watch(() => currentLocale.value, (newValue) => {
-  console.log(newValue)
   renderChart(props.chartsData)
 }, { immediate: true })
 </script>

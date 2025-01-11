@@ -8,6 +8,7 @@ import type { FormInstance, FormProps, SelectProps } from 'ant-design-vue';
 import { Button, Flex, Form, Input, Select, message } from 'ant-design-vue';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { ModalType, ModalTypeKey } from '../constants';
 const { t } = useI18n()
 interface DepartmentFormData {
   name: string;
@@ -21,7 +22,7 @@ defineOptions({
 })
 
 const props = defineProps<{
-  type: "addChild" | "edit";
+  type: ModalTypeKey;
   departmentId?: string;
 }>();
 
@@ -47,9 +48,15 @@ const formData = ref<DepartmentDetailVO>({
 const emits = defineEmits(['success'])
 
 // 计算标题
-const computedTitle = computed(() => {
-  return props.type === "addChild" ? t('department.operations.addChild') : t('department.operations.edit');
-});
+const computedTitle = () => {
+  return computedTitleMap[props.type].value
+}
+
+const computedTitleMap = {
+  [ModalType.addChild]: computed(() => t('department.operations.addChild')),
+  [ModalType.edit]: computed(() => t('department.operations.edit'))
+}
+
 
 // 表单验证规则
 const formRules: FormProps['rules'] = {
@@ -74,7 +81,6 @@ const formRules: FormProps['rules'] = {
 const { run: addDepartment, loading: addLoading } = useRequest(DepartmentService.addDepartment, {
   manual: true,
   onSuccess: (data) => {
-    console.log(data);
     message.success(t("department.operations.operationMessage.addSuccess"))
     emits('success')
   },
@@ -117,7 +123,7 @@ const { run: updateDepartment, loading: updateDepartmentLoading } = useRequest(D
 
 
 watch(() => props.departmentId, (newVal) => {
-  if (newVal) {
+  if (newVal && props.type === ModalType.edit) {
     getDepartmentDetail(newVal)
   }
 })
@@ -167,7 +173,7 @@ const loading = computed(() => getDepartmentDetailLoading.value || getDepartment
 </script>
 
 <template>
-  <QModal :width="600" :open="openStatus" @cancel="closeModal" :title="computedTitle" closable mask
+  <QModal :width="600" :open="openStatus" @cancel="closeModal" :title="computedTitle()" closable mask
     :maskClosable="false">
     <QSpin :spinning="loading">
       <div class="department-modal">

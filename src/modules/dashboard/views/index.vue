@@ -6,7 +6,7 @@ import { useAntdToken } from '@/shared/composables/use-antd-token';
 import { useRequest } from '@/shared/composables/use-request/use-request';
 import type { FlexProps } from 'ant-design-vue';
 import { Flex } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, shallowReactive } from 'vue';
 import DashboardDeclarePanel from '../components/declare-panel/index.vue';
 import DashboardHelpLink from '../components/help-link/index.vue';
 import DashboardInfo from '../components/info/index.vue';
@@ -28,10 +28,7 @@ const LeftPanelAttrs: FlexProps = {
 }
 
 
-const dashboardInfoList = ref<DashboardInfoItem[]>([])
-
-
-
+const dashboardInfoList = shallowReactive<DashboardInfoItem[]>([])
 
 const defaultProvidentFund = {
   categoryType: "providentFund",
@@ -55,26 +52,25 @@ const defaultSocialSecurity = {
   yAxis: []
 }
 
-const providentFund = ref<DashboardDeclareVO>(defaultProvidentFund)
-const socialSecurity = ref<DashboardDeclareVO>(defaultSocialSecurity)
+const providentFund = shallowReactive<DashboardDeclareVO>(defaultProvidentFund)
+const socialSecurity = shallowReactive<DashboardDeclareVO>(defaultSocialSecurity)
 
-const noticeList = ref<DashboardNoticeVO[]>([])
+const noticeList = shallowReactive<DashboardNoticeVO[]>([])
 
 const { run: getDashboardData, loading: getDashboardDataLoading } = useRequest<HomeDataVO>(DashboardService.getDashboardData, {
   manual: true,
   onSuccess: ({ data }) => {
-    console.log("dashboardData", data)
-    dashboardInfoList.value = convertDashboardInfoList(data)
-    providentFund.value = data.providentFund
-    socialSecurity.value = data.socialInsurance
+    Object.assign(dashboardInfoList, convertDashboardInfoList(data))
+    Object.assign(providentFund, data.providentFund)
+    Object.assign(socialSecurity, data.socialInsurance)
   }
 
 })
 
 const { run: getNotice, loading: getNoticeLoading } = useRequest(DashboardService.getDashboardNotice, {
   manual: true,
-  onSuccess: (res) => {
-    noticeList.value = res.data
+  onSuccess: ({ data }) => {
+    Object.assign(noticeList, data)
   }
 })
 

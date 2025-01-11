@@ -88,9 +88,9 @@ const { run: updateLeaveSetting } = useRequest(AttendanceSettingService.updateLe
 })
 
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   console.log(leaveSettingList.value)
-  updateLeaveSetting(leaveSettingList.value)
+  await updateLeaveSetting(leaveSettingList.value)
 }
 
 watch(selectedDepartmentId, (newValue) => {
