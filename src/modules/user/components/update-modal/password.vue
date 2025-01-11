@@ -21,14 +21,14 @@ const formRef = ref()
 const model = ref<FormState>({
   oldPassword: '',
   newPassword: '',
-  confirmPassword: ''
+  confirmPassword: '',
 })
 
 const rules = {
   oldPassword: [{ required: true, message: t('user.updateModal.password.rules.old.required') }],
   newPassword: [
     { required: true, message: t('user.updateModal.password.rules.new.required') },
-    { min: 6, message: t('user.updateModal.password.rules.new.minLength') }
+    { min: 6, message: t('user.updateModal.password.rules.new.minLength') },
   ],
   confirmPassword: [
     { required: true, message: t('user.updateModal.password.rules.confirm.required') },
@@ -38,9 +38,9 @@ const rules = {
           return Promise.reject(t('user.updateModal.password.rules.confirm.match'))
         }
         return Promise.resolve()
-      }
-    }
-  ]
+      },
+    },
+  ],
 }
 
 const { loading, run: updatePassword } = useRequest(UserService.updatePassword, {
@@ -51,7 +51,7 @@ const { loading, run: updatePassword } = useRequest(UserService.updatePassword, 
   },
   onError: (error) => {
     message.error(error.message || t('user.updateModal.password.messages.error'))
-  }
+  },
 })
 
 const handleSubmit = () => {
@@ -60,36 +60,50 @@ const handleSubmit = () => {
 
     updatePassword({
       oldPassword,
-      newPassword
+      newPassword,
     })
   })
 }
 
 defineExpose({
   loading,
-  handleSubmit
+  handleSubmit,
 })
 
 const formLabeCol: FormProps['labelCol'] = {
-  span: 6
+  span: 6,
 }
 
 const formWrapperCol: FormProps['wrapperCol'] = {
-  span: 14
+  span: 14,
 }
 </script>
 
 <template>
-  <Form ref="formRef" :model="model" :rules="rules" :label-col="formLabeCol" :wrapper-col="formWrapperCol">
+  <Form
+    ref="formRef"
+    :model="model"
+    :rules="rules"
+    :label-col="formLabeCol"
+    :wrapper-col="formWrapperCol"
+  >
     <Form.Item name="oldPassword" :label="t('user.updateModal.password.label.old')">
-      <Input.Password v-model:value="model.oldPassword" :placeholder="t('user.updateModal.password.placeholder.old')" />
+      <Input.Password
+        v-model:value="model.oldPassword"
+        :placeholder="t('user.updateModal.password.placeholder.old')"
+      />
     </Form.Item>
     <Form.Item name="newPassword" :label="t('user.updateModal.password.label.new')">
-      <Input.Password v-model:value="model.newPassword" :placeholder="t('user.updateModal.password.placeholder.new')" />
+      <Input.Password
+        v-model:value="model.newPassword"
+        :placeholder="t('user.updateModal.password.placeholder.new')"
+      />
     </Form.Item>
     <Form.Item name="confirmPassword" :label="t('user.updateModal.password.label.confirm')">
-      <Input.Password v-model:value="model.confirmPassword"
-        :placeholder="t('user.updateModal.password.placeholder.confirm')" />
+      <Input.Password
+        v-model:value="model.confirmPassword"
+        :placeholder="t('user.updateModal.password.placeholder.confirm')"
+      />
     </Form.Item>
   </Form>
 </template>

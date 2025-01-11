@@ -10,8 +10,8 @@ export const HTTP_ERROR_MESSAGES: Record<number, string> = {
   [HttpStatus.INTERNAL_SERVER_ERROR]: '服务器内部错误',
   [HttpStatus.BAD_GATEWAY]: '网关错误',
   [HttpStatus.SERVICE_UNAVAILABLE]: '服务不可用',
-  [HttpStatus.GATEWAY_TIMEOUT]: '网关超时'
+  [HttpStatus.GATEWAY_TIMEOUT]: '网关超时',
 }
 
 export const NETWORK_ERROR_MESSAGE = '网络连接失败，请检查网络'
-export const DEFAULT_ERROR_MESSAGE = '请求失败' 
+export const DEFAULT_ERROR_MESSAGE = '请求失败'

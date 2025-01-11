@@ -1,5 +1,9 @@
 import { useUserStore } from '@/core/stores'
-import { DEFAULT_ERROR_MESSAGE, HTTP_ERROR_MESSAGES, NETWORK_ERROR_MESSAGE } from '@/shared/constants/http-message'
+import {
+  DEFAULT_ERROR_MESSAGE,
+  HTTP_ERROR_MESSAGES,
+  NETWORK_ERROR_MESSAGE,
+} from '@/shared/constants/http-message'
 import { HttpStatus } from '@/shared/constants/http-status'
 import { throttledErrorMessage } from '@/shared/utils/http/utils/throttled-error-message'
 import type { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
@@ -7,32 +11,20 @@ import { requestCancel } from './request-cancel'
 
 const throttled = throttledErrorMessage()
 
-
 export const setRequestInterceptor = (instance: AxiosInstance) => {
   // 添加拦截器
   instance.interceptors.request.use(
     (config) => handleRequestFulfilled(config),
-    (error) => handleRequestRejected(error)
+    (error) => handleRequestRejected(error),
   )
 }
 
 export const setResponseInterceptor = (instance: AxiosInstance) => {
   instance.interceptors.response.use(
     (response) => handleResponseFulfilled(response),
-    (error) => handleResponseRejected(error)
+    (error) => handleResponseRejected(error),
   )
 }
-
-
-
-
-
-
-
-
-
-
-
 
 const handleRequestFulfilled = (config: InternalAxiosRequestConfig<any>) => {
   const userStore = useUserStore()

@@ -1,13 +1,13 @@
 <script setup lang="ts" generic="">
-import type { DashboardNoticeVO } from '@/modules/dashboard/types';
-import { QAvatar } from '@/shared/components/base/avatar';
-import { QSkeleton } from '@/shared/components/base/skeleton';
-import { useAntdToken } from '@/shared/composables/use-antd-token';
-import { Flex, List, ListItem, ListItemMeta, TypographyLink, TypographyText } from 'ant-design-vue';
-import { computed } from 'vue';
-import QPanel from '../panel.vue';
+import { QAvatar } from '@components/base/avatar'
+import { QSkeleton } from '@components/base/skeleton'
+import { useAntdToken } from '@composables/use-antd-token'
+import type { DashboardNoticeVO } from '@modules/dashboard/types'
+import { Flex, List, ListItem, ListItemMeta, TypographyLink, TypographyText } from 'ant-design-vue'
+import { computed } from 'vue'
+import QPanel from '../panel.vue'
 defineOptions({
-  name: "DashboardNotification"
+  name: 'DashboardNotification',
 })
 
 interface Props {
@@ -17,33 +17,29 @@ interface Props {
 
 const generateList = (length: number = 3) => {
   return Array.from({ length }, () => ({
-    icon: "",
-    notice: "",
-    createTime: ""
+    icon: '',
+    notice: '',
+    createTime: '',
   })) as DashboardNoticeVO[]
 }
 
 const skeletonList: DashboardNoticeVO[] = generateList()
 
-
-
-
 const { noticeList = [], loading } = defineProps<Props>()
 
 const computedNoticeList = computed(() => {
-  return noticeList.map(notice => {
+  return noticeList.map((notice) => {
     const { notice: noticeContent, createTime } = notice
     const [name, _, content] = noticeContent.split(' ')
     return {
       name,
       content,
-      createTime
+      createTime,
     }
   })
 })
 
 const { token } = useAntdToken()
-
 </script>
 
 <template>
@@ -57,7 +53,9 @@ const { token } = useAntdToken()
                 <RouterLink to="/">
                   <Flex gap="small">
                     <TypographyLink>{{ item.name }}</TypographyLink>
-                    <TypographyText type="secondary">{{ $t('dashboard.notification.published') }}</TypographyText>
+                    <TypographyText type="secondary">{{
+                      $t('dashboard.notification.published')
+                    }}</TypographyText>
                     <TypographyText>{{ item.content }}</TypographyText>
                   </Flex>
                 </RouterLink>
@@ -66,9 +64,7 @@ const { token } = useAntdToken()
                 <QAvatar size="large" :src="item.icon" />
               </template>
             </ListItemMeta>
-
           </ListItem>
-
         </template>
       </List>
     </template>
@@ -101,6 +97,6 @@ const { token } = useAntdToken()
 
 <style scoped lang="less">
 .notification-item {
-  padding-block: v-bind("`${token.padding}px`");
+  padding-block: v-bind('`${token.padding}px`');
 }
 </style>

@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
-
+import { RouterLink } from 'vue-router'
 
 defineOptions({
-  name: "QLogo"
+  name: 'QLogo',
 })
-
-
 </script>
 
 <template>

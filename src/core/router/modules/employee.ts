@@ -1,31 +1,31 @@
-import { TeamOutlined } from "@ant-design/icons-vue";
-import { h } from "vue";
-import type { RouteRecordRaw } from "vue-router";
+import { TeamOutlined } from '@ant-design/icons-vue'
+import { h } from 'vue'
+import type { RouteRecordRaw } from 'vue-router'
 export default {
   path: '/',
-  redirect: "/dashboard",
+  redirect: '/dashboard',
   name: 'employee',
-  component: () => import("@/core/layouts/default.vue"),
+  component: () => import('@/core/layouts/default.vue'),
   children: [
     {
       path: '/employee',
-      component: () => import("@/modules/employee/views/index.vue"),
+      component: () => import('@/modules/employee/views/index.vue'),
       meta: {
         name: 'employee',
         index: 3,
-        title: "nav.employee",
+        title: 'nav.employee',
         icon: h(TeamOutlined),
-      }
+      },
     },
     {
-      path: "/employee/detail/:id?",
-      component: () => import("@/modules/employee/views/detail/index.vue"),
+      path: '/employee/detail/:id?',
+      component: () => import('@/modules/employee/views/detail/index.vue'),
       meta: {
         name: 'employeeDetail',
-        title: "nav.employeeDetail",
+        title: 'nav.employeeDetail',
         hidden: true,
-        parentKey: 'employee'
-      }
-    }
-  ]
-} satisfies RouteRecordRaw 
+        parentKey: 'employee',
+      },
+    },
+  ],
+} satisfies RouteRecordRaw

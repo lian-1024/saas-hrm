@@ -4,5 +4,5 @@ export const DASHBOARD_TITLES = {
   PENDING_CONTRACTS: '合同待签署',
   PENDING_ONBOARD: '待入职',
   PENDING_CONVERSION: '本月待转正',
-  TOTAL_API_CALLS: '接口总访问量'
-} as const;
+  TOTAL_API_CALLS: '接口总访问量',
+} as const

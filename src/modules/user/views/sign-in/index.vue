@@ -1,15 +1,14 @@
 <script lang="ts" setup>
-import SignInHero from '@/modules/user/components/hero.vue'
-import MobileForm from '@/modules/user/components/mobile-form.vue'
-import QrcodeForm from '@/modules/user/components/qrcode-form.vue'
-import { useAntdToken } from '@/shared/composables/use-antd-token'
+import { useAntdToken } from '@composables/use-antd-token'
+import SignInHero from '@modules/user/components/hero.vue'
+import MobileForm from '@modules/user/components/mobile-form.vue'
+import QrcodeForm from '@modules/user/components/qrcode-form.vue'
 import { Flex, TypographyTitle } from 'ant-design-vue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 defineOptions({
-  name: 'SignInPage'
+  name: 'SignInPage',
 })
-
 
 const { t } = useI18n()
 
@@ -75,7 +74,6 @@ const { token } = useAntdToken()
 
     &-title {
       margin-bottom: 40px;
-
     }
 
     &-footer {

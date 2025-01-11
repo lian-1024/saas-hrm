@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { useUserStore } from '@/core/stores';
-import { QSpin } from '@/shared/components/base/spin';
-import { useRequest } from '@/shared/composables/use-request';
-import { preloadImage } from '@/shared/utils/file/preload-image';
-import { readFileAsBase64 } from '@/shared/utils/file/read-file-as-base64';
-import { RotateLeftOutlined, RotateRightOutlined, UploadOutlined } from '@ant-design/icons-vue';
-import { useFileDialog } from '@vueuse/core';
-import { Button, Flex, Image, message } from 'ant-design-vue';
-import { h, onMounted, reactive, ref } from 'vue';
-import { VueCropper } from 'vue-cropper';
-import 'vue-cropper/dist/index.css';
-import { useI18n } from 'vue-i18n';
-import { AvatarCropperOperation } from '../../constants';
-import UserService from '../../services/user.service';
+import { useUserStore } from '@/core/stores'
+import { QSpin } from '@/shared/components/base/spin'
+import { useRequest } from '@/shared/composables/use-request'
+import { preloadImage } from '@/shared/utils/file/preload-image'
+import { readFileAsBase64 } from '@/shared/utils/file/read-file-as-base64'
+import { RotateLeftOutlined, RotateRightOutlined, UploadOutlined } from '@ant-design/icons-vue'
+import { useFileDialog } from '@vueuse/core'
+import { Button, Flex, Image, message } from 'ant-design-vue'
+import { h, onMounted, reactive, ref } from 'vue'
+import { VueCropper } from 'vue-cropper'
+import 'vue-cropper/dist/index.css'
+import { useI18n } from 'vue-i18n'
+import { AvatarCropperOperation } from '../../constants'
+import UserService from '../../services/user.service'
 
 const { t } = useI18n()
 const emit = defineEmits(['success'])
@@ -30,7 +30,7 @@ const cropperOptions = reactive({
   fixedNumber: [1, 1], // 截图框的固定比例
   centerBox: true, // 是否将截图框居中
   infoTrue: true, // 是否显示截图框信息
-  fillColor: '#fff' // 导出时背景颜色
+  fillColor: '#fff', // 导出时背景颜色
 })
 
 const previewOptions = reactive({
@@ -45,9 +45,11 @@ const handleRealTime = async () => {
 }
 
 const getCropDataBase64 = (): Promise<string> => {
-  return new Promise((resolve) => cropperRef.value?.getCropData((data: string) => {
-    resolve(data)
-  }))
+  return new Promise((resolve) =>
+    cropperRef.value?.getCropData((data: string) => {
+      resolve(data)
+    }),
+  )
 }
 
 const clickCropOperationMap = {
@@ -63,20 +65,20 @@ const { run: updateAvatar, loading } = useRequest(UserService.updateAvatar, {
   },
   onError: (error) => {
     message.error(error.message || t('user.updateModal.avatar.messages.error'))
-  }
+  },
 })
 
 const handleSubmit = () => {
   if (!previewOptions.url) return message.warn(t('user.updateModal.avatar.messages.warning'))
   updateAvatar({
-    staffPhoto: previewOptions.url
+    staffPhoto: previewOptions.url,
   })
 }
 
 const { open: openFileDialog, onChange: handleFileChange } = useFileDialog({
   accept: 'image/*',
   multiple: false,
-  directory: false
+  directory: false,
 })
 
 handleFileChange(async (files) => {
@@ -88,7 +90,7 @@ handleFileChange(async (files) => {
 
 defineExpose({
   loading,
-  handleSubmit
+  handleSubmit,
 })
 
 const loadingImage = ref(false)
@@ -112,17 +114,34 @@ onMounted(async () => {
       <div class="avatar-upload-cropper">
         <VueCropper ref="cropperRef" v-bind="cropperOptions" @realTime="handleRealTime" />
         <Flex gap="middle">
-          <Button shape="circle" type="primary" :icon="h(UploadOutlined)" @click="() => openFileDialog()" />
-          <Button shape="circle" type="primary" :icon="h(RotateRightOutlined)"
-            @click="clickCropOperationMap[AvatarCropperOperation.ROTATE_RIGHT]" />
-          <Button shape="circle" type="primary" :icon="h(RotateLeftOutlined)"
-            @click="clickCropOperationMap[AvatarCropperOperation.ROTATE_LEFT]" />
+          <Button
+            shape="circle"
+            type="primary"
+            :icon="h(UploadOutlined)"
+            @click="() => openFileDialog()"
+          />
+          <Button
+            shape="circle"
+            type="primary"
+            :icon="h(RotateRightOutlined)"
+            @click="clickCropOperationMap[AvatarCropperOperation.ROTATE_RIGHT]"
+          />
+          <Button
+            shape="circle"
+            type="primary"
+            :icon="h(RotateLeftOutlined)"
+            @click="clickCropOperationMap[AvatarCropperOperation.ROTATE_LEFT]"
+          />
         </Flex>
       </div>
       <div class="avatar-upload-preview">
         <div class="avatar-upload-preview-img">
-          <Image v-if="previewOptions.url" :src="previewOptions.url" :width="previewOptions.width"
-            :height="previewOptions.height" />
+          <Image
+            v-if="previewOptions.url"
+            :src="previewOptions.url"
+            :width="previewOptions.width"
+            :height="previewOptions.height"
+          />
         </div>
       </div>
     </Flex>
@@ -142,7 +161,6 @@ onMounted(async () => {
       display: flex;
       flex-direction: column;
       gap: var(--spacing-large);
-
 
       :deep(.ant-spin-container) {
         height: 100%;

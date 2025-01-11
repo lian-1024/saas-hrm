@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 defineOptions({
-  name: 'SignInHero'
+  name: 'SignInHero',
 })
-
 </script>
 
 <template>

@@ -3,4 +3,3 @@ import type { EChartUIProps } from './src/types'
 
 export { EChartsUI as QEChartUI }
 export type { EChartUIProps }
-

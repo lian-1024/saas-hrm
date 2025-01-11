@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { QAvatar } from '@/shared/components/base/Avatar';
-import { Flex, TypographyText } from 'ant-design-vue';
-import { ref } from 'vue';
+import { QAvatar } from '@components/base/avatar'
+import { Flex, TypographyText } from 'ant-design-vue'
+import { ref } from 'vue'
 
 defineOptions({
-  name: "DashboardQuickItem"
+  name: 'DashboardQuickItem',
 })
 
 interface QuickItemProps {
   iconUrl?: string
-  name?: string,
+  name?: string
   path?: string
 }
 
@@ -19,7 +19,7 @@ const avatarSize = ref(42)
 </script>
 
 <template>
-  <RouterLink :to="props.path ?? '/'" style="padding-top: var(--spacing-middle);">
+  <RouterLink :to="props.path ?? '/'" style="padding-top: var(--spacing-middle)">
     <Flex vertical align="center" gap="small">
       <QAvatar shape="square" :size="avatarSize" :src="props.iconUrl" />
       <TypographyText type="secondary">{{ props.name }}</TypographyText>

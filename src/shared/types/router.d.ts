@@ -1,8 +1,8 @@
-import type { VNode } from "vue"
-import "vue-router"
-export { }
+import type { VNode } from 'vue'
+import 'vue-router'
+export {}
 
-declare module "vue-router" {
+declare module 'vue-router' {
   interface RouteMeta {
     title: string // 标题
     index?: number // 排序

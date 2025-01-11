@@ -29,11 +29,11 @@ export interface Roles {
   /**
    * 路由权限点数组, 每个字符串, 是用项目设置的, 标记英文字符串
    */
-  menus: string[];
+  menus: string[]
   /**
    * 按钮权限点数组, 每个字符串, 是用项目设置的, 标记英文字符串
    */
-  points: string[];
+  points: string[]
 }
 
 export interface UpdatePasswordParams {
@@ -44,7 +44,6 @@ export interface UpdatePasswordParams {
 export interface UpdateAvatarParams {
   staffPhoto: string
 }
-
 
 export interface QRCodeStatus {
   /**

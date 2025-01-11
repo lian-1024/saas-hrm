@@ -1,12 +1,12 @@
-import { Spin } from "ant-design-vue";
-import { spinProps } from "ant-design-vue/es/spin";
-import { defineComponent } from "vue";
+import { Spin } from 'ant-design-vue'
+import { spinProps } from 'ant-design-vue/es/spin'
+import { defineComponent } from 'vue'
 const QSpin = defineComponent({
   name: 'QSpin',
   props: spinProps(),
-  setup(props, {slots, attrs}) {
+  setup(props, { slots, attrs }) {
     const defaultProps = {
-      delay: 300
+      delay: 300,
     }
 
     return () => {
@@ -14,11 +14,9 @@ const QSpin = defineComponent({
         ...defaultProps,
         ...props,
       }
-      return <Spin {...mergedProps}>
-        {slots.default?.()}
-      </Spin>
+      return <Spin {...mergedProps}>{slots.default?.()}</Spin>
     }
-  }
+  },
 })
 
 export default QSpin

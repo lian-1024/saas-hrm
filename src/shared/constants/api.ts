@@ -6,4 +6,4 @@ export const RequestMethods = {
   PATCH: 'PATCH',
 } as const
 
-export type RequestMethodsType = typeof RequestMethods[keyof typeof RequestMethods] 
+export type RequestMethodsType = (typeof RequestMethods)[keyof typeof RequestMethods]

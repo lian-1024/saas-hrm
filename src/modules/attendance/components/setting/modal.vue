@@ -1,22 +1,20 @@
 <script setup lang="ts">
-import DepartmentService from '@/modules/department/services/department.service';
-import { QModal } from '@/shared/components/base/modal';
-import { QSkeleton } from '@/shared/components/base/skeleton';
-import { useRequest } from '@/shared/composables/use-request/use-request';
-import { Button, Flex, TabPane, Tabs } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import TabAttendance from './attendance.vue';
-import TabDeduction from './deduction.vue';
-import TabLeave from './leave.vue';
-import TabOvertime from './overtime.vue';
+import DepartmentService from '@/modules/department/services/department.service'
+import { QModal } from '@/shared/components/base/modal'
+import { QSkeleton } from '@/shared/components/base/skeleton'
+import { useRequest } from '@/shared/composables/use-request/use-request'
+import { Button, Flex, TabPane, Tabs } from 'ant-design-vue'
+import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import TabAttendance from './attendance.vue'
+import TabDeduction from './deduction.vue'
+import TabLeave from './leave.vue'
+import TabOvertime from './overtime.vue'
 
 defineOptions({
-  name: "AttendanceSettingModal"
+  name: 'AttendanceSettingModal',
 })
-const modalStatus = defineModel("open", { default: false })
-
-
+const modalStatus = defineModel('open', { default: false })
 
 const tabAttendanceRef = ref<InstanceType<typeof TabAttendance> | null>(null)
 const tabLeaveRef = ref<InstanceType<typeof TabLeave> | null>(null)
@@ -29,38 +27,38 @@ const { t } = useI18n()
 
 const tabOptions = [
   {
-    key: "attendance",
+    key: 'attendance',
     title: t('attendance.setting.tabs.attendance'),
-    pane: TabAttendance
+    pane: TabAttendance,
   },
   {
-    key: "leave",
+    key: 'leave',
     title: t('attendance.setting.tabs.leave'),
-    pane: TabLeave
+    pane: TabLeave,
   },
   {
-    key: "deduction",
+    key: 'deduction',
     title: t('attendance.setting.tabs.deduction'),
-    pane: TabDeduction
+    pane: TabDeduction,
   },
   {
-    key: "overtime",
+    key: 'overtime',
     title: t('attendance.setting.tabs.overtime'),
-    pane: TabOvertime
-  }
-
+    pane: TabOvertime,
+  },
 ]
 
 const departmentOptions = ref()
 
-
-const { run: getCompanyDepartmentList, loading: getCompanyDepartmentListLoading } = useRequest(DepartmentService.getCompanyDepartmentList, {
-  manual: true,
-  onSuccess: ({ data }) => {
-    departmentOptions.value = data.map((item) => ({ label: item.name, value: item.id }))
-  }
-})
-
+const { run: getCompanyDepartmentList, loading: getCompanyDepartmentListLoading } = useRequest(
+  DepartmentService.getCompanyDepartmentList,
+  {
+    manual: true,
+    onSuccess: ({ data }) => {
+      departmentOptions.value = data.map((item) => ({ label: item.name, value: item.id }))
+    },
+  },
+)
 
 // 设置组件ref
 const setComponentRef = (el: any, pane: string) => {
@@ -97,7 +95,7 @@ const handleConfirm = async () => {
     attendance: tabAttendanceRef,
     leave: tabLeaveRef,
     deduction: tabDeductionRef,
-    overtime: tabOvertimeRef
+    overtime: tabOvertimeRef,
   }
 
   const currentRef = refs[currentTab as keyof TabRefs]
@@ -116,19 +114,31 @@ const handleCancel = () => {
 onMounted(() => {
   getCompanyDepartmentList()
 })
-
 </script>
 
 <template>
-  <QModal :width="800" closable mask v-model:open="modalStatus" :title="t('attendance.setting.title')"
-    :destroyOnClose="true">
+  <QModal
+    :width="800"
+    closable
+    mask
+    v-model:open="modalStatus"
+    :title="t('attendance.setting.title')"
+    :destroyOnClose="true"
+  >
     <Tabs v-model:activeKey="activeKey">
       <TabPane v-for="pane in tabOptions" :key="pane.key" :tab="pane.title">
-        <QSkeleton :loading="getCompanyDepartmentListLoading" active :paragraph="{
-          rows: 8
-        }">
-          <component :departmentOptions="departmentOptions" :is="pane.pane"
-            :ref="(el) => setComponentRef(el, pane.key)">
+        <QSkeleton
+          :loading="getCompanyDepartmentListLoading"
+          active
+          :paragraph="{
+            rows: 8,
+          }"
+        >
+          <component
+            :departmentOptions="departmentOptions"
+            :is="pane.pane"
+            :ref="(el) => setComponentRef(el, pane.key)"
+          >
           </component>
         </QSkeleton>
       </TabPane>
@@ -136,7 +146,8 @@ onMounted(() => {
     <template #footer>
       <Flex justify="center">
         <Button @click="handleConfirm" type="primary" :loading="confirmLoading">{{
-          t('attendance.setting.buttons.saveUpdate') }}</Button>
+          t('attendance.setting.buttons.saveUpdate')
+        }}</Button>
         <Button @click="handleCancel">{{ t('attendance.setting.buttons.cancel') }}</Button>
       </Flex>
     </template>

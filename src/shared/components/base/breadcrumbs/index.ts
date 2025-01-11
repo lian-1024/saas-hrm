@@ -1,3 +1,3 @@
-import QBreadcrumbs from "./src/breadcrumbs.tsx"
+import QBreadcrumbs from './src/breadcrumbs.tsx'
 
 export { QBreadcrumbs }

@@ -6,7 +6,15 @@ import { QSkeleton } from '@/shared/components/base/skeleton'
 import { useAntdToken } from '@/shared/composables/use-antd-token'
 import { generateMenuItem } from '@/shared/utils/generate-menu-item'
 import { DashboardOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons-vue'
-import { Dropdown, Flex, Menu, Space, TypographyText, type FlexProps, type MenuProps } from 'ant-design-vue'
+import {
+  Dropdown,
+  Flex,
+  Menu,
+  Space,
+  TypographyText,
+  type FlexProps,
+  type MenuProps,
+} from 'ant-design-vue'
 import { defineAsyncComponent, h, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { OpenModalType, type ModalType } from '../../constants'
@@ -15,21 +23,21 @@ const { t } = useI18n()
 const UpdateModal = defineAsyncComponent(() => import('../update-modal/index.vue'))
 
 defineOptions({
-  name: "UserDropdown",
+  name: 'UserDropdown',
 })
 
 const userStore = useUserStore()
 
 const WrapperStyle: FlexProps = {
   gap: 'small',
-  align: "center"
+  align: 'center',
 }
 
 const avatarDropdownItems: MenuProps['items'] = [
-  generateMenuItem("/dashboard", t('user.dropdown.menu.dashboard'), h(DashboardOutlined)),
-  generateMenuItem("update-password", t('user.dropdown.menu.password'), h(SettingOutlined)),
-  generateMenuItem("update-avatar", t('user.dropdown.menu.avatar'), h(SettingOutlined)),
-  generateMenuItem("logout", t('user.dropdown.menu.logout'), h(LogoutOutlined)),
+  generateMenuItem('/dashboard', t('user.dropdown.menu.dashboard'), h(DashboardOutlined)),
+  generateMenuItem('update-password', t('user.dropdown.menu.password'), h(SettingOutlined)),
+  generateMenuItem('update-avatar', t('user.dropdown.menu.avatar'), h(SettingOutlined)),
+  generateMenuItem('logout', t('user.dropdown.menu.logout'), h(LogoutOutlined)),
 ]
 
 const updateModalStatus = ref<boolean>(false)
@@ -42,13 +50,13 @@ const showModal = (type: ModalType) => {
 
 const handleClickMenuItemActions: MenuProps['onClick'] = (info) => {
   switch (info.key) {
-    case "logout":
+    case 'logout':
       userStore.logout()
       break
-    case "update-password":
+    case 'update-password':
       showModal(OpenModalType.PASSWORD)
       break
-    case "update-avatar":
+    case 'update-avatar':
       showModal(OpenModalType.AVATAR)
       break
     default:
@@ -56,7 +64,6 @@ const handleClickMenuItemActions: MenuProps['onClick'] = (info) => {
       break
   }
 }
-
 
 const { token } = useAntdToken()
 </script>
@@ -83,7 +90,7 @@ const { token } = useAntdToken()
 <style scoped lang="less">
 .user {
   &-username {
-    color: v-bind("token.colorText");
+    color: v-bind('token.colorText');
   }
 }
 </style>

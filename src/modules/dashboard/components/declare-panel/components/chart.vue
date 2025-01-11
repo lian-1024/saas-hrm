@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { DashboardDeclareVO } from '@/modules/dashboard/types';
-import { QEChartUI } from '@/shared/components/base/echarts-ui';
-import { useECharts, type EChartUIType } from '@/shared/composables/use-echarts/use-echarts';
-import { useLocale } from '@/shared/composables/use-locale';
-import { ref, watch } from 'vue';
+import { QEChartUI } from '@components/base/echarts-ui'
+import { useECharts, type EChartUIType } from '@composables/use-echarts/use-echarts'
+import { useLocale } from '@composables/use-locale'
+import type { DashboardDeclareVO } from '@modules/dashboard/types'
+import { ref, watch } from 'vue'
 defineOptions({
-  name: "DeclareChart"
+  name: 'DeclareChart',
 })
 
 const props = defineProps<{
@@ -14,20 +14,11 @@ const props = defineProps<{
 
 const chartRef = ref<EChartUIType>()
 
-const { renderECharts } = useECharts(chartRef!, { theme: "light" })
+const { renderECharts } = useECharts(chartRef!, { theme: 'light' })
 
 const { currentLocale } = useLocale()
 
-const defaultXAxis = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday"
-]
-
+const defaultXAxis = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 const renderChartOptions = (xAxis: string[], yAxis: number[]) => ({
   grid: {
@@ -35,7 +26,7 @@ const renderChartOptions = (xAxis: string[], yAxis: number[]) => ({
     right: 10,
     bottom: 10,
     left: 10,
-    containLabel: true
+    containLabel: true,
   },
   xAxis: {
     type: 'category' as const,
@@ -45,8 +36,8 @@ const renderChartOptions = (xAxis: string[], yAxis: number[]) => ({
     axisTick: { show: false },
     axisLabel: {
       color: '#999',
-      fontSize: 12
-    }
+      fontSize: 12,
+    },
   },
   yAxis: {
     type: 'value' as const,
@@ -55,8 +46,8 @@ const renderChartOptions = (xAxis: string[], yAxis: number[]) => ({
     splitLine: { show: false },
     axisLabel: {
       color: '#999',
-      fontSize: 12
-    }
+      fontSize: 12,
+    },
   },
   series: [
     {
@@ -65,29 +56,36 @@ const renderChartOptions = (xAxis: string[], yAxis: number[]) => ({
       smooth: true,
       areaStyle: {
         color: '#04c9be',
-        opacity: 0.2
+        opacity: 0.2,
       },
       lineStyle: {
-        color: '#04c9be'
+        color: '#04c9be',
       },
-      symbol: 'none'
-    }
-  ]
+      symbol: 'none',
+    },
+  ],
 })
 const renderChart = async ({ xAxis, yAxis }: Pick<DashboardDeclareVO, 'xAxis' | 'yAxis'>) => {
   const xAxisData = currentLocale.value == 'zh-CN' ? xAxis : defaultXAxis
-  await renderECharts(renderChartOptions(xAxisData, yAxis));
+  await renderECharts(renderChartOptions(xAxisData, yAxis))
 }
 
-watch(() => props.chartsData, (newValue) => {
-  renderChart(newValue)
-}, { immediate: true })
+watch(
+  () => props.chartsData,
+  (newValue) => {
+    renderChart(newValue)
+  },
+  { immediate: true },
+)
 
-watch(() => currentLocale.value, (newValue) => {
-  renderChart(props.chartsData)
-}, { immediate: true })
+watch(
+  () => currentLocale.value,
+  (newValue) => {
+    renderChart(props.chartsData)
+  },
+  { immediate: true },
+)
 </script>
-
 <template>
   <div class="flex-1">
     <QEChartUI height="100%" width="100%" ref="chartRef" />

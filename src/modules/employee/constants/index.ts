@@ -8,4 +8,4 @@ export const FormOfEmploymentMap = {
   [FormOfEmployment.InFormal]: '非正式',
 }
 
-export type FormOfEmploymentType = typeof FormOfEmployment[keyof typeof FormOfEmployment];
+export type FormOfEmploymentType = (typeof FormOfEmployment)[keyof typeof FormOfEmployment]

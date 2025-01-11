@@ -1,6 +1,3 @@
-import TMap from "./src/tmap.vue";
+import TMap from './src/tmap.vue'
 
-export {
-  TMap
-};
-
+export { TMap }

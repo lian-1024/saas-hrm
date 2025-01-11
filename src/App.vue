@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useLocale } from '@/shared/composables/use-locale/index';
-import { useTheme } from '@/shared/composables/use-theme';
-import { App, ConfigProvider } from 'ant-design-vue';
+import { useLocale } from '@composables/use-locale'
+import { useTheme } from '@composables/use-theme'
+import { App, ConfigProvider } from 'ant-design-vue'
 const { themeConfig } = useTheme()
 const { antdLocale } = useLocale()
 </script>

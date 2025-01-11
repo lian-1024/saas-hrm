@@ -1,22 +1,22 @@
-import { Skeleton } from 'ant-design-vue';
-import { skeletonProps } from "ant-design-vue/es/skeleton";
-import { defineComponent } from "vue";
+import { Skeleton } from 'ant-design-vue'
+import { skeletonProps } from 'ant-design-vue/es/skeleton'
+import { defineComponent } from 'vue'
 
 const QSkeleton = defineComponent({
-  name: "QSkeleton",
+  name: 'QSkeleton',
   props: skeletonProps(),
   setup(props, { slots }) {
     const defaultProps = {
-      active: true
+      active: true,
     }
     return () => {
       const mergeProps = {
         ...defaultProps,
-        ...props
+        ...props,
       }
       return <Skeleton {...mergeProps}>{slots.default?.()}</Skeleton>
     }
-  }
-});
+  },
+})
 
-export default QSkeleton;
+export default QSkeleton

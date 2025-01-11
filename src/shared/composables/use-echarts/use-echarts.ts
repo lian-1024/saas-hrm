@@ -1,11 +1,17 @@
-import echarts from "@/core/plugins/echarts";
-import { tryOnUnmounted, useDark, useDebounceFn, useResizeObserver, useTimeoutFn, useWindowSize } from "@vueuse/core";
-import type { EChartsOption } from 'echarts';
-import { computed, nextTick, unref, watch, type Ref } from "vue";
-import type { EChartUIType, SizeHandlerOptions, UseEChartsOptions } from "./types";
+import echarts from '@/core/plugins/echarts'
+import {
+  tryOnUnmounted,
+  useDark,
+  useDebounceFn,
+  useResizeObserver,
+  useTimeoutFn,
+  useWindowSize,
+} from '@vueuse/core'
+import type { EChartsOption } from 'echarts'
+import { computed, nextTick, unref, watch, type Ref } from 'vue'
+import type { EChartUIType, SizeHandlerOptions, UseEChartsOptions } from './types'
 
 export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptions = {}) => {
-
   const { theme = null, initOptions = {}, updateOptions = {} } = options
 
   // 状态管理
@@ -16,7 +22,6 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
   const isDark = useDark()
   const { width, height } = useWindowSize()
 
-
   // 防抖函数处理 resize 函数
   const resizeHandler = useDebounceFn(() => resize(), 200)
 
@@ -24,7 +29,7 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
   const getOptions = computed<EChartsOption>(() => {
     if (!isDark.value) return {}
     return {
-      backgroundColor: 'transparent'
+      backgroundColor: 'transparent',
     }
   })
 
@@ -42,11 +47,10 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
       chartInstance = null
     }
 
-
     // 创建新实例
     chartInstance = echarts.init(el, theme || (isDark.value ? 'dark' : null), {
       ...initOptions,
-    });
+    })
 
     // 绑定resize 观察器
     if (!resizeObserver) {
@@ -55,20 +59,22 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
     return chartInstance
   }
 
-
   /**
    * 渲染图表
    * @param renderOptions 接收 ECharts 配置项
    * @param options 接收可选的更新选项
    */
-  const renderECharts = async (renderOptions: EChartsOption, options: UseEChartsOptions['updateOptions'] = {}) => {
+  const renderECharts = async (
+    renderOptions: EChartsOption,
+    options: UseEChartsOptions['updateOptions'] = {},
+  ) => {
     try {
       // 缓存传入的配置项
       cahceOptions = renderOptions
 
       const currentOptions = {
         ...renderOptions,
-        ...getOptions.value // 合并暗黑模式下的配置
+        ...getOptions.value, // 合并暗黑模式下的配置
       }
 
       // 处理容器高度为0的情况
@@ -96,15 +102,12 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
       // 设置选项
       chartInstance?.setOption(currentOptions, {
         ...updateOptions,
-        ...options // 合并传入的更新选项
+        ...options, // 合并传入的更新选项
       })
-
-
     } catch (error) {
-      console.error('渲染图表失败:', error);
+      console.error('渲染图表失败:', error)
     }
   }
-
 
   /**
    * 调整图表大小
@@ -120,11 +123,11 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
         height: options?.height,
         animation: options?.animation ?? {
           duration: 300, // 默认动画持续时间为300ms
-          easing: 'quadraticIn'  // 默认缓动函数为 quadraticIn
-        }
+          easing: 'quadraticIn', // 默认缓动函数为 quadraticIn
+        },
       })
     } catch (error) {
-      console.error('调整图表大小失败:', error);
+      console.error('调整图表大小失败:', error)
     }
   }
 
@@ -167,9 +170,8 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
     renderECharts,
     resize,
     getInstance,
-    echarts
+    echarts,
   }
 }
 
-export type { EChartUIType };
-
+export type { EChartUIType }

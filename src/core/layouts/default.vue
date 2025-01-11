@@ -1,22 +1,20 @@
 <script lang="ts" setup>
-import { Layout } from 'ant-design-vue';
+import { Layout } from 'ant-design-vue'
 
-import { useAntdToken } from '@/shared/composables/use-antd-token';
-import { ref } from 'vue';
-import QLayoutContent from './components/default/content.vue';
-import QLayoutHeader from './components/default/header.vue';
-import QLayoutSider from './components/default/sider.vue';
+import { useAntdToken } from '@/shared/composables/use-antd-token'
+import { ref } from 'vue'
+import QLayoutContent from './components/default/content.vue'
+import QLayoutHeader from './components/default/header.vue'
+import QLayoutSider from './components/default/sider.vue'
 defineOptions({
-  name: "LayoutDefault"
+  name: 'LayoutDefault',
 })
 
 // collapsed status
-const collapsed = ref<boolean>(true);
-
+const collapsed = ref<boolean>(true)
 
 // change collapsed status
 const handleChangeCollapsed = (status?: boolean) => {
-
   if (status !== undefined) {
     collapsed.value = status
   } else {
@@ -24,7 +22,6 @@ const handleChangeCollapsed = (status?: boolean) => {
   }
 }
 const { token } = useAntdToken()
-
 </script>
 
 <template>
@@ -54,7 +51,5 @@ const { token } = useAntdToken()
   &-header {
     padding-inline: var(--spacing-large);
   }
-
-
 }
 </style>

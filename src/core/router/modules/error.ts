@@ -1,12 +1,12 @@
-import type { RouteRecordRaw } from "vue-router";
+import type { RouteRecordRaw } from 'vue-router'
 
 export default {
   path: '/:pathMatch(.*)*',
   name: 'NotFound',
-  component: () => import("@/modules/error/views/404.vue"),
+  component: () => import('@/modules/error/views/404.vue'),
   meta: {
     name: 'notFound',
-    title: "nav.error.404",
-    hidden: true
-  }
-} satisfies RouteRecordRaw 
+    title: 'nav.error.404',
+    hidden: true,
+  },
+} satisfies RouteRecordRaw

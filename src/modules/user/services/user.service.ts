@@ -1,5 +1,11 @@
-import type { LoginParams, QRCodeStatus, UpdateAvatarParams, UpdatePasswordParams, UserInfoVO } from '@/modules/user/types';
-import { request } from '@/shared/utils/http/request';
+import type {
+  LoginParams,
+  QRCodeStatus,
+  UpdateAvatarParams,
+  UpdatePasswordParams,
+  UserInfoVO,
+} from '@/modules/user/types'
+import { request } from '@/shared/utils/http/request'
 
 class UserService {
   static async getUserInfoByToken() {
@@ -7,19 +13,19 @@ class UserService {
   }
   static login = (data: LoginParams) => {
     return request.post<string>('/sys/login', {
-      data
+      data,
     })
   }
 
   static updatePassword = (data: UpdatePasswordParams) => {
     return request.put('/sys/user/updatePass', {
-      data
+      data,
     })
   }
 
   static updateAvatar = (data: UpdateAvatarParams) => {
     return request.put('/sys/updateStaffPhoto', {
-      data
+      data,
     })
   }
   static getQRCodeKey = () => {
@@ -29,11 +35,10 @@ class UserService {
   static getQRCodeStatus = (qrcodeKey: string) => {
     return request.get<QRCodeStatus>('/sys/qrcodeState', {
       params: {
-        qrcode_key: qrcodeKey
-      }
+        qrcode_key: qrcodeKey,
+      },
     })
   }
-
 }
 
 export default UserService

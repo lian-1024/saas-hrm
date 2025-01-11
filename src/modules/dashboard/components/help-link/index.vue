@@ -1,33 +1,32 @@
 <script setup lang="ts">
-import { useAntdToken } from '@/shared/composables/use-antd-token';
-import { BookTwoTone, FlagTwoTone, PhoneTwoTone, PlusCircleTwoTone } from '@ant-design/icons-vue';
-import { Flex, TypographyText } from 'ant-design-vue';
-import { h } from 'vue';
-import QPanel from '../panel.vue';
+import { BookTwoTone, FlagTwoTone, PhoneTwoTone, PlusCircleTwoTone } from '@ant-design/icons-vue'
+import { useAntdToken } from '@composables/use-antd-token'
+import { Flex, TypographyText } from 'ant-design-vue'
+import { h } from 'vue'
+import QPanel from '../panel.vue'
 defineOptions({
-  name: "DashboardHelpLink"
+  name: 'DashboardHelpLink',
 })
 
 const { token } = useAntdToken()
 const LinkList = [
   {
-    label: "gettingStarted",
-    icon: h(FlagTwoTone)
+    label: 'gettingStarted',
+    icon: h(FlagTwoTone),
   },
   {
-    label: "onlineHelpManual",
-    icon: h(BookTwoTone)
+    label: 'onlineHelpManual',
+    icon: h(BookTwoTone),
   },
   {
-    label: "contactSupport",
-    icon: h(PhoneTwoTone)
+    label: 'contactSupport',
+    icon: h(PhoneTwoTone),
   },
   {
-    label: "addLink",
-    icon: h(PlusCircleTwoTone)
-  }
+    label: 'addLink',
+    icon: h(PlusCircleTwoTone),
+  },
 ]
-
 </script>
 
 <template>
@@ -48,16 +47,16 @@ const LinkList = [
   display: flex;
   align-items: center;
   gap: 10px;
-  padding-block: v-bind("`${token.padding}px`");
-  padding-inline: v-bind("`${token.padding}px`");
-  background-color: v-bind("token.colorBgElevated");
+  padding-block: v-bind('`${token.padding}px`');
+  padding-inline: v-bind('`${token.padding}px`');
+  background-color: v-bind('token.colorBgElevated');
 
-  border-radius: v-bind("`${token.borderRadiusLG}px`");
-  border: 1px solid v-bind("token.colorBorderSecondary");
+  border-radius: v-bind('`${token.borderRadiusLG}px`');
+  border: 1px solid v-bind('token.colorBorderSecondary');
   transition: border-color 0.3s;
 
   &:hover {
-    border-color: v-bind("token.colorBorder");
+    border-color: v-bind('token.colorBorder');
   }
 }
 </style>

@@ -1,14 +1,14 @@
-import { setupI18n } from '@/core/plugins/i18n';
-import { setupRouter } from '@/core/router/index';
-import { setupStore, useLocaleStore } from '@/core/stores';
-import TlbsMap from 'tlbs-map-vue';
-import { createApp } from 'vue';
-import App from './App.vue';
+import { setupI18n } from '@core/plugins/i18n'
+import { setupRouter } from '@core/router'
+import { setupStore, useLocaleStore } from '@core/stores'
+import TlbsMap from 'tlbs-map-vue'
+import { createApp } from 'vue'
+import App from './App.vue'
 // style
-import '@/core/plugins/dayjs';
-import '@/shared/styles/index.less';
-import 'ant-design-vue/dist/reset.css';
-import 'nprogress/nprogress.css';
+import '@core/plugins/dayjs'
+import '@shared/styles/index.less'
+import 'ant-design-vue/dist/reset.css'
+import 'nprogress/nprogress.css'
 const bootstrap = async () => {
   const app = createApp(App)
   // 注册 pinia
@@ -25,6 +25,5 @@ const bootstrap = async () => {
   // 挂载
   app.mount('#app')
 }
-
 
 bootstrap()

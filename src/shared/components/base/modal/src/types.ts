@@ -1,2 +1,1 @@
-import type { ModalProps } from "ant-design-vue";
-
+import type { ModalProps } from 'ant-design-vue'

@@ -1,4 +1,3 @@
-import axiosInstance from './instance';
+import axiosInstance from './instance'
 
-export { axiosInstance };
-
+export { axiosInstance }

@@ -1,6 +1,6 @@
-import type { LocaleType } from "@/core/plugins/i18n"
-import { createLocaleStore } from "@/core/stores/modules/locale"
-import { storeToRefs } from "pinia"
+import type { LocaleType } from '@/core/plugins/i18n'
+import { createLocaleStore } from '@/core/stores/modules/locale'
+import { storeToRefs } from 'pinia'
 
 export const useLocale = () => {
   const localeStore = createLocaleStore()
@@ -14,6 +14,6 @@ export const useLocale = () => {
   return {
     currentLocale,
     antdLocale,
-    changeLocale
+    changeLocale,
   }
 }

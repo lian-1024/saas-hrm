@@ -1,7 +1,7 @@
-import { i18n } from '@/core/plugins/i18n'
-import { useUserStore } from '@/core/stores'
-import useRouter from '@/shared/composables/use-router'
-import { requestCancel } from '@/shared/utils/http/request/axios/request-cancel'
+import useRouter from '@composables/use-router'
+import { i18n } from '@core/plugins/i18n'
+import { useUserStore } from '@core/stores'
+import { requestCancel } from '@utils/http/request/axios/request-cancel'
 import { useTitle } from '@vueuse/core'
 import NProgress from 'nprogress'
 import type { NavigationGuardNext, RouteLocationNormalizedLoadedGeneric, Router } from 'vue-router'
@@ -29,7 +29,6 @@ export const registerGlobalRouteGuard = async (router: Router) => {
     const userStore = useUserStore()
     const { getIsRoutesGenerated } = useRouter()
 
-
     // 如果没有token,处理未认证情况
     if (!userStore.token) {
       await withSetPageTitle(to.meta.title)(handleUnauthenticated(to, next))
@@ -41,7 +40,6 @@ export const registerGlobalRouteGuard = async (router: Router) => {
       await withSetPageTitle(to.meta.title)(() => next({ path: '/dashboard' }))
       return
     }
-
 
     // 如果路由未生成，进行路由注册
     if (!getIsRoutesGenerated()) {
@@ -66,8 +64,6 @@ const withSetPageTitle = (name: string) => (func?: any) => {
   return func ? func() : null
 }
 
-
-
 const setPageTitle = (name?: string) => {
   if (!name) return
 
@@ -83,7 +79,10 @@ const setPageTitle = (name?: string) => {
  * @param to 目标路由
  * @param next 路由跳转函数
  */
-const handleUnauthenticated = (to: RouteLocationNormalizedLoadedGeneric, next: NavigationGuardNext) => {
+const handleUnauthenticated = (
+  to: RouteLocationNormalizedLoadedGeneric,
+  next: NavigationGuardNext,
+) => {
   // 如果是白名单路由,直接放行
   if (whiteList.includes(to.path)) {
     next()
@@ -105,11 +104,14 @@ const handleRouteRegistration = async (
   next: NavigationGuardNext,
   to: RouteLocationNormalizedLoadedGeneric,
 ) => {
-
   try {
     // 如果没有用户信息,先获取用户信息
     if (!userStore.userInfo) {
-      const { data: { roles: { menus } } } = await userStore.getUserInfo()
+      const {
+        data: {
+          roles: { menus },
+        },
+      } = await userStore.getUserInfo()
       registerRoutes(menus)
     } else {
       // 否则直接使用现有用户信息注册路由

@@ -18,7 +18,7 @@ const qrcodeStatusMap: Record<QRCodeStatusType, QRCodeProps['status']> = {
   [QRCodeStatus.SCANED]: 'scanned',
   [QRCodeStatus.SUCCESS]: 'scanned',
   [QRCodeStatus.EXPIRED]: 'expired',
-  [QRCodeStatus.CANCEL]: 'expired'
+  [QRCodeStatus.CANCEL]: 'expired',
 }
 
 // 获取二维码key
@@ -28,7 +28,7 @@ const { run: getQRCodeKey, loading: getQRCodeKeyLoading } = useRequest(UserServi
     qrcodeKey.value = data
     // 获取到新的二维码key后开始轮询
     startPolling()
-  }
+  },
 })
 
 // 获取二维码状态
@@ -41,7 +41,7 @@ const { run: getQRCodeStatus } = useRequest(UserService.getQRCodeStatus, {
       stopPolling()
       userStore.login(data)
     }
-  }
+  },
 })
 
 // 开始轮询
@@ -67,7 +67,6 @@ const stopPolling = () => {
 // 刷新二维码
 const handleRefresh = () => {
   getQRCodeKey()
-
 }
 
 onMounted(async () => {

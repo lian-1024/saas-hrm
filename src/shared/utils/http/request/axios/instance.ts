@@ -7,12 +7,11 @@ const axiosInstance = axios.create({
   timeout: 20000,
   headers: {
     'Content-Type': 'application/json',
-    "responseType": "blob"
-  }
+    responseType: 'blob',
+  },
 })
 
 setRequestInterceptor(axiosInstance)
 setResponseInterceptor(axiosInstance)
-
 
 export default axiosInstance

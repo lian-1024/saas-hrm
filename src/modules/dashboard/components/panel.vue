@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { useAntdToken } from '@/shared/composables/use-antd-token';
-import { Flex, TypographyText, type FlexProps } from 'ant-design-vue';
+import { useAntdToken } from '@composables/use-antd-token'
+import { Flex, TypographyText, type FlexProps } from 'ant-design-vue'
 defineOptions({
-  name: "QPanel"
+  name: 'QPanel',
 })
 
 withDefaults(
   defineProps<{
-    title?: string,
-    vertical?: boolean,
+    title?: string
+    vertical?: boolean
     gap?: FlexProps['gap']
   }>(),
   {
-    title: "",
+    title: '',
     vertical: true,
-    gap: "middle"
-  }
+    gap: 'middle',
+  },
 )
 
 const { token } = useAntdToken()
@@ -30,18 +30,18 @@ const { token } = useAntdToken()
 
 <style lang="less" scoped>
 .panel {
-  padding: v-bind("`${token.paddingLG}px`");
-  background: v-bind("token.colorBgContainer");
-  border-radius: v-bind("`${token.borderRadiusLG}px`");
-  border: 1px solid v-bind("token.colorBorderSecondary");
+  padding: v-bind('`${token.paddingLG}px`');
+  background: v-bind('token.colorBgContainer');
+  border-radius: v-bind('`${token.borderRadiusLG}px`');
+  border: 1px solid v-bind('token.colorBorderSecondary');
   transition: border-color 0.3s;
 
   &:hover {
-    border-color: v-bind("token.colorPrimary");
+    border-color: v-bind('token.colorPrimary');
   }
 
   &-title {
-    font-size: v-bind("`${token.fontSizeLG}px`");
+    font-size: v-bind('`${token.fontSizeLG}px`');
   }
 }
 </style>

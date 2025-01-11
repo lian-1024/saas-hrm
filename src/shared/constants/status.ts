@@ -10,7 +10,7 @@ export const EnableStatus = {
   /**
    * 已启用
    */
-  ENABLED: 1
+  ENABLED: 1,
 } as const
 
 /**
@@ -18,10 +18,10 @@ export const EnableStatus = {
  */
 export const EnableStatusMap = {
   [EnableStatus.DISABLED]: '未启用',
-  [EnableStatus.ENABLED]: '已启用'
+  [EnableStatus.ENABLED]: '已启用',
 } as const
 
-export type EnableStatusType = typeof EnableStatus[keyof typeof EnableStatus]
+export type EnableStatusType = (typeof EnableStatus)[keyof typeof EnableStatus]
 
 /**
  * 开启状态枚举
@@ -35,7 +35,7 @@ export const OpenStatus = {
   /**
    * 已开启
    */
-  OPENED: 1
+  OPENED: 1,
 } as const
 
 /**
@@ -43,5 +43,5 @@ export const OpenStatus = {
  */
 export const OpenStatusMap = {
   [OpenStatus.CLOSED]: '未开启',
-  [OpenStatus.OPENED]: '已开启'
+  [OpenStatus.OPENED]: '已开启',
 } as const

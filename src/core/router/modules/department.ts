@@ -1,22 +1,22 @@
-import { ApartmentOutlined } from "@ant-design/icons-vue";
-import { h } from "vue";
-import type { RouteRecordRaw } from "vue-router";
+import { ApartmentOutlined } from '@ant-design/icons-vue'
+import { h } from 'vue'
+import type { RouteRecordRaw } from 'vue-router'
 
 export default {
   path: '/',
-  redirect: "/dashboard",
+  redirect: '/dashboard',
   name: 'department',
-  component: () => import("@/core/layouts/default.vue"),
+  component: () => import('@/core/layouts/default.vue'),
   children: [
     {
       path: '/department',
-      component: () => import("@/modules/department/views/index.vue"),
+      component: () => import('@/modules/department/views/index.vue'),
       meta: {
         index: 1,
         name: 'department',
-        title: "nav.department",
+        title: 'nav.department',
         icon: h(ApartmentOutlined),
-      }
-    }
-  ]
-} satisfies RouteRecordRaw 
+      },
+    },
+  ],
+} satisfies RouteRecordRaw

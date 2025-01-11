@@ -1,69 +1,66 @@
 <script setup lang="ts">
-import EmployeeService from '@/modules/employee/services/employee.service';
-import RoleService from '@/modules/role/services/role.service';
-import { QModal } from '@/shared/components/base/modal';
-import { QSpin } from '@/shared/components/base/spin';
-import { useRequest } from '@/shared/composables/use-request/use-request';
-import { Button, CheckboxGroup, Flex, message, type CheckboxGroupProps } from 'ant-design-vue';
-import { computed, ref, watchEffect } from 'vue';
-import { useI18n } from 'vue-i18n';
+import EmployeeService from '@/modules/employee/services/employee.service'
+import RoleService from '@/modules/role/services/role.service'
+import { QModal } from '@/shared/components/base/modal'
+import { QSpin } from '@/shared/components/base/spin'
+import { useRequest } from '@/shared/composables/use-request/use-request'
+import { Button, CheckboxGroup, Flex, message, type CheckboxGroupProps } from 'ant-design-vue'
+import { computed, ref, watchEffect } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
 defineOptions({
-  name: 'RoleModal'
+  name: 'RoleModal',
 })
 
 const props = defineProps<{
   employeeId: number | string | null
 }>()
 
-
-
-const modalStatus = defineModel("open", { default: false })
+const modalStatus = defineModel('open', { default: false })
 
 const selectedRole = ref<CheckboxGroupProps['value']>([])
 
-
 const roleOptions = ref<CheckboxGroupProps['options']>([])
-
-
-
 
 // 获取角色列表
 const { loading: getRoleListEnableLoading } = useRequest(RoleService.getRoleListEnable, {
   onSuccess: ({ data }) => {
-    roleOptions.value = data.map(item => ({
+    roleOptions.value = data.map((item) => ({
       value: item.id,
-      label: item.name
+      label: item.name,
     }))
-  }
+  },
 })
 
 // 获取员工详情
-const { run: getEmployeeDetail, loading: getEmployeeDetailLoading } = useRequest(EmployeeService.getEmployeeDetailById, {
-  manual: true,
-  onSuccess: ({ data }) => {
-    selectedRole.value = data.roleIds
-  }
-})
-
-const { run: giveEmployeeRole, loading: giveEmployeeRoleLoading } = useRequest(EmployeeService.giveEmployeeRole, {
-  manual: true,
-  onSuccess: () => {
-    message.success(t('employee.roleModal.success'))
+const { run: getEmployeeDetail, loading: getEmployeeDetailLoading } = useRequest(
+  EmployeeService.getEmployeeDetailById,
+  {
+    manual: true,
+    onSuccess: ({ data }) => {
+      selectedRole.value = data.roleIds
+    },
   },
-  onError: (error) => {
-    if (error.message) {
-      message.error(error.message)
-    } else {
-      message.error(t('employee.roleModal.error'))
-    }
-  }
-})
+)
 
-
-
+const { run: giveEmployeeRole, loading: giveEmployeeRoleLoading } = useRequest(
+  EmployeeService.giveEmployeeRole,
+  {
+    manual: true,
+    onSuccess: () => {
+      message.success(t('employee.roleModal.success'))
+    },
+    onError: (error) => {
+      if (error.message) {
+        message.error(error.message)
+      } else {
+        message.error(t('employee.roleModal.error'))
+      }
+    },
+  },
+)
 
 const closeModal = () => {
   modalStatus.value = false
@@ -72,7 +69,7 @@ const closeModal = () => {
 const handleConfirm = () => {
   giveEmployeeRole({
     id: props.employeeId,
-    roleIds: selectedRole.value
+    roleIds: selectedRole.value,
   })
   closeModal()
 }
@@ -92,8 +89,14 @@ const loading = computed(() => getRoleListEnableLoading.value || getEmployeeDeta
 </script>
 
 <template>
-  <QModal :confirm-loading="giveEmployeeRoleLoading" :width="800" mask v-model:open="modalStatus"
-    :title="t('employee.roleModal.title')" @cancel="handleCancel">
+  <QModal
+    :confirm-loading="giveEmployeeRoleLoading"
+    :width="800"
+    mask
+    v-model:open="modalStatus"
+    :title="t('employee.roleModal.title')"
+    @cancel="handleCancel"
+  >
     <QSpin :spinning="loading">
       <div class="modal-content">
         <CheckboxGroup v-model:value="selectedRole" :options="roleOptions" />
@@ -110,6 +113,6 @@ const loading = computed(() => getRoleListEnableLoading.value || getEmployeeDeta
 
 <style scoped lang="scss">
 .modal-content {
-  padding: var(--spacing-middle)
+  padding: var(--spacing-middle);
 }
 </style>

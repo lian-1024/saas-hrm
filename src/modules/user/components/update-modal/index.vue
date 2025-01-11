@@ -9,8 +9,8 @@ import PasswordForm from './password.vue'
 
 const { t } = useI18n()
 
-const type = defineModel<ModalType>("type", { default: OpenModalType.PASSWORD })
-const open = defineModel<boolean>("open")
+const type = defineModel<ModalType>('type', { default: OpenModalType.PASSWORD })
+const open = defineModel<boolean>('open')
 const userStore = useUserStore()
 const componentsRef = ref()
 
@@ -49,16 +49,20 @@ const handleCancel = () => {
 
 const componentMap = {
   [OpenModalType.PASSWORD]: PasswordForm,
-  [OpenModalType.AVATAR]: AvatarForm
+  [OpenModalType.AVATAR]: AvatarForm,
 }
-
-
 </script>
 
 <template>
-  <Modal :width="800" :title="title" :open="open" :ok-text="title" :confirm-loading="componentsRef?.loading"
-    @ok="handleOk" @cancel="handleCancel">
+  <Modal
+    :width="800"
+    :title="title"
+    :open="open"
+    :ok-text="title"
+    :confirm-loading="componentsRef?.loading"
+    @ok="handleOk"
+    @cancel="handleCancel"
+  >
     <component :is="componentMap[type]" ref="componentsRef" @success="handleClose" />
-
   </Modal>
 </template>

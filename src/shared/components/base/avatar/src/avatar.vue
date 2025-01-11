@@ -1,20 +1,16 @@
 <script setup lang="ts">
-import { UserOutlined } from '@ant-design/icons-vue';
-import { Avatar } from 'ant-design-vue';
-import { h } from 'vue';
-import type { QAvatarProps } from './types';
+import { UserOutlined } from '@ant-design/icons-vue'
+import { Avatar } from 'ant-design-vue'
+import { h } from 'vue'
+import type { QAvatarProps } from './types'
 defineOptions({
-  name: "QAvatar"
+  name: 'QAvatar',
 })
-
-
 
 const props = withDefaults(defineProps<QAvatarProps>(), {
   icon: h(UserOutlined),
   alt: 'avatar',
 })
-
-
 </script>
 
 <template>

@@ -1,51 +1,51 @@
 export interface RoleTableItem {
-  key: number | string,
-  name: string,
-  enable: boolean | string,
-  description: string,
+  key: number | string
+  name: string
+  enable: boolean | string
+  description: string
 }
 
 export interface RoleItemVO {
   /**
    * 角色描述
    */
-  description: string;
+  description: string
   /**
    * 角色id
    */
-  id: number;
+  id: number
   /**
    * 角色名字
    */
-  name: string;
+  name: string
   /**
    * 状态启动
    */
-  state: number;
+  state: number
 }
 
 /**角色详情 */
 export interface RoleDetailVO {
   /**
-    * 角色描述
-    */
-  description: string;
+   * 角色描述
+   */
+  description: string
   /**
    * 角色id
    */
-  id: number;
+  id: number
   /**
    * 角色名字
    */
-  name: string;
+  name: string
   /**
    * 角色关联的权限集合
    */
-  permIds: number[];
+  permIds: number[]
   /**
    * 角色状态
    */
-  state: number;
+  state: number
 }
 
 // export interface UpdateRoleParams {
@@ -54,62 +54,58 @@ export interface RoleDetailVO {
 //   description: string;
 // }
 
-
 export interface GivePermissionParams {
   /**
    * 角色id
    */
-  id: number;
+  id: number
   /**
    * 权限点数组
    */
-  permIds: number[];
+  permIds: number[]
 }
-
-
 
 export interface UpdateRoleParams {
   /**
    * 角色描述
    */
-  description: string;
+  description: string
   /**
    * 角色id
    */
-  id: number;
+  id: number
   /**
    * 角色名字
    */
-  name: string;
+  name: string
   /**
    * 角色状态1启用0不启用
    */
-  state: number;
+  state: number
 }
-
 
 export interface AddRoleParams {
   /**
    * 角色描述
    */
-  description: string;
+  description: string
   /**
    * 角色名称
    */
-  name: string;
+  name: string
   /**
    * 角色状态，默认是启用的,1启用状态0未启用
    */
-  state: number;
+  state: number
 }
 
 export interface EnableRoleItem {
   /**
    * 角色id
    */
-  id: number;
+  id: number
   /**
    * 角色名称
    */
-  name: string;
+  name: string
 }

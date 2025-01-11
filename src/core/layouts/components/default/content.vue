@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { QBreadcrumbs } from '@/shared/components/base/breadcrumbs';
-import { useAntdToken } from '@/shared/composables/use-antd-token';
-import { LayoutContent } from 'ant-design-vue';
+import { QBreadcrumbs } from '@/shared/components/base/breadcrumbs'
+import { useAntdToken } from '@/shared/composables/use-antd-token'
+import { LayoutContent } from 'ant-design-vue'
 defineOptions({
-  name: "QLayoutContent"
+  name: 'QLayoutContent',
 })
 
 const { token } = useAntdToken()

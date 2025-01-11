@@ -1,6 +1,3 @@
-import QSkeleton from './src/skeleton';
+import QSkeleton from './src/skeleton'
 
-
-export {
-  QSkeleton
-};
+export { QSkeleton }

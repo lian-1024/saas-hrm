@@ -1,18 +1,18 @@
-import { EnvironmentOutlined } from '@ant-design/icons-vue';
-import { Breadcrumb, Flex } from "ant-design-vue";
-import { computed, defineComponent, type CSSProperties } from "vue";
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
-import { useAntdToken } from '../../../../composables/use-antd-token/index';
+import { EnvironmentOutlined } from '@ant-design/icons-vue'
+import { Breadcrumb, Flex } from 'ant-design-vue'
+import { computed, defineComponent, type CSSProperties } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+import { useAntdToken } from '../../../../composables/use-antd-token/index'
 
 /**
  * 面包屑导航项的接口定义
  */
 interface BreadcrumbItem {
   /** 路由路径 */
-  path: string;
+  path: string
   /** 显示的标题 */
-  title: string;
+  title: string
 }
 
 /**
@@ -20,7 +20,7 @@ interface BreadcrumbItem {
  * 根据当前路由自动生成面包屑导航
  */
 const QBreadcrumbs = defineComponent({
-  name: "QBreadcrumbs",
+  name: 'QBreadcrumbs',
   setup() {
     // 获取当前路由信息
     const route = useRoute()
@@ -37,7 +37,7 @@ const QBreadcrumbs = defineComponent({
       const items = new Map<string, BreadcrumbItem>()
 
       // 遍历匹配的路由
-      route.matched.forEach(route => {
+      route.matched.forEach((route) => {
         if (!route.meta?.title) return
 
         // 如果有父级，添加父级路由
@@ -51,7 +51,7 @@ const QBreadcrumbs = defineComponent({
             // 添加父级路由
             items.set(parentPath, {
               path: parentPath,
-              title: parentTitle
+              title: parentTitle,
             })
           }
         }
@@ -59,7 +59,7 @@ const QBreadcrumbs = defineComponent({
         // 添加当前路由
         items.set(route.path, {
           path: route.path,
-          title: t(route.meta.title)
+          title: t(route.meta.title),
         })
       })
 
@@ -77,7 +77,7 @@ const QBreadcrumbs = defineComponent({
       paddingInline: `${token.value.padding}px`,
       borderRadius: `${token.value.borderRadiusLG}px`,
       marginBottom: `${token.value.marginXXS}px`,
-      maxWidth: "max-content"
+      maxWidth: 'max-content',
     }))
 
     /**
@@ -87,7 +87,7 @@ const QBreadcrumbs = defineComponent({
       <Flex gap="small" align="center" style={styles.value}>
         <EnvironmentOutlined />
         <Breadcrumb>
-          {breadcrumbs.value.map(item => (
+          {breadcrumbs.value.map((item) => (
             <Breadcrumb.Item key={item.path}>
               <router-link to={item.path} class="q-breadcrumbs-link">
                 {item.title}
@@ -97,7 +97,7 @@ const QBreadcrumbs = defineComponent({
         </Breadcrumb>
       </Flex>
     )
-  }
+  },
 })
 
 export default QBreadcrumbs

@@ -1,5 +1,5 @@
-import router from '@/core/router'
-import { constantRoutes, dynamicRoutes, resultRoutes } from '@/core/router/router.config'
+import router from '@core/router'
+import { constantRoutes, dynamicRoutes, resultRoutes } from '@core/router/router.config'
 import { ref } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 
@@ -8,7 +8,6 @@ import type { RouteRecordRaw } from 'vue-router'
 const isRoutesGenerated = ref<boolean>(false)
 
 const useRouter = () => {
-
   const setIsRoutesGenerated = (value: boolean) => {
     isRoutesGenerated.value = value
   }
@@ -22,23 +21,21 @@ const useRouter = () => {
    */
   const resetRoutes = () => {
     const routes = router.getRoutes()
-    routes.forEach(route => {
+    routes.forEach((route) => {
       if (route.name) {
         router.removeRoute(route.name)
       }
     })
     // 添加基础路由
-    constantRoutes.forEach(route => {
+    constantRoutes.forEach((route) => {
       router.addRoute(route)
     })
     // 重置路由生成状态
     isRoutesGenerated.value = false
-
   }
 
-
   const addResultRoute = () => {
-    resultRoutes.forEach(route => {
+    resultRoutes.forEach((route) => {
       if (!router.hasRoute(route.name as string)) {
         router.addRoute(route)
       }
@@ -51,7 +48,7 @@ const useRouter = () => {
    * @returns 过滤后的路由
    */
   const generateRoutesByRules = (rules: string[]) => {
-    return dynamicRoutes.filter(route => rules.includes(route.name as string))
+    return dynamicRoutes.filter((route) => rules.includes(route.name as string))
   }
 
   /**
@@ -59,14 +56,12 @@ const useRouter = () => {
    * @param rules 权限规则
    */
   const registerRoutes = (rules: string[]) => {
-
     // 如果没有传入权限规则，则添加所有动态路由
     const routes = generateRoutesByRules(rules)
     // 添加路由
     addRoutes(routes)
     // 设置路由已生成标志
     isRoutesGenerated.value = true
-
   }
 
   /**
@@ -76,9 +71,11 @@ const useRouter = () => {
     return router.getRoutes()
   }
 
-
-  const getRouteByMetaName = (routes: RouteRecordRaw[], name: string): RouteRecordRaw | undefined => {
-    return routes.find(route => {
+  const getRouteByMetaName = (
+    routes: RouteRecordRaw[],
+    name: string,
+  ): RouteRecordRaw | undefined => {
+    return routes.find((route) => {
       if (route.meta?.name === name) {
         return route
       }
@@ -102,7 +99,7 @@ const useRouter = () => {
    * @param routes 路由配置
    */
   const addRoutes = (routes: RouteRecordRaw[]) => {
-    routes.forEach(route => {
+    routes.forEach((route) => {
       if (!router.hasRoute(route.name as string)) {
         router.addRoute(route)
       }
@@ -128,7 +125,7 @@ const useRouter = () => {
     setIsRoutesGenerated,
     getIsRoutesGenerated,
     getRouteByMetaName,
-    addResultRoute
+    addResultRoute,
   }
 }
 

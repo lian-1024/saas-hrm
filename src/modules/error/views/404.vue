@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { Result404 } from '@/shared/components/base/result';
-import { useAntdToken } from '@/shared/composables/use-antd-token';
-import { computed } from 'vue';
+import { Result404 } from '@components/base/result'
+import { useAntdToken } from '@composables/use-antd-token'
+import { computed } from 'vue'
 const { token } = useAntdToken()
 
 const styles = computed(() => ({
@@ -10,7 +10,7 @@ const styles = computed(() => ({
   height: '100%',
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'center'
+  alignItems: 'center',
 }))
 </script>
 

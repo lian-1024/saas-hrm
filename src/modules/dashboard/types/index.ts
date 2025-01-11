@@ -3,47 +3,46 @@ export interface DashboardInfoItem {
   total: number
 }
 
-
 /**
- * Home data 
+ * Home data
  */
 export interface HomeDataVO {
   /**
    * 合同待签署总数
    */
-  contractSignTotal: number;
+  contractSignTotal: number
   /**
    * 组织总人数
    */
-  employeeTotal: number;
+  employeeTotal: number
   /**
    * 接口总访问数
    */
-  interfaceAccessTotal: number;
+  interfaceAccessTotal: number
   /**
    * 公积金申报数据
    */
-  providentFund: DashboardDeclareVO;
+  providentFund: DashboardDeclareVO
   /**
    * 正式员工总数
    */
-  regularEmployeeTotal: number;
+  regularEmployeeTotal: number
   /**
    * 社保申报数据
    */
-  socialInsurance: DashboardDeclareVO;
+  socialInsurance: DashboardDeclareVO
   /**
    * 本月待转正人数
    */
-  toBeConfirmed: number;
+  toBeConfirmed: number
   /**
    * 本月待离职人数
    */
-  toBeDismissed: number;
+  toBeDismissed: number
   /**
    * 待入职人数
    */
-  toBeEmployed: number;
+  toBeEmployed: number
 }
 
 /**
@@ -53,50 +52,48 @@ export interface DashboardDeclareVO {
   /**
    * 分类
    */
-  category: string;
+  category: string
   /**
    * 分类类型
    */
-  categoryType: string;
+  categoryType: string
   /**
    * 申报人数
    */
-  declarationTotal: number;
+  declarationTotal: number
   /**
    * 已申报人数
    */
-  declaredTotal: number;
+  declaredTotal: number
   /**
    * 申报中人数
    */
-  declaringTotal: number;
+  declaringTotal: number
   /**
    * 待申报人数
    */
-  toDeclareTotal: number;
+  toDeclareTotal: number
   /**
    * x轴
    */
-  xAxis: string[];
+  xAxis: string[]
   /**
    * y轴
    */
-  yAxis: number[];
+  yAxis: number[]
 }
-
-
 
 export interface DashboardNoticeVO {
   /**
    * 创建时间
    */
-  createTime: string;
+  createTime: string
   /**
    * 图标
    */
-  icon: string;
+  icon: string
   /**
    * 消息通知内容
    */
-  notice: string;
+  notice: string
 }

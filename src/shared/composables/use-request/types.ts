@@ -9,6 +9,6 @@ export interface UseRequestOptions<TData> {
   onSuccess?: (data: Response<TData>) => void
   /**请求失败时触发 */
   onError?: (error: any) => void
-  /**请求完成时触发 */,
+  /**请求完成时触发 */
   onFinally?: () => void
 }

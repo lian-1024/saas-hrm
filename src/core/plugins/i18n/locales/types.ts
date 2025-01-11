@@ -1,2 +1,2 @@
-import type { LocalMessageType } from "./zh-CN";
-export type { LocalMessageType };
+import type { LocalMessageType } from './zh-CN'
+export type { LocalMessageType }

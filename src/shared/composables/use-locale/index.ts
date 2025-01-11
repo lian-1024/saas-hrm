@@ -1,2 +1,2 @@
-import { useLocale } from './use-locale';
-export { useLocale };
+import { useLocale } from './use-locale'
+export { useLocale }

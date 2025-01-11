@@ -3,14 +3,9 @@ import { ref } from 'vue'
 import type { UseRequestOptions } from './types'
 export function useRequest<TData = any>(
   requestFn: (...args: any[]) => Promise<Response<TData>>,
-  options: UseRequestOptions<TData> = {}
+  options: UseRequestOptions<TData> = {},
 ) {
-  const {
-    manual = false,
-    onSuccess,
-    onError,
-    onFinally
-  } = options
+  const { manual = false, onSuccess, onError, onFinally } = options
 
   /**请求返回的数据 */
   const data = ref<Response<TData> | undefined>()
@@ -55,7 +50,6 @@ export function useRequest<TData = any>(
     data,
     loading,
     error,
-    run
+    run,
   }
 }
-

@@ -1,3 +1,1 @@
-export const useThrottleFn = <T extends (...args: any[]) => any>() => {
-
-}
+export const useThrottleFn = <T extends (...args: any[]) => any>() => {}
