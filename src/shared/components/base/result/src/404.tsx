@@ -57,7 +57,7 @@ const Result404 = defineComponent({
         {{
           extra: () => (
             <Button type="primary" onClick={() => router.push('/dashboard')}>{t('result.404.extra')}</Button>
-          )
+          ),
         }}
       </Result>
     )
