@@ -1,10 +1,12 @@
 /// <reference types="../../env/env.d.ts" />
 
+import legacy from '@vitejs/plugin-legacy';
 import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import { visualizer } from "rollup-plugin-visualizer";
 import { PluginOption } from "vite";
 import compression from 'vite-plugin-compression';
+import { createHtmlPlugin } from 'vite-plugin-html';
 import imagemin from 'vite-plugin-imagemin';
 import vueDevTools from "vite-plugin-vue-devtools";
 
@@ -14,7 +16,11 @@ export const createVitePlugins = (viteEnv: ImportMetaEnv): PluginOption[] => {
     vue(),
     vueJsx(),
     vueDevTools(),
-
+    // 兼容IE11
+    legacy({
+      targets: ['defaults', 'not IE 11'],
+      additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
+    }),
     // 注意: 使用gzip压缩,需要告诉浏览器支持的类型,设置响应头Content-Encoding: gzip,在nginx中配置
     compression({
       algorithm: 'gzip', // 压缩算法
@@ -52,6 +58,18 @@ export const createVitePlugins = (viteEnv: ImportMetaEnv): PluginOption[] => {
       },
 
     }),
+
+    // 使用 vite-plugin-html 插件在 index.html 中注入环境变量
+    createHtmlPlugin({
+      minify: true,
+      inject: {
+        data: {
+          title: viteEnv.IHRM_APP_TITLE,
+          baseUrl: viteEnv.IHRM_BASE_URL,
+          description: viteEnv.IHRM_APP_DESCRIPTION,
+        },
+      },
+    })
   ]
 
   // 是否开启产物分析报告
@@ -61,7 +79,6 @@ export const createVitePlugins = (viteEnv: ImportMetaEnv): PluginOption[] => {
         open: true, // 是否打开可视化文件
         gzipSize: true,// 计算gzip压缩后的文件大小
         brotliSize: true,// 计算brotli压缩后的文件大小
-        filename: './stats.html',// 输出文件名
       }),
     )
   }

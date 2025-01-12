@@ -2,6 +2,7 @@ import type {
   EmployeeDetailVO,
   EmployeeVO,
   GiveEmployeeRoleParams,
+  MassNotificationParams,
   PagingEmployeeListParams,
   UpdateWithAddEmployeeParams,
 } from '@/modules/employee/types'
@@ -52,6 +53,11 @@ class EmployeeService {
         'Content-Type': 'multipart/form-data',
       },
     })
+  }
+
+
+  static massNotification(data: MassNotificationParams) {
+    return request.post('/sys/messageMuch', { data })
   }
 }
 export default EmployeeService

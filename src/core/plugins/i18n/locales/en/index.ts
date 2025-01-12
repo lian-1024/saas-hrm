@@ -8,6 +8,14 @@ const en: LocalMessageType = {
       enable: 'Enabled',
       disable: 'Disabled',
     },
+    message: {
+      level: {
+        notification: 'Notification',
+        tips: 'Tips',
+        important: 'Important',
+        urgent: 'Urgent',
+      },
+    },
     title: {
       prefix: 'IHRM',
       dashboard: 'Dashboard',
@@ -210,12 +218,15 @@ const en: LocalMessageType = {
       placeholder: 'Search employee name',
     },
     messages: {
+      noSelectedEmployee: 'Please select employees',
       deleteSuccess: 'Employee deleted successfully',
       deleteError: 'Failed to delete employee',
       updateSuccess: 'Update employee successfully',
       updateError: 'Failed to update employee',
       addSuccess: 'Add employee successfully',
       addError: 'Failed to add employee',
+      massNotificationSuccess: 'Mass notification sent successfully',
+      massNotificationError: 'Failed to send mass notification',
     },
     detail: {
       title: 'Employee Detail',
@@ -294,6 +305,15 @@ const en: LocalMessageType = {
         confirm: 'Confirm',
         cancel: 'Cancel',
       },
+    },
+    massNotification: {
+      title: 'Mass Notification',
+      messageLevel: 'Message Level',
+      content: 'Content',
+      rules: {
+        messageLevel: 'Please select message level',
+        content: 'Please enter notification content'
+      }
     },
   },
   permission: {

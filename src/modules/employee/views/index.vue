@@ -44,6 +44,7 @@ const { token } = useAntdToken()
 const { t } = useI18n()
 const RoleModal = defineAsyncComponent(() => import('../components/role-modal.vue'))
 const ImportExcelModal = defineAsyncComponent(() => import('../components/import-excel-modal.vue'))
+const MassNotificationModal = defineAsyncComponent(() => import('../components/mass-notification.vue'))
 // 员工管理
 defineOptions({
   name: 'EmployeePage',
@@ -61,11 +62,12 @@ const importExcelModalStatus = ref<boolean>(false)
 
 const actionsSize: ButtonProps['size'] = 'middle'
 
-const columns: TableProps<EmployeeVO>['columns'] = [
+const columns = computed<TableProps['columns']>(() => [
   {
     title: t('employee.table.columns.staffPhoto'),
     dataIndex: 'staffPhoto',
     key: 'staffPhoto',
+    width: 80,
   },
   {
     title: t('employee.table.columns.username'),
@@ -76,13 +78,11 @@ const columns: TableProps<EmployeeVO>['columns'] = [
     title: t('employee.table.columns.mobile'),
     dataIndex: 'mobile',
     key: 'mobile',
-    sorter: (a: EmployeeVO, b: EmployeeVO) => a.mobile.length - b.mobile.length,
   },
   {
     title: t('employee.table.columns.workNumber'),
     dataIndex: 'workNumber',
     key: 'workNumber',
-    sorter: (a: EmployeeVO, b: EmployeeVO) => a.workNumber.length - b.workNumber.length,
   },
   {
     title: t('employee.table.columns.formOfEmployment'),
@@ -98,16 +98,14 @@ const columns: TableProps<EmployeeVO>['columns'] = [
     title: t('employee.table.columns.timeOfEntry'),
     dataIndex: 'timeOfEntry',
     key: 'timeOfEntry',
-    sorter: (a: EmployeeVO, b: EmployeeVO) => a.timeOfEntry.length - b.timeOfEntry.length,
   },
   {
     title: t('employee.table.columns.operations'),
-    dataIndex: 'operations',
     key: 'operations',
     fixed: 'right',
-    width: 200,
+    width: 180,
   },
-]
+])
 
 const employeeTableDataSource = shallowReactive<
   PagingResponse<EmployeeVO & { key: number | string }>
@@ -125,9 +123,7 @@ const openGiveRoleModal = (employeeId: number | string) => {
   currentSelectedEmployee.value = employeeId
 }
 
-const tableRowSelection = ref<TableProps['rowSelection']>({
-  onChange: (selectedRowKeys, selectedRows) => {},
-})
+
 
 const { loading: getDepartmentLoading, run: getCompanyDepartmentList } = useRequest(
   DepartmentService.getCompanyDepartmentList,
@@ -215,38 +211,43 @@ const formalOfEmploymentMap = {
   [FormOfEmployment.Formal]: computed(() => t('employee.table.formalOfEmployment.formal')),
   [FormOfEmployment.InFormal]: computed(() => t('employee.table.formalOfEmployment.informal')),
 }
+
+
+
+const selectedEmployees = ref<(Pick<EmployeeVO, 'id' | 'username'>)[]>([])
+
+const tableRowSelection = ref<TableProps['rowSelection']>({
+  onChange(selectedRowKeys, selectedRows) {
+    selectedEmployees.value = selectedRows.map((item) => ({
+      id: item.id,
+      username: item.username,
+    }))
+  },
+
+})
+
+const massNotificationModalStatus = ref<boolean>(false)
+const openMassNotificationModal = () => {
+  selectedEmployees.value.length > 0 ? (massNotificationModalStatus.value = true) : message.warning(t('employee.messages.noSelectedEmployee'))
+  console.log(massNotificationModalStatus.value)
+}
 </script>
 
 <template>
   <Flex gap="small" class="h-full employee-wrapper">
     <Flex vertical class="employee-left" gap="middle">
-      <InputSearch
-        @search="getEmployeeList(pagingEmployeeParams)"
-        :placeholder="t('employee.search.placeholder')"
-        v-model:value="pagingEmployeeParams.keyword"
-      />
-      <QSkeleton
-        :loading="getDepartmentLoading"
-        active
-        :title="false"
-        :paragraph="{
-          rows: 16,
-        }"
-      >
-        <Tree
-          v-if="!getDepartmentLoading"
-          class="draggable-tree h-full"
-          draggable
-          block-node
-          :tree-data="departmentTree"
-          default-expand-all
-          @select="handleSelectDepartment"
-        />
+      <InputSearch @search="getEmployeeList(pagingEmployeeParams)" :placeholder="t('employee.search.placeholder')"
+        v-model:value="pagingEmployeeParams.keyword" />
+      <QSkeleton :loading="getDepartmentLoading" active :title="false" :paragraph="{
+        rows: 16,
+      }">
+        <Tree v-if="!getDepartmentLoading" class="draggable-tree h-full" draggable block-node
+          :tree-data="departmentTree" default-expand-all @select="handleSelectDepartment" />
       </QSkeleton>
     </Flex>
     <Flex vertical gap="small" class="flex-1 employee-right h-full">
       <Flex justify="space-between" class="employee-right-actions">
-        <Button :size="actionsSize">
+        <Button :size="actionsSize" @click="openMassNotificationModal">
           {{ t('employee.actions.sendNotification') }}
         </Button>
         <Flex gap="small">
@@ -256,35 +257,26 @@ const formalOfEmploymentMap = {
           <Button :size="actionsSize" @click="importExcelModalStatus = true">
             {{ t('employee.actions.importExcel') }}
           </Button>
-          <Button
-            :loading="exportEmployeeListLoading"
-            :size="actionsSize"
-            @click="exportEmployeeList"
-          >
+          <Button :loading="exportEmployeeListLoading" :size="actionsSize" @click="exportEmployeeList">
             {{ t('employee.actions.exportExcel') }}
           </Button>
         </Flex>
       </Flex>
       <!-- table -->
       <QSpin :spinning="getEmployeeListLoading" wrapper-class-name="flex-1 h-full">
-        <Table
-          :pagination="{
-            position: tablePaginationPosition,
-            pageSizeOptions: tablePaginationPageSizeOptions,
-            total: employeeTableDataSource.total,
-            current: pagingEmployeeParams.page,
-            onChange: handleChangeTablePagination,
-            showTotal: (total) => t('employee.table.pagination.total', { total }),
-          }"
-          class="flex-1 h-full employee-right-table"
-          :columns="columns"
-          :data-source="employeeTableDataSource.rows"
-          :row-selection="tableRowSelection"
-        >
+        <Table :pagination="{
+          position: tablePaginationPosition,
+          pageSizeOptions: tablePaginationPageSizeOptions,
+          total: employeeTableDataSource.total,
+          current: pagingEmployeeParams.page,
+          onChange: handleChangeTablePagination,
+          showTotal: (total) => t('employee.table.pagination.total', { total }),
+        }" class="flex-1 h-full employee-right-table" :columns="columns" :data-source="employeeTableDataSource.rows"
+          :row-selection="tableRowSelection">
           <template #headerCell="{ title }">
             <TypographyText type="secondary" :level="5" class="table-header-title">{{
               title
-            }}</TypographyText>
+              }}</TypographyText>
           </template>
           <template #bodyCell="{ column, record }">
             <!-- 员工头像 -->
@@ -302,17 +294,14 @@ const formalOfEmploymentMap = {
               <Flex>
                 <Button type="link" size="small" @click="handleViewEmployee(record.key)">{{
                   t('employee.table.actions.view')
-                }}</Button>
+                  }}</Button>
                 <Button type="link" size="small" @click="openGiveRoleModal(record.key)">{{
                   t('employee.table.actions.role')
-                }}</Button>
-                <Popconfirm
-                  @confirm="deleteEmployee(record.key)"
-                  :title="t('employee.table.actions.deleteConfirm')"
-                >
+                  }}</Button>
+                <Popconfirm @confirm="deleteEmployee(record.key)" :title="t('employee.table.actions.deleteConfirm')">
                   <Button type="link" size="small" danger>{{
                     t('employee.table.actions.delete')
-                  }}</Button>
+                    }}</Button>
                 </Popconfirm>
               </Flex>
             </template>
@@ -322,6 +311,7 @@ const formalOfEmploymentMap = {
       <!-- 分配角色 modal -->
       <RoleModal v-model:open="giveRoleModalStatus" :employee-id="currentSelectedEmployee" />
       <ImportExcelModal v-model:open="importExcelModalStatus" />
+      <MassNotificationModal v-model:open="massNotificationModalStatus" :employees="selectedEmployees" />
     </Flex>
   </Flex>
 </template>

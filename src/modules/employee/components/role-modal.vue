@@ -66,8 +66,8 @@ const closeModal = () => {
   modalStatus.value = false
 }
 
-const handleConfirm = () => {
-  giveEmployeeRole({
+const handleConfirm = async () => {
+  await giveEmployeeRole({
     id: props.employeeId,
     roleIds: selectedRole.value,
   })
@@ -89,14 +89,8 @@ const loading = computed(() => getRoleListEnableLoading.value || getEmployeeDeta
 </script>
 
 <template>
-  <QModal
-    :confirm-loading="giveEmployeeRoleLoading"
-    :width="800"
-    mask
-    v-model:open="modalStatus"
-    :title="t('employee.roleModal.title')"
-    @cancel="handleCancel"
-  >
+  <QModal :confirm-loading="giveEmployeeRoleLoading" :width="800" mask v-model:open="modalStatus"
+    :title="t('employee.roleModal.title')" @cancel="handleCancel">
     <QSpin :spinning="loading">
       <div class="modal-content">
         <CheckboxGroup v-model:value="selectedRole" :options="roleOptions" />

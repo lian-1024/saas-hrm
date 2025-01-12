@@ -5,6 +5,8 @@ interface ImportMetaEnv {
   readonly IHRM_APP_TITLE: string
   /** 接口基地址 */
   readonly IHRM_APP_API_BASE_URL: string
+  /** 基础地址 */
+  readonly IHRM_BASE_URL: string
   /** 是否开启 sourcemap(开发环境建议开启便于调试) */
   readonly IHRM_SOURCEMAP: string
   /** 是否开启 css 代码分割(开发环境可以关闭以提高构建速度) */
@@ -15,6 +17,8 @@ interface ImportMetaEnv {
   readonly IHRM_CONSOLE: string
   /** 是否开启 tree-shaking */
   readonly IHRM_TREE_SHAKING: string
+  /** 腾讯地图 API 密钥 */
+  readonly IHRM_MAP_API_KEY: string
 }
 
 interface ImportMeta {

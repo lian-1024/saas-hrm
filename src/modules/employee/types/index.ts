@@ -1,3 +1,4 @@
+import type { MessageLevelType } from '@/shared/constants/message'
 import type { PagingQueryParams } from '../../../shared/types'
 import type { FormOfEmploymentType } from '../constants'
 
@@ -37,7 +38,7 @@ export interface Employee {
 }
 
 /**员工列表项  */
-export interface EmployeeVO extends Employee {}
+export interface EmployeeVO extends Employee { }
 
 /**
  * 响应数据
@@ -137,4 +138,20 @@ export interface AddEmployeeParams {
    * 员工工号
    */
   workNumber: string
+}
+
+
+export interface MassNotificationParams {
+  /**
+   * 群发的消息内容，5-100个字符
+   */
+  content: string;
+  /**
+   * 消息类型 1 通知消息 2 提示消息 3 重要消息 4 紧急消息
+   */
+  type: MessageLevelType;
+  /**
+   * 要群发的用户的id数组 [1,2,3,4,5]
+   */
+  userIds: string[];
 }

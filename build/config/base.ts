@@ -7,9 +7,11 @@ export const createBaseConfig = (viteEnv: ImportMetaEnv) => (rootPath: string, e
   return {
     envDir: envDir,  // 环境变量目录
     envPrefix: 'IHRM_',  // 环境变量前缀
+    base: viteEnv.IHRM_BASE_URL || '/',
     resolve: {
       alias: {
         '@': resolve(rootPath, './src'),
+        '@assets': resolve(rootPath, './src/assets'),
         '@components': resolve(rootPath, './src/shared/components'),
         "@composables": resolve(rootPath, "./src/shared/composables"),
         "@core": resolve(rootPath, "./src/core"),

@@ -39,12 +39,8 @@ const quickItems = [
 <template>
   <QPanel :title="$t('dashboard.quick.title')">
     <Flex gap="large" justify="space-between">
-      <DashboardQuickItem
-        v-for="item in quickItems"
-        :key="item.name"
-        :icon-url="item.iconUrl"
-        :name="$t(`dashboard.quick.${item.name}`)"
-      />
+      <DashboardQuickItem v-for="item in quickItems" :key="item.name" :icon-url="item.iconUrl"
+        :name="$t(`dashboard.quick.${item.name}`)" />
     </Flex>
   </QPanel>
 </template>

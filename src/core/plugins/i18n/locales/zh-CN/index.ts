@@ -6,6 +6,14 @@ const zhCN = {
       enable: '已启用',
       disable: '未启用',
     },
+    message: {
+      level: {
+        notification: '通知消息',
+        tips: '提示消息',
+        important: '重要消息',
+        urgent: '紧急消息',
+      },
+    },
     title: {
       prefix: 'IHRM',
       dashboard: '仪表盘',
@@ -209,12 +217,15 @@ const zhCN = {
       placeholder: '请输入员工姓名全员搜索',
     },
     messages: {
+      noSelectedEmployee: '请选择员工',
       deleteSuccess: '删除员工成功',
       deleteError: '删除员工失败',
       updateSuccess: '更新员工成功',
       updateError: '更新员工失败',
-      addSuccess: '新增员工成功',
-      addError: '新增员工失败',
+      addSuccess: '添加员工成功',
+      addError: '添加员工失败',
+      massNotificationSuccess: '群发通知成功',
+      massNotificationError: '群发通知失败',
     },
     detail: {
       title: '员工详情',
@@ -293,6 +304,15 @@ const zhCN = {
         confirm: '确定',
         cancel: '取消',
       },
+    },
+    massNotification: {
+      title: '群发通知',
+      messageLevel: '消息等级',
+      content: '通知内容',
+      rules: {
+        messageLevel: '请选择消息等级',
+        content: '请输入通知内容'
+      }
     },
   },
   permission: {

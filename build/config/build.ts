@@ -21,7 +21,7 @@ export const createBuildConfig = (viteEnv: ImportMetaEnv): BuildOptions => ({
         // 将 antd 相关的库打包到 antd-vendor 中
         "antd-vendor": ['ant-design-vue', '@ant-design/icons-vue'],
         "axios-vendor": ['axios'],
-        "lodash-vendor": ['lodash'],
+        "lodash-vendor": ['lodash-es'],
         "dayjs-vendor": ['dayjs'],
         "echarts-vendor": ['echarts'],
       },

@@ -95,31 +95,15 @@ const computedMarker = computed(() => ({
 
 const mapRef = ref()
 
-// watch(isDark, (newVal) => {
-//   mapRef.value.map.setMapStyleId(newVal ? 'style2' : 'style1')
-// })
+const mapApiKey = computed(() => import.meta.env.IHRM_MAP_API_KEY)
+
 </script>
 <template>
-  <BaseMap
-    ref="mapRef"
-    :options="mapOptions"
-    class="h-full w-full"
-    api-key="OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77"
-    :center="scopedCenter"
-    :zoom="mapZoom"
-    :control="mapControl"
-    @click="handleClickMap"
-  >
-    <MultiCircle
-      :geometries="circleGeometriesComputed"
-      :styles="circleStyles"
-      :options="circleOptions"
-    />
+  <BaseMap ref="mapRef" :options="mapOptions" class="h-full w-full" :api-key="mapApiKey" :center="scopedCenter"
+    :zoom="mapZoom" :control="mapControl" @click="handleClickMap">
+    <MultiCircle :geometries="circleGeometriesComputed" :styles="circleStyles" :options="circleOptions" />
     <MultiLabel :styles="labelStyles" :geometries="labelGeometriesComputed" />
-    <MultiMarker
-      :geometries="computedMarker.geometries"
-      :styles="computedMarker.styles"
-      :options="computedMarker.options"
-    />
+    <MultiMarker :geometries="computedMarker.geometries" :styles="computedMarker.styles"
+      :options="computedMarker.options" />
   </BaseMap>
 </template>
