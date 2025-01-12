@@ -73,10 +73,10 @@ const { token } = useAntdToken()
     <Flex v-bind="WrapperStyle">
       <Dropdown>
         <Space gap="middle">
-          <QAvatar size="large" :src="userStore.userInfo?.staffPhoto" />
           <TypographyText class="user-username">
             {{ userStore.userInfo?.username }}
           </TypographyText>
+          <QAvatar size="large" :src="userStore.userInfo?.staffPhoto" />
         </Space>
         <template #overlay>
           <Menu :items="avatarDropdownItems" @click="handleClickMenuItemActions" />

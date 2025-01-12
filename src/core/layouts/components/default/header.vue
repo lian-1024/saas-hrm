@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import UserDropdown from '@/modules/user/components/user-dropdown/user-dropdown.vue'
-import { QLocalSelect } from '@/shared/components/base/local-select'
-import { QThemeSwitch } from '@/shared/components/base/theme-switch'
-import { useAntdToken } from '@/shared/composables/use-antd-token'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons-vue'
+import { QLocalSelect } from '@components/base/local-select'
+import { QNotificationPopover } from '@components/base/notification-popover'
+import { QThemeSwitch } from '@components/base/theme-switch'
+import { useAntdToken } from '@composables/use-antd-token'
+import QUserDropdown from '@modules/user/components/user-dropdown/user-dropdown.vue'
 import { Flex, LayoutHeader, type FlexProps } from 'ant-design-vue'
-
 defineOptions({
   name: 'QLayoutHeader',
 })
+
+
 const emits = defineEmits<{
   changeCollapsed: [collapsed?: boolean]
 }>()
@@ -19,28 +21,24 @@ const LayoutHeaderFlex: FlexProps = {
   justify: 'space-between',
 }
 const { token } = useAntdToken()
+
+
 </script>
 
 <template>
   <LayoutHeader class="layout-header">
     <Flex v-bind="LayoutHeaderFlex">
       <div class="flex-1">
-        <MenuUnfoldOutlined
-          v-if="collapsed"
-          class="trigger layout-header-collapsed-icon"
-          @click="emits('changeCollapsed')"
-        />
-        <MenuFoldOutlined
-          v-else
-          class="trigger layout-header-collapsed-icon"
-          @click="emits('changeCollapsed')"
-        />
+        <MenuUnfoldOutlined v-if="collapsed" class="trigger layout-header-collapsed-icon"
+          @click="emits('changeCollapsed')" />
+        <MenuFoldOutlined v-else class="trigger layout-header-collapsed-icon" @click="emits('changeCollapsed')" />
       </div>
       <Flex gap="large" align="center">
         <QThemeSwitch />
-        <UserDropdown />
-        <QLocalSelect /> </Flex
-      >,
+        <QNotificationPopover />
+        <QLocalSelect />
+        <QUserDropdown />
+      </Flex>,
     </Flex>
   </LayoutHeader>
 </template>

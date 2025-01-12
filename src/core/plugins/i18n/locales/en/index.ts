@@ -31,6 +31,19 @@ const en: LocalMessageType = {
         404: '404',
       },
     },
+    notification: {
+      empty: 'No Messages',
+      unread: 'Unread',
+      read: 'Read',
+      markAsRead: 'Mark as Read',
+      delete: 'Delete',
+      messages: {
+        markAsReadSuccess: 'Marked as read successfully',
+        markAsReadError: 'Failed to mark as read',
+        deleteSuccess: 'Message deleted successfully',
+        deleteError: 'Failed to delete message'
+      }
+    }
   },
   nav: {
     dashboard: 'Dashboard',

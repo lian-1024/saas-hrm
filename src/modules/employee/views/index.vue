@@ -45,6 +45,7 @@ const { t } = useI18n()
 const RoleModal = defineAsyncComponent(() => import('../components/role-modal.vue'))
 const ImportExcelModal = defineAsyncComponent(() => import('../components/import-excel-modal.vue'))
 const MassNotificationModal = defineAsyncComponent(() => import('../components/mass-notification.vue'))
+
 // 员工管理
 defineOptions({
   name: 'EmployeePage',
@@ -276,7 +277,7 @@ const openMassNotificationModal = () => {
           <template #headerCell="{ title }">
             <TypographyText type="secondary" :level="5" class="table-header-title">{{
               title
-              }}</TypographyText>
+            }}</TypographyText>
           </template>
           <template #bodyCell="{ column, record }">
             <!-- 员工头像 -->
@@ -294,14 +295,14 @@ const openMassNotificationModal = () => {
               <Flex>
                 <Button type="link" size="small" @click="handleViewEmployee(record.key)">{{
                   t('employee.table.actions.view')
-                  }}</Button>
+                }}</Button>
                 <Button type="link" size="small" @click="openGiveRoleModal(record.key)">{{
                   t('employee.table.actions.role')
-                  }}</Button>
+                }}</Button>
                 <Popconfirm @confirm="deleteEmployee(record.key)" :title="t('employee.table.actions.deleteConfirm')">
                   <Button type="link" size="small" danger>{{
                     t('employee.table.actions.delete')
-                    }}</Button>
+                  }}</Button>
                 </Popconfirm>
               </Flex>
             </template>

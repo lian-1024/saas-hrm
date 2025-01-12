@@ -4,6 +4,7 @@ import type {
   UpdateAvatarParams,
   UpdatePasswordParams,
   UserInfoVO,
+  UserNotificationVO
 } from '@/modules/user/types'
 import { request } from '@/shared/utils/http/request'
 
@@ -38,6 +39,20 @@ class UserService {
         qrcode_key: qrcodeKey,
       },
     })
+  }
+
+
+  static getUserNotification = () => {
+    return request.get<UserNotificationVO>('/sys/message')
+  }
+
+
+  static deleteUserNotification = (id: number) => {
+    return request.delete('/sys/message/' + id)
+  }
+
+  static markUserNotificationAsRead = (id: number) => {
+    return request.put('/sys/message/' + id)
   }
 }
 

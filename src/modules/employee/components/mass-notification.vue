@@ -95,10 +95,12 @@ const { run: massNotification, loading: massNotificationLoading } = useRequest(
     manual: true,
     onSuccess: () => {
       message.success(t('employee.messages.massNotificationSuccess'))
-      closeModal()
     },
     onError: ({ message }) => {
       message.error(message || t('employee.messages.massNotificationError'))
+    },
+    onFinally: () => {
+      closeModal()
     }
   },
 )
@@ -117,6 +119,10 @@ const handleSubmit = async () => {
 const handleCancel = () => {
   closeModal()
 }
+
+const labelCol = { span: 6 }
+const wrapperCol = { span: 16 }
+
 </script>
 
 <template>
@@ -128,7 +134,7 @@ const handleCancel = () => {
           @close="handleRemoveEmployee(item.id)">{{ item.username }}</Tag>
       </Flex>
     </Flex>
-    <Form :rules="formRules" ref="formRef" :model="fromData">
+    <Form :rules="formRules" ref="formRef" :model="fromData" :label-col="labelCol" :wrapper-col="wrapperCol">
       <Form.Item :label="t('employee.massNotification.messageLevel')" name="type">
         <Select v-model:value="fromData.type" :options="messageLevelOptions" />
       </Form.Item>

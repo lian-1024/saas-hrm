@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { Layout } from 'ant-design-vue'
-
 import { useAntdToken } from '@/shared/composables/use-antd-token'
+import useNotification from '@/shared/composables/use-notification'
+import { usePolling } from '@/shared/composables/use-polling'
+import { Layout } from 'ant-design-vue'
 import { ref } from 'vue'
 import QLayoutContent from './components/default/content.vue'
 import QLayoutHeader from './components/default/header.vue'
@@ -22,6 +23,22 @@ const handleChangeCollapsed = (status?: boolean) => {
   }
 }
 const { token } = useAntdToken()
+
+
+const {
+  getUserNotification,
+} = useNotification()
+
+
+
+usePolling(async () => {
+  await getUserNotification()
+}, {
+  interval: 3000,
+  immediate: true,
+  autoStart: true
+})
+
 </script>
 
 <template>

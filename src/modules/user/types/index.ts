@@ -1,3 +1,4 @@
+import type { MessageLevelType } from '@/shared/constants/message'
 import { type QRCodeStatusType } from '../constants'
 export interface LoginParams {
   mobile: string
@@ -55,4 +56,63 @@ export interface QRCodeStatus {
    */
   status: QRCodeStatusType
   userId: number
+}
+
+export interface UserNotificationVO {
+  /**
+   * 已读消息
+   */
+  read: NotificationMessage[];
+  /**
+   * 未读消息
+   */
+  unread: NotificationMessage[];
+}
+
+/**
+ * 发送者信息
+ */
+export interface SendUser {
+  /**
+   * 发送者姓名
+   */
+  username: string;
+}
+
+/**
+ * 通知消息基础类型
+ */
+export interface NotificationMessage {
+  /**
+   * 消息内容
+   */
+  content: null | string;
+  /**
+   * 发送时间
+   */
+  create_time: string;
+  /**
+   * 消息id
+   */
+  id: number;
+  /**
+   * 发送者id
+   */
+  send_user_id: number;
+  /**
+   * 发送者信息
+   */
+  sendUser: SendUser;
+  /**
+   * 消息等级消息类型 1 通知消息 2 提示消息 3 重要消息 4 紧急消息
+   */
+  type: MessageLevelType;
+  /**
+   * 更新时间
+   */
+  update_time: string;
+  /**
+   * 当前用户id
+   */
+  user_id: number;
 }

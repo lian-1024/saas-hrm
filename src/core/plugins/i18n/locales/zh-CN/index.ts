@@ -29,6 +29,19 @@ const zhCN = {
         404: '404',
       },
     },
+    notification: {
+      empty: '暂无消息',
+      unread: '未读',
+      read: '已读',
+      markAsRead: '标记已读',
+      delete: '删除',
+      messages: {
+        markAsReadSuccess: '标记已读成功',
+        markAsReadError: '标记已读失败',
+        deleteSuccess: '删除消息成功',
+        deleteError: '删除消息失败'
+      }
+    }
   },
   nav: {
     dashboard: '仪表盘',
