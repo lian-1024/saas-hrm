@@ -1,6 +1,6 @@
 # Admin IHRM (Intelligent Human Resource Management)
 
-一个现代化的人力资源管理系统前端项目，基于Vue 3和TypeScript构建。
+一个现代化的人力资源管理系统前端项目，基于Vue 3和TypeScript构建(该项目是基于黑马程序员IHRM项目(Vue2版本)开发的Vue3版本)。
 
 ## 目录
 
@@ -47,7 +47,6 @@
 - 🗺️ 地图功能支持
 - 💾 Pinia状态持久化
 - 🌓 暗黑模式支持
-- 📱 响应式设计
 
 ## 快速开始
 
@@ -61,6 +60,17 @@
 ```bash
 # 安装依赖
 pnpm install
+```
+
+### 配置环境变量
+
+```bash
+# 复制.env.example文件为.env
+cp env/.env.example env/.env
+# 以及env.development 和 env.production 文件
+cp env/env.development.example env/env.development
+cp env/env.production.example env/env.production
+# 修改env.development 和 env.production 文件中的变量
 ```
 
 ### 开发
@@ -127,7 +137,7 @@ pnpm format
 │   │   ├── error/         # 错误页面
 │   │   ├── permission/    # 权限管理
 │   │   ├── role/          # 角色管理
-│   │   └── user/          # 用户管理
+│   │   └── user/          # 用户模块
 │   └── shared/            # 共享资源
 │       ├── components/    # 共享组件
 │       │   ├── business/  # 业务组件
