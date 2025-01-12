@@ -28,9 +28,11 @@ const props = withDefaults(defineProps<TablePopoverProps>(), {
 
 const { t } = useI18n()
 
-const title = computed(
-  () =>
-    `${props.username}-${props.yearOfReport}/${props.monthOfReport}/${props.dayOfReport}-考情记录`,
+const title = computed(() =>
+  t('attendance.record.title', {
+    username: props.username,
+    date: `${props.yearOfReport}/${props.monthOfReport}/${props.dayOfReport}`
+  })
 )
 
 const status = computed(() => {
@@ -46,27 +48,15 @@ const status = computed(() => {
   <Popover>
     <TypographyText :style="{ color: status.color }">{{ status.text }}</TypographyText>
     <template #content>
-      <Card
-        :title="title"
-        :head-style="{ padding: 'var(--spacing-large)' }"
-        style="min-width: 500px"
-      >
+      <Card :title="title" :head-style="{ padding: 'var(--spacing-large)' }" style="min-width: 500px">
         <template #extra>
           <Tag :color="status.color">{{ status.text }}</Tag>
         </template>
         <Flex vertical gap="large">
-          <TypographyText
-            >{{ t('attendance.popover.checkInTime') }}：{{ adtInTime }}</TypographyText
-          >
-          <TypographyText
-            >{{ t('attendance.popover.checkOutTime') }}：{{ adtOutTime }}</TypographyText
-          >
-          <TypographyText
-            >{{ t('attendance.popover.checkInPlace') }}：{{ adtInPlace }}</TypographyText
-          >
-          <TypographyText
-            >{{ t('attendance.popover.checkOutPlace') }}：{{ adtOutPlace }}</TypographyText
-          >
+          <TypographyText>{{ t('attendance.popover.checkInTime') }}：{{ adtInTime }}</TypographyText>
+          <TypographyText>{{ t('attendance.popover.checkOutTime') }}：{{ adtOutTime }}</TypographyText>
+          <TypographyText>{{ t('attendance.popover.checkInPlace') }}：{{ adtInPlace }}</TypographyText>
+          <TypographyText>{{ t('attendance.popover.checkOutPlace') }}：{{ adtOutPlace }}</TypographyText>
         </Flex>
       </Card>
     </template>

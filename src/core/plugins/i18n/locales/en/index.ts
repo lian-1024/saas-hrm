@@ -544,6 +544,9 @@ const en: LocalMessageType = {
         },
       },
     },
+    record: {
+      title: "{username}'s Attendance Record for {date}"
+    },
   },
   user: {
     signIn: {

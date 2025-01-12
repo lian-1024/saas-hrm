@@ -193,12 +193,10 @@ const generateDateColumns = (days: number) => {
           adtInPlace: attendanceRecord?.adtInPlace,
           adtOutPlace: attendanceRecord?.adtOutPlace,
           onClick: () => {
-            Object.assign(updateAttendanceProps, {
-              userId: record.id ?? 0,
-              day: date,
-              adtStatu: text,
-              departmentId: record.departmentId,
-            })
+            updateAttendanceProps.userId = record.id ?? 0
+            updateAttendanceProps.departmentId = record.departmentId
+            updateAttendanceProps.day = date
+            updateAttendanceProps.adtStatu = text
             updateModalOpenStatus.value = true
           },
         })
@@ -280,12 +278,8 @@ watch(
           t('attendance.top.unprocessed')
         }}</TypographyText>
         <QSkeleton :paragraph="false" active :loading="getAttendanceListLoading">
-          <CountTo
-            :start-val="0"
-            :end-val="attendanceInfo.tobeTaskCount"
-            :duration="3000"
-            class="attendance-top-total"
-          />
+          <CountTo :start-val="0" :end-val="attendanceInfo.tobeTaskCount" :duration="3000"
+            class="attendance-top-total" />
         </QSkeleton>
       </Flex>
       <Flex gap="middle">
@@ -296,24 +290,14 @@ watch(
       </Flex>
     </Flex>
     <Flex class="attendance-middle" gap="small" align="flex-start">
-      <TypographyTitle class="attendance-middle-label" :level="5"
-        >{{ t('attendance.filter.department') }}:
+      <TypographyTitle class="attendance-middle-label" :level="5">{{ t('attendance.filter.department') }}:
       </TypographyTitle>
-      <QSkeleton
-        active
-        :title="false"
-        :loading="getDepartmentListLoading"
-        :paragraph="{
-          rows: 2,
-        }"
-      >
+      <QSkeleton active :title="false" :loading="getDepartmentListLoading" :paragraph="{
+        rows: 2,
+      }">
         <CheckboxGroup v-model:value="selectedDepartmentIds" class="w-full">
           <div class="attendance-middle-checkbox-group">
-            <Checkbox
-              v-for="option in departmentOptions"
-              :key="option.value.toString()"
-              :value="option.value"
-            >
+            <Checkbox v-for="option in departmentOptions" :key="option.value.toString()" :value="option.value">
               {{ option.label }}
             </Checkbox>
           </div>
@@ -322,32 +306,22 @@ watch(
     </Flex>
     <div class="attendance-table">
       <QSpin :spinning="getAttendanceListLoading">
-        <Table
-          :pagination="{
-            position: ['bottomCenter'],
-            pageSize: attendancePagingParams.pagesize,
-            total: employeeDataSource.total,
-            current: attendancePagingParams.page,
-            onChange: handleChangeTablePagination,
-            showTotal: (total) => t('attendance.table.pagination.total', { total }),
-          }"
-          :columns="attendanceColumns"
-          :data-source="employeeDataSource.rows"
-          :scroll="{ x: 'max-content' }"
-          bordered
-        />
+        <Table :pagination="{
+          position: ['bottomCenter'],
+          pageSize: attendancePagingParams.pagesize,
+          total: employeeDataSource.total,
+          current: attendancePagingParams.page,
+          onChange: handleChangeTablePagination,
+          showTotal: (total) => t('attendance.table.pagination.total', { total }),
+        }" :columns="attendanceColumns" :data-source="employeeDataSource.rows" :scroll="{ x: 'max-content' }"
+          bordered />
       </QSpin>
     </div>
     <CompanyDrawerCompanyDrawer v-model:open="drawerStatus" />
     <SettingModal v-model:open="settingModalStatus" />
-    <UpdateAttendance
-      :day="updateAttendanceProps.day"
-      :adtStatu="updateAttendanceProps.adtStatu"
-      :userId="updateAttendanceProps.userId"
-      :departmentId="updateAttendanceProps.departmentId"
-      v-model:open="updateModalOpenStatus"
-      @update="getAttendanceList(attendancePagingParams)"
-    />
+    <UpdateAttendance :day="updateAttendanceProps.day" :adtStatu="updateAttendanceProps.adtStatu"
+      :userId="updateAttendanceProps.userId" :departmentId="updateAttendanceProps.departmentId"
+      v-model:open="updateModalOpenStatus" @update="getAttendanceList(attendancePagingParams)" />
   </Flex>
 </template>
 
@@ -384,7 +358,7 @@ watch(
       flex: 1;
       display: grid;
       grid-template-columns: repeat(auto-fill, 120px);
-      grid-template-rows: repeat(auto-fill, 30px;);
+      grid-template-rows: repeat(auto-fill, 30px; );
       gap: v-bind('`${token.padding}px`');
     }
   }

@@ -543,6 +543,9 @@ const zhCN = {
         },
       },
     },
+    record: {
+      title: "{username}-{date}-考勤记录"
+    },
   },
   user: {
     signIn: {
