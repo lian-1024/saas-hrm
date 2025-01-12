@@ -5,7 +5,7 @@ import { MESSAGE_LEVEL_COLOR, MESSAGE_LEVEL_TEXT } from "@shared/constants/messa
 import { Button, Flex, Tag, Typography } from "ant-design-vue"
 import { computed, defineComponent, ref, type CSSProperties, type PropType } from "vue"
 import { useI18n } from "vue-i18n"
-import { QSpin } from '../../../spin'
+import { QSpin } from '../../../../base/spin'
 
 export const QNotificationMessage = defineComponent({
   name: 'QNotificationMessage',

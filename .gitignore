@@ -28,6 +28,12 @@ coverage
 *.sw?
 
 
-./env/*
-./dist/*
+# 忽略env目录下的所有文件
+/env/*
+# 不忽略env目录下的.env.example和env.d.ts文件
+!/env/.env.example
+!/env/env.d.ts
+# 忽略dist目录下的所有文件
+/dist/*
+
 *.tsbuildinfo

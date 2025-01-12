@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { QNotificationPopover } from '@/shared/components/business/notification-popover'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons-vue'
 import { QLocalSelect } from '@components/base/local-select'
-import { QNotificationPopover } from '@components/base/notification-popover'
 import { QThemeSwitch } from '@components/base/theme-switch'
 import { useAntdToken } from '@composables/use-antd-token'
 import QUserDropdown from '@modules/user/components/user-dropdown/user-dropdown.vue'
