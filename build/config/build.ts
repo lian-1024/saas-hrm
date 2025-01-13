@@ -25,13 +25,10 @@ export const createBuildConfig = (viteEnv: ImportMetaEnv): BuildOptions => ({
         "dayjs-vendor": ['dayjs'],
         "echarts-vendor": ['echarts'],
       },
-      // 块文件名
+      // 资源文件输出路径配置
       chunkFileNames: 'assets/js/[name]-[hash].js',
-      // 入口文件名
       entryFileNames: 'assets/js/[name]-[hash].js',
-      // 资源文件名
-      assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+      assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
     }
-  },
-
+  }
 })
