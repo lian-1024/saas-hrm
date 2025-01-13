@@ -17,4 +17,4 @@ const props = withDefaults(defineProps<QAvatarProps>(), {
   <Avatar v-bind="props" />
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="less"></style>

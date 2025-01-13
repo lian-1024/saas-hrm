@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { QBreadcrumbs } from '@/shared/components/base/breadcrumbs'
-import { useAntdToken } from '@/shared/composables/use-antd-token'
-import { LayoutContent } from 'ant-design-vue'
+import { QBreadcrumbs } from '@/shared/components/base/breadcrumbs';
+import { useAntdToken } from '@/shared/composables/use-antd-token';
+import { LayoutContent } from 'ant-design-vue';
 defineOptions({
   name: 'QLayoutContent',
 })
@@ -21,7 +21,7 @@ const { token } = useAntdToken()
   </LayoutContent>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .layout-content {
   position: relative;
   padding: 24px 16px;

@@ -176,30 +176,17 @@ const { token } = useAntdToken()
 <template>
   <QModal mask v-model:open="modalStatus" @cancel="handleCancel" :title="modalTitle" closable>
     <QSpin :spinning="getPermissionByIdLoading">
-      <Form
-        layout="vertical"
-        ref="formRef"
-        class="permission-form"
-        :rules="permissionFormRules"
-        :model="permissionForm"
-      >
+      <Form layout="vertical" ref="formRef" class="permission-form" :rules="permissionFormRules"
+        :model="permissionForm">
         <FormItem :label="t('permission.modal.form.fields.name')" name="name">
-          <Input
-            v-model:value="permissionForm.name"
-            :placeholder="t('permission.modal.form.placeholder.name')"
-          />
+          <Input v-model:value="permissionForm.name" :placeholder="t('permission.modal.form.placeholder.name')" />
         </FormItem>
         <FormItem :label="t('permission.modal.form.fields.code')" name="code">
-          <Input
-            v-model:value="permissionForm.code"
-            :placeholder="t('permission.modal.form.placeholder.code')"
-          />
+          <Input v-model:value="permissionForm.code" :placeholder="t('permission.modal.form.placeholder.code')" />
         </FormItem>
         <FormItem :label="t('permission.modal.form.fields.description')" name="description">
-          <Input
-            v-model:value="permissionForm.description"
-            :placeholder="t('permission.modal.form.placeholder.description')"
-          />
+          <Input v-model:value="permissionForm.description"
+            :placeholder="t('permission.modal.form.placeholder.description')" />
         </FormItem>
         <FormItem :label="t('permission.modal.form.fields.enable')" name="enVisible">
           <Switch :checked="isOpenPermission" @change="handleChangeIsOpenPermission" />
@@ -218,7 +205,7 @@ const { token } = useAntdToken()
   </QModal>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .permission {
   &-form {
     margin-block: v-bind('`${token.marginLG}px`');

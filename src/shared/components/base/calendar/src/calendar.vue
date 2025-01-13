@@ -17,4 +17,4 @@ const onPanelChange: CalendarProps<Dayjs>['onPanelChange'] = (data, mode) => {
   <Calendar :fullscreen="false" v-model:value="value" @panel-change="onPanelChange" />
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="less"></style>

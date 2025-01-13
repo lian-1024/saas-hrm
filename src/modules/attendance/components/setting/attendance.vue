@@ -80,9 +80,9 @@ const validateDate = computed(() => {
   // 检查所有时间是否都已输入
   return Boolean(
     formState.morningStartTime &&
-      formState.morningEndTime &&
-      formState.afternoonStartTime &&
-      formState.afternoonEndTime,
+    formState.morningEndTime &&
+    formState.afternoonStartTime &&
+    formState.afternoonEndTime,
   )
 })
 
@@ -115,59 +115,26 @@ defineExpose({
 </script>
 
 <template>
-  <Form
-    ref="formRef"
-    :label-col="formLabelCol"
-    :model="formState"
-    :wrapper-col="formWrapperCol"
-    :rules="formRules"
-  >
-    <FormItem
-      :label="t('attendance.settings.attendance.department')"
-      :model="formState"
-      name="departmentId"
-    >
+  <Form ref="formRef" :label-col="formLabelCol" :model="formState" :wrapper-col="formWrapperCol" :rules="formRules">
+    <FormItem :label="t('attendance.settings.attendance.department')" :model="formState" name="departmentId">
       <Select :options="departmentOptions" v-model:value="selectedDepartmentId" />
     </FormItem>
-    <QSkeleton
-      :title="false"
-      active
-      :loading="getAttendanceSettingLoading"
-      :paragraph="{
-        rows: 8,
-      }"
-    >
-      <FormItem
-        :label="t('attendance.settings.attendance.attendanceTime')"
+    <QSkeleton :title="false" active :loading="getAttendanceSettingLoading" :paragraph="{
+      rows: 8,
+    }">
+      <FormItem :label="t('attendance.settings.attendance.attendanceTime')"
         :validate-status="validateDate ? 'success' : 'error'"
-        :help="validateDate ? '' : t('attendance.settings.attendance.rules.selectDate')"
-      >
+        :help="validateDate ? '' : t('attendance.settings.attendance.rules.selectDate')">
         <Flex gap="middle" vertical>
           <Flex gap="small" align="center">
-            <DatePicker
-              picker="time"
-              value-format="HH:mm:ss"
-              v-model:value="formState.morningStartTime"
-            />
+            <DatePicker picker="time" value-format="HH:mm:ss" v-model:value="formState.morningStartTime" />
             -
-            <DatePicker
-              picker="time"
-              value-format="HH:mm:ss"
-              v-model:value="formState.morningEndTime"
-            />
+            <DatePicker picker="time" value-format="HH:mm:ss" v-model:value="formState.morningEndTime" />
           </Flex>
           <Flex gap="small" align="center">
-            <DatePicker
-              picker="time"
-              value-format="HH:mm:ss"
-              v-model:value="formState.afternoonStartTime"
-            />
+            <DatePicker picker="time" value-format="HH:mm:ss" v-model:value="formState.afternoonStartTime" />
             -
-            <DatePicker
-              picker="time"
-              value-format="HH:mm:ss"
-              v-model:value="formState.afternoonEndTime"
-            />
+            <DatePicker picker="time" value-format="HH:mm:ss" v-model:value="formState.afternoonEndTime" />
           </Flex>
         </Flex>
       </FormItem>
@@ -175,4 +142,4 @@ defineExpose({
   </Form>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="less"></style>

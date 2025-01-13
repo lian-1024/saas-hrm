@@ -117,28 +117,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <QModal
-    :width="800"
-    closable
-    mask
-    v-model:open="modalStatus"
-    :title="t('attendance.setting.title')"
-    :destroyOnClose="true"
-  >
+  <QModal :width="800" closable mask v-model:open="modalStatus" :title="t('attendance.setting.title')"
+    :destroyOnClose="true">
     <Tabs v-model:activeKey="activeKey">
       <TabPane v-for="pane in tabOptions" :key="pane.key" :tab="pane.title">
-        <QSkeleton
-          :loading="getCompanyDepartmentListLoading"
-          active
-          :paragraph="{
-            rows: 8,
-          }"
-        >
-          <component
-            :departmentOptions="departmentOptions"
-            :is="pane.pane"
-            :ref="(el) => setComponentRef(el, pane.key)"
-          >
+        <QSkeleton :loading="getCompanyDepartmentListLoading" active :paragraph="{
+          rows: 8,
+        }">
+          <component :departmentOptions="departmentOptions" :is="pane.pane"
+            :ref="(el) => setComponentRef(el, pane.key)">
           </component>
         </QSkeleton>
       </TabPane>
@@ -154,4 +141,4 @@ onMounted(() => {
   </QModal>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="less"></style>

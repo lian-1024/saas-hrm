@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
+import { RouterLink } from 'vue-router';
 
 defineOptions({
   name: 'QLogo',
@@ -14,7 +14,7 @@ defineOptions({
   </div>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .logo-container {
   display: flex;
   justify-content: center;

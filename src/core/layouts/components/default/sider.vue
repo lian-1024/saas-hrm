@@ -88,29 +88,15 @@ const menuItems = computed<MenuProps['items']>(() => {
 </script>
 
 <template>
-  <LayoutSider
-    width="150"
-    class="layout-sider"
-    v-model:collapsed="collapsed"
-    :trigger="null"
-    collapsible
-    :theme="themeStatus"
-  >
+  <LayoutSider width="150" class="layout-sider" v-model:collapsed="collapsed" :trigger="null" collapsible
+    :theme="themeStatus">
     <QLogo />
-    <Menu
-      :theme="themeStatus"
-      mode="inline"
-      v-model:selectedKeys="selectedKeys"
-      v-model:openKeys="openKeys"
-      :items="menuItems"
-      @click="handleClickMenuItem"
-      @openChange="handleOpenChange"
-      class="layout-sider-menu"
-    />
+    <Menu :theme="themeStatus" mode="inline" v-model:selectedKeys="selectedKeys" v-model:openKeys="openKeys"
+      :items="menuItems" @click="handleClickMenuItem" @openChange="handleOpenChange" class="layout-sider-menu" />
   </LayoutSider>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .layout-sider {
   background-color: v-bind('token.colorBgContainer');
 

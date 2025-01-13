@@ -36,4 +36,4 @@ const chartsData = computed<Pick<DashboardDeclareVO, 'xAxis' | 'yAxis'>>(() => {
   </QPanel>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="less"></style>

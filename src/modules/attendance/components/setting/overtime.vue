@@ -179,53 +179,28 @@ const wrapperCol: FormProps['wrapperCol'] = {
     <FormItem :label="t('attendance.settings.overtime.department')" name="departmentId">
       <Select v-model:value="selectedDepartmentId" :options="departmentOptions" />
     </FormItem>
-    <QSkeleton
-      active
-      :title="false"
-      :loading="getOverTimeSettingLoading"
-      :paragraph="{
-        rows: 8,
-      }"
-    >
+    <QSkeleton active :title="false" :loading="getOverTimeSettingLoading" :paragraph="{
+      rows: 8,
+    }">
       <FormItem :label="t('attendance.settings.overtime.overtimeRules')">
         <Flex vertical gap="middle">
-          <Flex
-            v-for="(rule, index) in overtimeRules"
-            wrap="wrap"
-            :key="index"
-            justify="space-between"
-            gap="large"
-            align="center"
-          >
+          <Flex v-for="(rule, index) in overtimeRules" wrap="wrap" :key="index" justify="space-between" gap="large"
+            align="center">
             <Flex span="12" gap="small">
-              <Switch
-                :checked="Boolean(rule.isEnable)"
-                @change="(checked) => updateRule(index, 'isEnable', checked ? 1 : 0)"
-              />
+              <Switch :checked="Boolean(rule.isEnable)"
+                @change="(checked) => updateRule(index, 'isEnable', checked ? 1 : 0)" />
               <TypographyText class="nowrap">{{ rule.rule }}</TypographyText>
             </Flex>
             <Flex gap="small" align="center">
-              <Checkbox
-                :checked="Boolean(rule.isTimeOff)"
-                @change="(e) => updateRule(index, 'isTimeOff', e.target.checked ? 1 : 0)"
-              />
+              <Checkbox :checked="Boolean(rule.isTimeOff)"
+                @change="(e) => updateRule(index, 'isTimeOff', e.target.checked ? 1 : 0)" />
               <TypographyText :disabled="Boolean(!rule.isTimeOff)" class="nowrap">{{
                 t('attendance.settings.overtime.timeOff')
               }}</TypographyText>
-              <TimePicker
-                valueFormat="mm:ss"
-                :disabled="Boolean(!rule.isTimeOff)"
-                class="overtime-input"
-                :value="rule.ruleStartTime"
-                @change="(time) => updateRule(index, 'ruleStartTime', time)"
-              />
-              <TimePicker
-                valueFormat="mm:ss"
-                :disabled="Boolean(!rule.isTimeOff)"
-                class="overtime-input"
-                :value="rule.ruleEndTime"
-                @change="(time) => updateRule(index, 'ruleEndTime', time)"
-              />
+              <TimePicker valueFormat="mm:ss" :disabled="Boolean(!rule.isTimeOff)" class="overtime-input"
+                :value="rule.ruleStartTime" @change="(time) => updateRule(index, 'ruleStartTime', time)" />
+              <TimePicker valueFormat="mm:ss" :disabled="Boolean(!rule.isTimeOff)" class="overtime-input"
+                :value="rule.ruleEndTime" @change="(time) => updateRule(index, 'ruleEndTime', time)" />
             </Flex>
           </Flex>
         </Flex>
@@ -247,16 +222,10 @@ const wrapperCol: FormProps['wrapperCol'] = {
             <TypographyText class="nowrap">{{
               t('attendance.settings.overtime.latestEffectiveDate')
             }}</TypographyText>
-            <DatePicker
-              valueFormat="MM-DD"
-              class="overtime-input"
-              v-model:value="formData.latestEffectDate"
-            />
+            <DatePicker valueFormat="MM-DD" class="overtime-input" v-model:value="formData.latestEffectDate" />
           </Flex>
           <Flex gap="small" align="center">
-            <TypographyText class="nowrap"
-              >{{ t('attendance.settings.overtime.minimumUnit') }}:</TypographyText
-            >
+            <TypographyText class="nowrap">{{ t('attendance.settings.overtime.minimumUnit') }}:</TypographyText>
             <Tooltip :trigger="['hover']" placement="topLeft" overlay-class-name="numeric-input">
               <template #title>
                 <span class="numeric-input-title">{{ formData.unit }}</span>
@@ -273,7 +242,7 @@ const wrapperCol: FormProps['wrapperCol'] = {
   </Form>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .overtime {
   &-wrapper {
     display: flex;

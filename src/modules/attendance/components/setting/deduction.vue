@@ -111,174 +111,106 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
     <FormItem :label="t('attendance.settings.deduction.department')" name="departmentId">
       <Select :options="departmentOptions" v-model:value="selectedDepartmentId" />
     </FormItem>
-    <QSkeleton
-      :title="false"
-      active
-      :loading="getDeductionSettingByDepartmentLoading"
-      :paragraph="{
-        rows: 8,
-      }"
-    >
+    <QSkeleton :title="false" active :loading="getDeductionSettingByDepartmentLoading" :paragraph="{
+      rows: 8,
+    }">
       <FormItem class="deduction-content">
         <Flex vertical>
           <Flex vertical gap="large" v-for="item in deductionSetting" :key="item.id">
             <template v-if="!Boolean(+item.isAbsenteeism)">
               <Row>
                 <Col span="4">
-                  <Flex align="center" gap="small">
-                    <TypographyText class="deduction-text"
-                      >{{ deductionText(item.dedTypeCode)
-                      }}{{ t('attendance.settings.deduction.deduction') }}</TypographyText
-                    >
-                    <Switch
-                      :checked="Boolean(item.isEnable)"
-                      @change="(checked) => handleSwitchChange(Boolean(checked), item)"
-                    />
-                  </Flex>
+                <Flex align="center" gap="small">
+                  <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode)
+                    }}{{ t('attendance.settings.deduction.deduction') }}</TypographyText>
+                  <Switch :checked="Boolean(item.isEnable)"
+                    @change="(checked) => handleSwitchChange(Boolean(checked), item)" />
+                </Flex>
                 </Col>
               </Row>
               <Row>
                 <Col span="8" offset="4">
-                  <Flex align="center" gap="small">
-                    <TypographyText class="deduction-text"
-                      >{{ deductionText(item.dedTypeCode) }}≤</TypographyText
-                    >
-                    <Input
-                      class="deduction-input"
-                      v-model:value="item.periodLowerLimit"
-                      type="number"
-                    />
-                    <TypographyText class="deduction-text"
-                      >{{ t('attendance.settings.deduction.minutes') }}
-                    </TypographyText>
-                  </Flex>
+                <Flex align="center" gap="small">
+                  <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}≤</TypographyText>
+                  <Input class="deduction-input" v-model:value="item.periodLowerLimit" type="number" />
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.minutes') }}
+                  </TypographyText>
+                </Flex>
                 </Col>
               </Row>
               <Row>
                 <Col span="14" offset="6">
-                  <Flex align="center" gap="small">
-                    <TypographyText class="deduction-text"
-                      >{{ deductionText(item.dedTypeCode) }}≤</TypographyText
-                    >
-                    <Input
-                      class="deduction-input"
-                      v-model:value="item.timesLowerLimit"
-                      type="number"
-                    />
-                    <TypographyText class="deduction-text"
-                      >{{ t('attendance.settings.deduction.times') }},{{
-                        t('attendance.settings.deduction.perTime')
-                      }}</TypographyText
-                    >
-                    <Input
-                      class="deduction-input"
-                      v-model:value="item.dedAmonutLowerLimit"
-                      type="number"
-                    />
-                    <TypographyText class="deduction-text">{{
-                      t('attendance.settings.deduction.yuan')
-                    }}</TypographyText>
-                  </Flex>
+                <Flex align="center" gap="small">
+                  <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}≤</TypographyText>
+                  <Input class="deduction-input" v-model:value="item.timesLowerLimit" type="number" />
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.times') }},{{
+                    t('attendance.settings.deduction.perTime')
+                  }}</TypographyText>
+                  <Input class="deduction-input" v-model:value="item.dedAmonutLowerLimit" type="number" />
+                  <TypographyText class="deduction-text">{{
+                    t('attendance.settings.deduction.yuan')
+                  }}</TypographyText>
+                </Flex>
                 </Col>
               </Row>
               <Row>
                 <Col span="14" offset="6">
-                  <Flex align="center" gap="small">
-                    <TypographyText class="deduction-text"
-                      >{{ deductionText(item.dedTypeCode) }}></TypographyText
-                    >
-                    <Input
-                      disabled
-                      class="deduction-input"
-                      v-model:value="item.timesUpperLimit"
-                      type="number"
-                    />
-                    <TypographyText class="deduction-text"
-                      >{{ t('attendance.settings.deduction.times') }},{{
-                        t('attendance.settings.deduction.perTime')
-                      }}</TypographyText
-                    >
-                    <Input
-                      class="deduction-input"
-                      v-model:value="item.dedAmonutUpperLimit"
-                      type="number"
-                    />
-                    <TypographyText class="deduction-text">{{
-                      t('attendance.settings.deduction.yuan')
-                    }}</TypographyText>
-                  </Flex>
+                <Flex align="center" gap="small">
+                  <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}></TypographyText>
+                  <Input disabled class="deduction-input" v-model:value="item.timesUpperLimit" type="number" />
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.times') }},{{
+                    t('attendance.settings.deduction.perTime')
+                  }}</TypographyText>
+                  <Input class="deduction-input" v-model:value="item.dedAmonutUpperLimit" type="number" />
+                  <TypographyText class="deduction-text">{{
+                    t('attendance.settings.deduction.yuan')
+                  }}</TypographyText>
+                </Flex>
                 </Col>
               </Row>
               <Row>
                 <Col span="8" offset="4">
-                  <Flex align="center" gap="small">
-                    <TypographyText class="deduction-text"
-                      >{{ deductionText(item.dedTypeCode) }}></TypographyText
-                    >
-                    <Input
-                      disabled
-                      class="deduction-input"
-                      v-model:value="item.periodUpperLimit"
-                      type="number"
-                    />
-                    <TypographyText class="deduction-text"
-                      >{{ t('attendance.settings.deduction.minutes') }}
-                    </TypographyText>
-                  </Flex>
+                <Flex align="center" gap="small">
+                  <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}></TypographyText>
+                  <Input disabled class="deduction-input" v-model:value="item.periodUpperLimit" type="number" />
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.minutes') }}
+                  </TypographyText>
+                </Flex>
                 </Col>
               </Row>
               <Row>
                 <Col span="14" offset="6">
-                  <Flex align="center" gap="small">
-                    <TypographyText class="deduction-text"
-                      >{{ deductionText(item.dedTypeCode) }}≤</TypographyText
-                    >
-                    <Input
-                      disabled
-                      class="deduction-input"
-                      v-model:value="item.absenceTimesUpperLimt"
-                      type="number"
-                    />
-                    <TypographyText class="deduction-text"
-                      >{{ t('attendance.settings.deduction.times') }},{{
-                        t('attendance.settings.deduction.perTime')
-                      }}</TypographyText
-                    >
-                    <Input class="deduction-input" v-model:value="item.absenceDays" type="number" />
-                    <TypographyText class="deduction-text">{{
-                      t('attendance.settings.deduction.days')
-                    }}</TypographyText>
-                  </Flex>
+                <Flex align="center" gap="small">
+                  <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}≤</TypographyText>
+                  <Input disabled class="deduction-input" v-model:value="item.absenceTimesUpperLimt" type="number" />
+                  <TypographyText class="deduction-text">{{ t('attendance.settings.deduction.times') }},{{
+                    t('attendance.settings.deduction.perTime')
+                  }}</TypographyText>
+                  <Input class="deduction-input" v-model:value="item.absenceDays" type="number" />
+                  <TypographyText class="deduction-text">{{
+                    t('attendance.settings.deduction.days')
+                  }}</TypographyText>
+                </Flex>
                 </Col>
               </Row>
             </template>
             <template v-else>
               <Row>
                 <Col span="4">
-                  <Flex align="center" gap="small">
-                    <TypographyText class="deduction-text"
-                      >{{ deductionText(item.dedTypeCode) }}扣款</TypographyText
-                    >
-                    <Switch
-                      :checked="Boolean(item.isEnable)"
-                      @change="(checked) => handleSwitchChange(Boolean(checked), item)"
-                    />
-                  </Flex>
+                <Flex align="center" gap="small">
+                  <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}扣款</TypographyText>
+                  <Switch :checked="Boolean(item.isEnable)"
+                    @change="(checked) => handleSwitchChange(Boolean(checked), item)" />
+                </Flex>
                 </Col>
               </Row>
               <Row>
                 <Col span="10" offset="4">
-                  <Flex align="center" gap="small">
-                    <TypographyText class="deduction-text"
-                      >{{ deductionText(item.dedTypeCode) }}按</TypographyText
-                    >
-                    <Input
-                      class="deduction-input"
-                      v-model:value="item.fineSalaryMultiples"
-                      type="number"
-                    />
-                    <TypographyText class="deduction-text">部工资处罚</TypographyText>
-                  </Flex>
+                <Flex align="center" gap="small">
+                  <TypographyText class="deduction-text">{{ deductionText(item.dedTypeCode) }}按</TypographyText>
+                  <Input class="deduction-input" v-model:value="item.fineSalaryMultiples" type="number" />
+                  <TypographyText class="deduction-text">部工资处罚</TypographyText>
+                </Flex>
                 </Col>
               </Row>
             </template>
@@ -289,14 +221,13 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
   </Form>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .deduction {
   &-text {
     min-width: max-content;
   }
 
-  &-input {
-  }
+  &-input {}
 
   &-content {
     :deep(.ant-form-item-row) {

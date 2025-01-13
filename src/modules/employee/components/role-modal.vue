@@ -105,7 +105,7 @@ const loading = computed(() => getRoleListEnableLoading.value || getEmployeeDeta
   </QModal>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .modal-content {
   padding: var(--spacing-middle);
 }

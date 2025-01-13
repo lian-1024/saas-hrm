@@ -121,21 +121,14 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
         <Select v-model:value="selectedDepartmentId" :options="departmentOptions" />
       </FormItem>
     </Form>
-    <QSkeleton
-      :title="false"
-      active
-      :loading="getLeaveSettingByDepartmentIdLoading"
-      :paragraph="{
-        rows: 8,
-      }"
-    >
+    <QSkeleton :title="false" active :loading="getLeaveSettingByDepartmentIdLoading" :paragraph="{
+      rows: 8,
+    }">
       <Table :pagination="false" :columns="leaveTypeColumns" :data-source="leaveSettingList">
         <template #bodyCell="{ column, record }">
           <template v-if="column.dataIndex === 'isEnable'">
-            <Switch
-              :checked="Boolean(record.isEnable)"
-              @change="(checked) => handleSwitchChange(Boolean(checked), record)"
-            />
+            <Switch :checked="Boolean(record.isEnable)"
+              @change="(checked) => handleSwitchChange(Boolean(checked), record)" />
           </template>
         </template>
       </Table>
@@ -143,4 +136,4 @@ const formWrapperCol: FormProps['wrapperCol'] = { span: 16 }
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="less"></style>
