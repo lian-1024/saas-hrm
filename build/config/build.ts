@@ -26,9 +26,24 @@ export const createBuildConfig = (viteEnv: ImportMetaEnv): BuildOptions => ({
         "echarts-vendor": ['echarts'],
       },
       // 资源文件输出路径配置
-      chunkFileNames: 'assets/js/[name]-[hash].js',
-      entryFileNames: 'assets/js/[name]-[hash].js',
-      assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
+      chunkFileNames: () => {
+        return `js/[name]-[hash].js`
+      },
+      entryFileNames: 'js/[name]-[hash].js',
+      assetFileNames: (assetInfo) => {
+        const fileName = assetInfo.name || '';
+        const extType = fileName.split('.').at(-1) || '';
+        if (/\.(png|jpe?g|gif|svg|webp|ico)$/.test(fileName)) {
+          return `images/[name]-[hash][extname]`;
+        }
+        if (/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/.test(fileName)) {
+          return `media/[name]-[hash][extname]`;
+        }
+        if (/\.(woff2?|eot|ttf|otf)$/.test(fileName)) {
+          return `fonts/[name]-[hash][extname]`;
+        }
+        return `${extType}/[name]-[hash][extname]`;
+      }
     }
   }
 })
