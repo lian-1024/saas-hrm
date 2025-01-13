@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main # 当main分支有推送时触发部署
-  workflow_dispatch: # 允许手动触发部署
+  workflow_dispatch: # 允许手动触发部署.
 
 # 设置GITHUB_TOKEN的权限
 permissions:
