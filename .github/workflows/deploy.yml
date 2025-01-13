@@ -20,6 +20,12 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      IHRM_APP_TITLE: 'Admin IHRM'
+      IHRM_APP_API_BASE_URL: 'https://heimahr.itheima.net'
+      IHRM_BASE_URL: '/admin-ihrm/'
+      IHRM_APP_DESCRIPTION: '企业级人力资源管理系统'
+      IHRM_ASSETS_URL: '/admin-ihrm/'
 
     steps:
       - name: Checkout
