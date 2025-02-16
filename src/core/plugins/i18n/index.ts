@@ -1,16 +1,22 @@
 import type { App } from 'vue'
 import { createI18n } from 'vue-i18n'
 import { SUPPORT_LOCALES_TEXT } from './constants'
-import en from './locales/en'
-import zhCN from './locales/zh-CN'
-import { SUPPORT_LOCALES, type LocaleType } from './types'
 
+const loadLocale = async (locale: string) => {
+  const res = await fetch(`locales/${locale}.json`)
+  return res.json()
+}
+
+const en = await loadLocale('en')
+const zhCN = await loadLocale('zh-CN')
+
+import { SUPPORT_LOCALES, type LocaleType } from './types'
 // 获取浏览器语言
 const language = (navigator.language || 'zh-CN').toLocaleLowerCase()
 
 const messages = {
   'zh-CN': zhCN,
-  en,
+  en
 }
 
 const i18n = createI18n({
