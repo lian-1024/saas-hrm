@@ -1,0 +1,35 @@
+name: CI/CD
+
+# 触发条件
+on:
+  push:
+    branches:
+      - main
+
+# 工作流
+jobs:
+  # 构建
+  build:
+    runs-on: ubuntu-latest # 运行系统
+    env:
+      TITLE: 'CI/CD'
+    steps:
+      - uses: actions/checkout@v3 # 检查代码
+      - name: Use Node.js 20.x # 使用 Node.js 18.x
+        uses: actions/setup-node@v3  # 设置 node 版本
+        with:
+          node-version: '20' # 指定 node 版本
+      - run: npm install # 安装依赖
+      - run: npm run build-only # 构建
+
+
+  # 部署
+  deploy:
+    needs: build # 依赖 build 工作流
+    runs-on: ubuntu-latest # 运行系统
+    steps:
+      - uses: actions/checkout@v3 # 检查代码
+      - name: Build Docker image # 构建 Docker 镜像
+        run: docker build -t ${{ env.TITLE }} . # 构建镜像命令
+      - name: Run Docker container # 运行 Docker 容器
+        run: docker run -d -p 8080:80 ${{ env.TITLE }} # 运行容器命令

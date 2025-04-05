@@ -36,4 +36,6 @@ coverage
 # 忽略dist目录下的所有文件
 /dist/*
 
+interview.md
+project-interview.md
 *.tsbuildinfo

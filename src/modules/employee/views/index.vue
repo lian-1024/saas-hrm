@@ -39,6 +39,7 @@ import {
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { FormOfEmployment } from '../constants'
+import { PERMISSION_POINTS } from '@shared/constants/permission'
 const { isDark } = useTheme()
 const { token } = useAntdToken()
 const { t } = useI18n()
@@ -252,7 +253,7 @@ const openMassNotificationModal = () => {
           {{ t('employee.actions.sendNotification') }}
         </Button>
         <Flex gap="small">
-          <Button type="primary" :size="actionsSize" @click="() => handleAddEmployee()">
+          <Button v-permission="PERMISSION_POINTS.ADD_EMPLOYEE" type="primary" :size="actionsSize" @click="() => handleAddEmployee()">
             {{ t('employee.actions.addEmployee') }}
           </Button>
           <Button :size="actionsSize" @click="importExcelModalStatus = true">

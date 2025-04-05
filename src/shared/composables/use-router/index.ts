@@ -7,7 +7,7 @@ import type { RouteRecordRaw } from 'vue-router'
 // 必须要是全局唯一的
 const isRoutesGenerated = ref<boolean>(false)
 
-const useRouter = () => {
+const useRouterManager = () => {
   const setIsRoutesGenerated = (value: boolean) => {
     isRoutesGenerated.value = value
   }
@@ -129,4 +129,4 @@ const useRouter = () => {
   }
 }
 
-export default useRouter
+export default useRouterManager

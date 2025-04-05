@@ -19,7 +19,7 @@ export const usePolling = (
     autoStart = true
   } = options
 
-  let pollingTimer: NodeJS.Timeout | null = null
+  let pollingTimer: ReturnType<typeof setInterval> | null = null
 
   // 开始轮询
   const startPolling = () => {

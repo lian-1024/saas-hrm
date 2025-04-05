@@ -63,6 +63,7 @@ export const createLocaleStore = defineStore(
       currentLocale.value = locale
 
       // 设置 i18n 语言
+      // i18n.global.locale.value = locale
       i18n.global.locale.value = locale
 
       // 保存到 localStorage

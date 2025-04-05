@@ -27,7 +27,7 @@ export const createVitePlugins = (viteEnv: ImportMetaEnv): PluginOption[] => {
       threshold: 10240, // 压缩阈值
       verbose: true, // 是否在控制台中输出压缩结果
       ext: '.gz', // 压缩后文件后缀
-      deleteOriginFile: true // 源文件压缩后是否删除
+      deleteOriginFile: false // 源文件压缩后是否删除
     }),
     imagemin({
       gifsicle: { // gif图片压缩

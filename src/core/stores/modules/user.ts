@@ -10,7 +10,6 @@ import { ref } from 'vue'
 import { pinia } from '..'
 
 const { resetRoutes, setIsRoutesGenerated } = useRouter()
-
 export const createUserStore = defineStore(
   'user',
   () => {

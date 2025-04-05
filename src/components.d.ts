@@ -12,8 +12,10 @@ declare module 'vue' {
     Calendar: typeof import('./shared/components/base/Calendar/src/calendar.vue')['default']
     EChartsUI: typeof import('./shared/components/base/EChartsUI/src/echarts-ui.vue')['default']
     Modal: typeof import('./shared/components/base/Modal/src/modal.vue')['default']
+    SchemaForm: typeof import('./shared/components/base/schema-form/src/schema-form.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TMap: typeof import('./shared/components/base/TMap')['default']
+    VirtualList: typeof import('./shared/components/base/virtual-list/src/virtual-list.vue')['default']
   }
 }

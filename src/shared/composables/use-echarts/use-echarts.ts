@@ -1,3 +1,6 @@
+/**
+ * 导入所需的依赖
+ */
 import echarts from '@/core/plugins/echarts'
 import {
   tryOnUnmounted,
@@ -11,21 +14,33 @@ import type { EChartsOption } from 'echarts'
 import { computed, nextTick, unref, watch, type Ref } from 'vue'
 import type { EChartUIType, SizeHandlerOptions, UseEChartsOptions } from './types'
 
+/**
+ * ECharts 组合式函数
+ * @param chartRef - 图表容器的引用
+ * @param options - 配置选项
+ * @returns 返回图表相关的方法和实例
+ */
 export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptions = {}) => {
+  // 解构配置选项,设置默认值
   const { theme = null, initOptions = {}, updateOptions = {} } = options
 
-  // 状态管理
-  let chartInstance: echarts.ECharts | null = null
-  let cahceOptions: EChartsOption = {}
-  let resizeObserver: ReturnType<typeof useResizeObserver> | null = null
+  // 状态管理变量
+  let chartInstance: echarts.ECharts | null = null // 图表实例
+  let cacheOptions: EChartsOption = {} // 缓存的配置项
+  let resizeObserver: ReturnType<typeof useResizeObserver> | null = null // resize观察器
 
+  // 获取暗黑模式状态
   const isDark = useDark()
+  // 获取窗口尺寸
   const { width, height } = useWindowSize()
 
-  // 防抖函数处理 resize 函数
+  // 使用防抖函数处理resize,避免频繁调用
   const resizeHandler = useDebounceFn(() => resize(), 200)
 
-  // 计算暗黑模式下的配置
+  /**
+   * 计算暗黑模式下的配置
+   * 当处于暗黑模式时,设置透明背景
+   */
   const getOptions = computed<EChartsOption>(() => {
     if (!isDark.value) return {}
     return {
@@ -35,24 +50,25 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
 
   /**
    * 初始化图表
-   * @returns
+   * 创建ECharts实例并绑定到DOM元素
+   * @returns 返回图表实例或null
    */
   const initCharts = () => {
     const el = unref(chartRef)?.$el
     if (!el) return null
 
-    // 如果图表实例存在，则销毁
+    // 如果已存在实例则销毁
     if (chartInstance) {
       chartInstance.dispose()
       chartInstance = null
     }
 
-    // 创建新实例
+    // 创建新的ECharts实例
     chartInstance = echarts.init(el, theme || (isDark.value ? 'dark' : null), {
       ...initOptions,
     })
 
-    // 绑定resize 观察器
+    // 绑定resize观察器
     if (!resizeObserver) {
       resizeObserver = useResizeObserver(el, resizeHandler)
     }
@@ -61,27 +77,27 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
 
   /**
    * 渲染图表
-   * @param renderOptions 接收 ECharts 配置项
-   * @param options 接收可选的更新选项
+   * @param renderOptions - ECharts的配置项
+   * @param options - 可选的更新选项
    */
   const renderECharts = async (
     renderOptions: EChartsOption,
     options: UseEChartsOptions['updateOptions'] = {},
   ) => {
     try {
-      // 缓存传入的配置项
-      cahceOptions = renderOptions
+      // 缓存配置项
+      cacheOptions = renderOptions
 
+      // 合并配置项
       const currentOptions = {
         ...renderOptions,
-        ...getOptions.value, // 合并暗黑模式下的配置
+        ...getOptions.value, // 合并暗黑模式配置
       }
 
       // 处理容器高度为0的情况
       if (unref(chartRef)?.offsetHeight === 0) {
         await new Promise((resolve) => {
           useTimeoutFn(() => {
-            // 如果容器高度为0，延迟30ms后重新渲染
             renderECharts(currentOptions, options)
             resolve(null)
           }, 30)
@@ -89,20 +105,18 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
         return
       }
 
-      await nextTick() // 等待下一个tick
+      await nextTick()
 
       // 确保实例存在
       if (!chartInstance) {
-        // 如果实例不存在，初始化图表
         const instance = initCharts()
-
-        if (!instance) return // 如果初始化失败,直接返回
+        if (!instance) return
       }
 
-      // 设置选项
+      // 设置图表配置
       chartInstance?.setOption(currentOptions, {
         ...updateOptions,
-        ...options, // 合并传入的更新选项
+        ...options,
       })
     } catch (error) {
       console.error('渲染图表失败:', error)
@@ -111,19 +125,18 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
 
   /**
    * 调整图表大小
-   * @param options
-   * @returns
+   * @param options - 尺寸调整的配置选项
    */
   const resize = (options?: SizeHandlerOptions) => {
-    if (!chartInstance) return // 如果实例不存在 直接返回
+    if (!chartInstance) return
 
     try {
       chartInstance.resize({
         width: options?.width,
         height: options?.height,
         animation: options?.animation ?? {
-          duration: 300, // 默认动画持续时间为300ms
-          easing: 'quadraticIn', // 默认缓动函数为 quadraticIn
+          duration: 300,
+          easing: 'quadraticIn',
         },
       })
     } catch (error) {
@@ -133,7 +146,8 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
 
   /**
    * 获取图表实例
-   * @returns
+   * 如果实例不存在则初始化
+   * @returns 返回图表实例
    */
   const getInstance = () => {
     if (!chartInstance) {
@@ -142,27 +156,27 @@ export const useECharts = (chartRef: Ref<EChartUIType>, options: UseEChartsOptio
     return chartInstance
   }
 
-  // 监听窗口尺寸变化 当窗口尺寸发生变化时
+  // 监听窗口尺寸变化
   watch([width, height], () => resizeHandler())
 
-  // 监听主题变化 当主题发生变化时    调整图表大小
+  // 监听主题变化
   watch(isDark, () => {
     if (chartInstance) {
-      chartInstance.dispose() // 销毁旧实例
-      initCharts() //重新初始化图表
-      renderECharts(cahceOptions) // 重新渲染图表
-      resize() //调用防抖处理的 resize 函数
+      chartInstance.dispose()
+      initCharts()
+      renderECharts(cacheOptions)
+      resize()
     }
   })
 
   // 组件卸载时清理资源
   tryOnUnmounted(() => {
     if (chartInstance) {
-      chartInstance.dispose() // 销毁实例
-      chartInstance = null // 将实例置为 null
+      chartInstance.dispose()
+      chartInstance = null
     }
     if (resizeObserver) {
-      resizeObserver = null // 将 resize 观察器置为 null
+      resizeObserver = null
     }
   })
 

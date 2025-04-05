@@ -1,10 +1,13 @@
 name: Deploy to GitHub Pages
-
+# 触发条件
 on:
   push:
     branches:
+      # 推送到主分支时触发
       - main
+  # 手动触发
   workflow_dispatch:
+
 
 # 设置GITHUB_TOKEN的权限
 permissions:
@@ -18,36 +21,44 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # 构建任务
   build:
+    # 运行在 ubuntu 最新版本
     runs-on: ubuntu-latest
+    # 环境变量
     env:
+      # 项目标题
       IHRM_APP_TITLE: 'Admin IHRM'
+      # 项目 API 基础 URL
       IHRM_APP_API_BASE_URL: 'https://heimahr.itheima.net'
+      # 项目基础 URL
       IHRM_BASE_URL: '/admin-ihrm/'
+      # 项目描述
       IHRM_APP_DESCRIPTION: '企业级人力资源管理系统'
       IHRM_ASSETS_URL: '/admin-ihrm/'
-
+    # 步骤
     steps:
+      # 检查代码
       - name: Checkout
         uses: actions/checkout@v4
-
+      # 设置 Node 版本
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
+      # 设置 pnpm 版本
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
           run_install: false
-
+      # 获取 pnpm 存储目录
       - name: Get pnpm store directory
         id: pnpm-cache
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
+      # 设置 pnpm 缓存
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
@@ -55,29 +66,32 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-
+      # 安装依赖
       - name: Install dependencies
         run: pnpm install
-
+      # 构建
       - name: Build
         run: pnpm build-only
-
+      # 设置 Pages
       - name: Setup Pages
         uses: actions/configure-pages@v3
-
+      # 上传构建产物
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
           path: './dist'
 
+  # 部署任务
   deploy:
+    # 部署环境
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     needs: build
     runs-on: ubuntu-latest
-    
+    # 步骤
     steps:
+      # 部署到 GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2 
