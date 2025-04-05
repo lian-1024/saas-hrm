@@ -8,8 +8,7 @@ export const createBaseConfig = (viteEnv: ImportMetaEnv) => (rootPath: string, e
     envDir: envDir,  // 环境变量目录
     envPrefix: 'IHRM_',  // 环境变量前缀
     // 确保基础路径正确设置，默认为根路径'/'
-    // base: viteEnv.IHRM_BASE_URL || '/',
-    base: '/',
+    base: viteEnv.IHRM_BASE_URL || '/',
     resolve: {
       alias: {
         '@': resolve(rootPath, './src'),
