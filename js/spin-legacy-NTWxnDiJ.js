@@ -1,1 +1,0 @@
-System.register(["./antd-vendor-legacy-C9XdHwF7.js","./vue-vendor-legacy-x9FjLCOD.js"],(function(e,t){"use strict";var r,s,n,a;return{setters:[e=>{r=e.aK,s=e.aL},e=>{n=e.d,a=e.c}],execute:function(){e("Q",n({name:"QSpin",props:r(),setup(e,{slots:t,attrs:r}){const n={delay:300};return()=>{const r={...n,...e};return a(s,r,{default:()=>[t.default?.()]})}}}))}}}));

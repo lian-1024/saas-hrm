@@ -1,0 +1,1 @@
+System.register(["./antd-vendor-legacy-DsFsidym.js","./vue-vendor-legacy-ikyms0Ip.js"],(function(e,t){"use strict";var n,r,s,u;return{setters:[e=>{n=e.aL,r=e.aM},e=>{s=e.d,u=e.c}],execute:function(){e("Q",s({name:"QSkeleton",props:n(),setup(e,{slots:t}){const n={active:!0};return()=>{const s={...n,...e};return u(r,s,{default:()=>[t.default?.()]})}}}))}}}));

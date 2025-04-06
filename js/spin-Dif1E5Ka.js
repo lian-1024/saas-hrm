@@ -1,0 +1,1 @@
+import{aH as t,aI as o}from"./antd-vendor-ChGXved8.js";import{d,c as i}from"./vue-vendor-BX3z0DRI.js";const u=d({name:"QSpin",props:t(),setup(a,{slots:e,attrs:m}){const p={delay:300};return()=>{const n={...p,...a};return i(o,n,{default:()=>{var r;return[(r=e.default)==null?void 0:r.call(e)]}})}}});export{u as Q};

@@ -1,0 +1,1 @@
+System.register(["./antd-vendor-legacy-DsFsidym.js"],(function(e,t){"use strict";var n;return{setters:[e=>{n=e.t}],execute:function(){e("u",(()=>{const{useToken:e}=n,{token:t}=e();return{token:t}}))}}}));
