@@ -6,14 +6,14 @@ on:
       # 推送到主分支时触发
       - main
   # 手动触发
-  workflow_dispatch:
+  # workflow_dispatch:
 
 
 # 设置GITHUB_TOKEN的权限
 permissions:
   contents: read
-  pages: write
-  id-token: write
+  # pages: write
+  # id-token: write
 
 # 允许一个并发部署
 concurrency:
@@ -45,7 +45,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
       - name: Install  Dependencies and Build # 安装依赖并构建
         run: | 
           npm install
