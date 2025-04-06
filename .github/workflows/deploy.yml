@@ -46,52 +46,61 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Install  Dependencies and Build # 安装依赖并构建
+        run: | 
+          npm install
+          npm run build
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4 # 使用 GitHub Pages 部署 Action
+        with: 
+          folder: dist # 部署目录下的dist 文件夹
       # 设置 pnpm 版本
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          run_install: false
-      # 获取 pnpm 存储目录
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      # 设置 pnpm 缓存
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      # 安装依赖
-      - name: Install dependencies
-        run: pnpm install
-      # 构建
-      - name: Build
-        run: pnpm build-only
-      # 设置 Pages
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      # 上传构建产物
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist'
+      # - name: Setup pnpm
+      #   uses: pnpm/action-setup@v2
+      #   with:
+      #     version: 8
+      #     run_install: false
+      # # 获取 pnpm 存储目录
+      # - name: Get pnpm store directory
+      #   id: pnpm-cache
+      #   shell: bash
+      #   run: |
+      #     echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      # # 设置 pnpm 缓存
+      # - name: Setup pnpm cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+      #     key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-pnpm-store-
+      # # 安装依赖
+      # - name: Install dependencies
+      #   run: pnpm install
+      # # 构建
+      # - name: Build
+      #   run: pnpm build-only
 
-  # 部署任务
-  deploy:
-    # 部署环境
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
-    runs-on: ubuntu-latest
-    # 步骤
-    steps:
-      # 部署到 GitHub Pages
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2 
+      # 设置 Pages
+      # - name: Setup Pages
+      #   uses: actions/configure-pages@v3
+      # # 上传构建产物
+      # - name: Upload artifact
+      #   uses: actions/upload-pages-artifact@v3
+      #   with:
+      #     path: './dist'
+
+  # # 部署任务
+  # deploy:
+  #   # 部署环境
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   # 步骤
+  #   steps:
+  #     # 部署到 GitHub Pages
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v2 
