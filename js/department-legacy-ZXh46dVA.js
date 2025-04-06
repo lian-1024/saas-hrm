@@ -1,0 +1,1 @@
+System.register([],(function(e,t){"use strict";return{execute:function(){e("D",{toTree(e,t=0){return e.filter((e=>e.pid===t)).map((t=>({key:t.id,title:t.name,managerName:t.managerName,children:this.toTree(e,t.id)})))},toCascader(e,t=0){return e.filter((e=>e.pid===t)).map((t=>({value:t.id.toString(),label:t.name,code:parseInt(t.code),children:this.toCascader(e,t.id)})))}})}}}));

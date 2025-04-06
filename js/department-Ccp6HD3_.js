@@ -1,0 +1,1 @@
+const d={toTree(a,r=0){return a.filter(e=>e.pid===r).map(e=>({key:e.id,title:e.name,managerName:e.managerName,children:this.toTree(a,e.id)}))},toCascader(a,r=0){return a.filter(e=>e.pid===r).map(e=>({value:e.id.toString(),label:e.name,code:parseInt(e.code),children:this.toCascader(a,e.id)}))}};export{d as D};

@@ -1,0 +1,1 @@
+const e={NOTIFICATION:1,TIPS:2,IMPORTANT:3,URGENT:4},T={[e.NOTIFICATION]:"common.message.level.notification",[e.TIPS]:"common.message.level.tips",[e.IMPORTANT]:"common.message.level.important",[e.URGENT]:"common.message.level.urgent"},o={[e.NOTIFICATION]:"processing",[e.TIPS]:"default",[e.IMPORTANT]:"warning",[e.URGENT]:"error"};export{T as M,o as a,e as b};

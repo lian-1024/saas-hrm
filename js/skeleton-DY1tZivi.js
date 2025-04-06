@@ -1,0 +1,1 @@
+import{aO as n,aP as p}from"./antd-vendor-T3zku5__.js";import{d as m,c as u}from"./vue-vendor-I_PSXyJa.js";const f=m({name:"QSkeleton",props:n(),setup(t,{slots:e}){const o={active:!0};return()=>{const a={...o,...t};return u(p,a,{default:()=>{var r;return[(r=e.default)==null?void 0:r.call(e)]}})}}});export{f as Q};

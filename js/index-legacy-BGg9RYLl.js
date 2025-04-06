@@ -1,0 +1,1 @@
+System.register([],(function(t,e){"use strict";return{execute:function(){t("O",{PASSWORD:"password",AVATAR:"avatar"}),t("A",{ROTATE_RIGHT:"rotateRight",ROTATE_LEFT:"rotateLeft"}),t("Q",{UN_SCAN:1,SCANED:2,SUCCESS:3,EXPIRED:4,CANCEL:5})}}}));
