@@ -6,14 +6,13 @@ on:
       # 推送到主分支时触发
       - main
   # 手动触发
-  # workflow_dispatch:
-
+  workflow_dispatch:
 
 # 设置GITHUB_TOKEN的权限
 permissions:
-  contents: read
-  # pages: write
-  # id-token: write
+  contents: write
+  pages: write
+  id-token: write
 
 # 允许一个并发部署
 concurrency:
@@ -28,7 +27,7 @@ jobs:
     # 环境变量
     env:
       # 项目标题
-      IHRM_APP_TITLE: 'Admin IHRM'
+      IHRM_APP_TITLE: '企业级人力资源管理系统'
       # 项目 API 基础 URL
       IHRM_APP_API_BASE_URL: 'https://heimahr.itheima.net'
       # 项目基础 URL
@@ -41,45 +40,28 @@ jobs:
       # 检查代码
       - name: Checkout
         uses: actions/checkout@v4
+      
       # 设置 Node 版本
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install  Dependencies and Build # 安装依赖并构建
+          cache: 'npm'
+      
+      # 安装依赖并构建
+      - name: Install Dependencies and Build
         run: | 
           npm install
           npm run build-only
+      
+      # 部署到 GitHub Pages
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4 # 使用 GitHub Pages 部署 Action
+        uses: JamesIves/github-pages-deploy-action@v4
         with: 
-          folder: dist # 部署目录下的dist 文件夹
-      # 设置 pnpm 版本
-      # - name: Setup pnpm
-      #   uses: pnpm/action-setup@v2
-      #   with:
-      #     version: 8
-      #     run_install: false
-      # # 获取 pnpm 存储目录
-      # - name: Get pnpm store directory
-      #   id: pnpm-cache
-      #   shell: bash
-      #   run: |
-      #     echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      # # 设置 pnpm 缓存
-      # - name: Setup pnpm cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-      #     key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pnpm-store-
-      # # 安装依赖
-      # - name: Install dependencies
-      #   run: pnpm install
-      # # 构建
-      # - name: Build
-      #   run: pnpm build-only
+          folder: dist
+          branch: gh-pages
+          clean: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       # 设置 Pages
       # - name: Setup Pages
