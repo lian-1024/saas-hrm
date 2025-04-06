@@ -31,10 +31,10 @@ jobs:
       # 项目 API 基础 URL
       IHRM_APP_API_BASE_URL: 'https://heimahr.itheima.net'
       # 项目基础 URL
-      IHRM_BASE_URL: '/admin-ihrm/'
+      IHRM_BASE_URL: '/sass-hrm/'
       # 项目描述
       IHRM_APP_DESCRIPTION: '企业级人力资源管理系统'
-      IHRM_ASSETS_URL: '/admin-ihrm/'
+      IHRM_ASSETS_URL: '/sass-hrm/'
     # 步骤
     steps:
       # 检查代码
