@@ -4,6 +4,8 @@ import type { UserConfig } from "vite";
 
 export const createBaseConfig = (viteEnv: ImportMetaEnv) => (rootPath: string, envDir: string): UserConfig => {
 
+  console.log(viteEnv.IHRM_BASE_URL);
+  
   return {
     envDir: envDir,  // 环境变量目录
     envPrefix: 'IHRM_',  // 环境变量前缀
