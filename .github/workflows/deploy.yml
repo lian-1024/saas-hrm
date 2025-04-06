@@ -35,6 +35,8 @@ jobs:
       # 项目描述
       IHRM_APP_DESCRIPTION: '企业级人力资源管理系统'
       IHRM_ASSETS_URL: '/saas-hrm/'
+
+      
     # 步骤
     steps:
       # 检查代码
