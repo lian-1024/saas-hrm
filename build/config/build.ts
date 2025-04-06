@@ -20,12 +20,11 @@ export const createBuildConfig = (viteEnv: ImportMetaEnv): BuildOptions => ({
       // 手动分块策略
       manualChunks: {
         // 将 vue 相关的库打包到 vendor 中
-        "vue-vendor": ['vue', 'vue-router', 'pinia', 'vue-i18n'],
+        "vue-vendor": ['vue', 'vue-router', 'pinia', 'vue-i18n', 'dayjs'],
         // 将 antd 相关的库打包到 antd-vendor 中
         "antd-vendor": ['ant-design-vue', '@ant-design/icons-vue'],
         "axios-vendor": ['axios'],
         "lodash-vendor": ['lodash-es'],
-        "dayjs-vendor": ['dayjs'],
         "echarts-vendor": ['echarts'],
       },
       // 资源文件输出路径配置
