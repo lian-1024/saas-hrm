@@ -60,26 +60,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with: 
           folder: dist
-      # 设置 Pages
-      # - name: Setup Pages
-      #   uses: actions/configure-pages@v3
-      # # 上传构建产物
-      # - name: Upload artifact
-      #   uses: actions/upload-pages-artifact@v3
-      #   with:
-      #     path: './dist'
-
-  # # 部署任务
-  # deploy:
-  #   # 部署环境
-  #   environment:
-  #     name: github-pages
-  #     url: ${{ steps.deployment.outputs.page_url }}
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   # 步骤
-  #   steps:
-  #     # 部署到 GitHub Pages
-  #     - name: Deploy to GitHub Pages
-  #       id: deployment
-  #       uses: actions/deploy-pages@v2 
+   
